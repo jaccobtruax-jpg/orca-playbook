@@ -138,6 +138,7 @@ h2 small { font-size: 13px; color: var(--muted); font-weight: 400; }
   <button data-tab="tracker">📊 Tracker + Contacts</button>
   <button data-tab="actions">📝 Actions</button>
   <button data-tab="prospects">🎯 Prospects</button>
+  <button data-tab="messaging">✍️ Messaging Assistant</button>
   <button data-tab="learn">📈 Dashboard</button>
 </div>
 
@@ -229,6 +230,97 @@ h2 small { font-size: 13px; color: var(--muted); font-weight: 400; }
   </div>
 
   <div id="prospectsRoot"></div>
+</div>
+
+<div class="section" id="tab-messaging">
+  <h2>✍️ Messaging Assistant <small>Craft tailored outreach aligned with Straight Line Selling</small></h2>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+    <!-- CONTACT SELECTOR -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px">
+      <h3 style="font-size:15px;font-weight:600;margin-bottom:14px">👤 Select Contact</h3>
+      <div class="field-group" style="margin-bottom:10px">
+        <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:3px">Choose Account</label>
+        <select id="msgAccount" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px;font-family:Inter"></select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+        <div class="field-group">
+          <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:3px">👤 Contact Name</label>
+          <input id="msgContactName" placeholder="Auto-fills from tracker" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;font-family:Inter">
+        </div>
+        <div class="field-group">
+          <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:3px">💼 Title</label>
+          <input id="msgContactTitle" placeholder="Auto-fills from tracker" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;font-family:Inter">
+        </div>
+      </div>
+      <div class="field-group" style="margin-bottom:10px">
+        <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:3px">🔗 LinkedIn URL</label>
+        <input id="msgLinkedIn" placeholder="Auto-fills from tracker" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;font-family:Inter">
+      </div>
+      <div class="field-group" style="margin-bottom:10px">
+        <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:3px">📝 Additional Context About Contact</label>
+        <textarea id="msgContext" placeholder="Recent post they made, thing they said, shared connection, anything relevant..." style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;font-family:Inter;min-height:50px;resize:vertical"></textarea>
+      </div>
+    </div>
+
+    <!-- CHANNEL + GOAL -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px">
+      <h3 style="font-size:15px;font-weight:600;margin-bottom:14px">📡 Channel & Objective</h3>
+      <div class="field-group" style="margin-bottom:12px">
+        <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:3px">Channel</label>
+        <select id="msgChannel" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px;font-family:Inter">
+          <option value="email">📧 Email</option>
+          <option value="linkedin">💼 LinkedIn Message</option>
+          <option value="call">📞 Phone Call</option>
+          <option value="inmail">📨 LinkedIn InMail</option>
+        </select>
+      </div>
+      <div class="field-group" style="margin-bottom:12px">
+        <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:3px">🎯 Objective</label>
+        <select id="msgGoal" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px;font-family:Inter">
+          <option value="meeting">🗓️ Book a meeting</option>
+          <option value="demo">🎤 Schedule a demo</option>
+          <option value="intro">🤝 Get an intro</option>
+          <option value="info">📋 Gather information</option>
+          <option value="followup">📬 Follow up</option>
+        </select>
+      </div>
+      <div class="field-group" style="margin-bottom:12px">
+        <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:3px">🏷️ Pitch Category</label>
+        <select id="msgPitchCat" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px;font-family:Inter">
+          <option value="reliability">🔗 Reliability / Fallback</option>
+          <option value="security">🛡️ Security / Compliance</option>
+          <option value="cost">💰 Cost Optimization</option>
+          <option value="platform">🏗️ Platform Play</option>
+        </select>
+      </div>
+      <div class="field-group" style="margin-bottom:10px">
+        <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:3px">📄 Company Context / Use Case</label>
+        <textarea id="msgContext2" placeholder="What do they do? What AI features do they ship? Any relevant news or signals?" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;font-family:Inter;min-height:70px;resize:vertical"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- GENERATE BUTTON -->
+  <div style="text-align:center;margin-bottom:20px">
+    <button id="msgGenerateBtn" class="btn" onclick="generateMessage()" style="padding:10px 32px;font-size:14px;background:rgba(0,212,170,0.1);border-color:var(--accent);color:var(--accent)">✨ Generate Outreach Message</button>
+  </div>
+
+  <!-- OUTPUT -->
+  <div id="msgOutput" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <h2>📬 Generated Message</h2>
+      <button class="btn" onclick="copyMessage()" style="background:rgba(59,130,246,0.15);border-color:var(--blue);color:var(--blue);font-size:11px">📋 Copy to Clipboard</button>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--accent);border-radius:12px;padding:24px;line-height:1.8;font-size:14px">
+      <div id="msgBody" style="color:var(--text);white-space:pre-wrap"></div>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" onclick="regenerate()" style="background:rgba(0,212,170,0.05);border-color:var(--border);font-size:11px">🔄 Regenerate</button>
+      <button class="btn" onclick="copyToTracker()" style="background:rgba(16,185,129,0.1);border-color:var(--green);color:var(--green);font-size:11px">💾 Copy to Tracker Notes</button>
+      <span id="msgCopied" style="font-size:12px;color:var(--accent);display:none">✅ Copied!</span>
+    </div>
+  </div>
 </div>
 
 <div class="section" id="tab-learn">
@@ -566,6 +658,121 @@ function addLearn(){
   renderDashboard();
 }
 
+// ===== MESSAGING ASSISTANT =====
+function initMessaging() {
+  const sel = document.getElementById('msgAccount');
+  sel.innerHTML = DATA.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+  sel.onchange = function() {
+    const t = getTracker();
+    const tr = t.find(x => x.id === this.value);
+    if(tr) {
+      document.getElementById('msgContactName').value = tr.contactName || '';
+      document.getElementById('msgContactTitle').value = tr.contactTitle || '';
+      document.getElementById('msgLinkedIn').value = tr.linkedinUrl || '';
+    }
+  };
+}
+initMessaging();
+
+function generateMessage() {
+  const acct = document.getElementById('msgAccount').value;
+  const d = DATA.find(x => x.id === acct);
+  const contactName = document.getElementById('msgContactName').value.trim() || 'there';
+  const title = document.getElementById('msgContactTitle').value.trim();
+  const linkedin = document.getElementById('msgLinkedIn').value.trim();
+  const context = document.getElementById('msgContext').value.trim();
+  const channel = document.getElementById('msgChannel').value;
+  const goal = document.getElementById('msgGoal').value;
+  const pitchCat = document.getElementById('msgPitchCat').value;
+  const companyContext = document.getElementById('msgContext2').value.trim() || (d ? d.signal : '');
+
+  const btn = document.getElementById('msgGenerateBtn');
+  btn.textContent = '⏳ Crafting...';
+  btn.disabled = true;
+
+  // Build message using template logic based on Straight Line Selling
+  const channelInfo = {
+    email: { greeting: 'Hi', signoff: 'Best,', format: 'email' },
+    linkedin: { greeting: 'Hi', signoff: '—', format: 'short' },
+    call: { greeting: '', signoff: '', format: 'call' },
+    inmail: { greeting: 'Hi', signoff: 'Best,', format: 'email' }
+  };
+  const ci = channelInfo[channel];
+
+  const goalLines = {
+    meeting: `Would you be open to a 15-minute call this week to discuss? I'll share how other [feature] teams are solving this.`,
+    demo: `I'd love to show you how OrcaRouter works in 20 minutes. Bring your toughest use case.`,
+    intro: `Would you be open to connecting me with your team responsible for [model infrastructure / AI platform]?`,
+    info: `Curious how you're currently handling [specific challenge]. Got 10 minutes to share your perspective?`,
+    followup: `Following up on my note from last week — any thoughts? Happy to jump on a quick call.`
+  };
+
+  // Build the pitch based on category and channel
+  let pitchBody = '';
+  const sharedPain = d ? d.angle : '';
+  const signalLine = d ? d.msg : '';
+
+  const openers = {
+    reliability: `I noticed you're running AI features that depend on model availability — when [provider] degrades, it directly impacts your users.`,
+    security: `Given the sensitive data flowing through your AI pipeline, I imagine governance and compliance are top of mind.`,
+    cost: `At your scale, every inference call adds up. I'm curious how you're thinking about cost-to-serve as AI usage grows.`,
+    platform: `You've built a platform that others build on. I'd love to talk about how OrcaRouter could complement your ecosystem.`
+  };
+
+  const bridges = {
+    reliability: `OrcaRouter sits between your app and every LLM provider with intelligent fallback chains — traffic auto-routes before users notice latency. No single-provider risk.`,
+    security: `OrcaRouter's PII Shield scans every prompt and response in real-time — blocks secrets, PHI, and credentials before they hit the model. Full audit trail. Deploy in your VPC.`,
+    cost: `OrcaRouter is a zero-markup passthrough. We don't add margin to your inference bill. Route simple requests to cheaper models automatically. Same quality, lower cost.`,
+    platform: `OrcaRouter gives your users enterprise-grade model governance under your ecosystem — PII Shield, compliance recipes, and cost-optimized routing through a single endpoint.`
+  };
+
+  const personalTouch = context ? `\n\nI also saw that ${context} — thought it was worth mentioning.` : '';
+  const liNote = linkedin ? `\n\n(I came across your profile on LinkedIn.)` : '';
+  const titleIntro = title ? ` ${title}` : '';
+
+  if(channel === 'call') {
+    pitchBody = `Hi${titleIntro ? ' ' + title : ''}, I'm reaching out because ${openers[pitchCat]}\n\n${bridges[pitchCat]}\n\n${goalLines[goal]}${personalTouch}`;
+  } else {
+    pitchBody = `${ci.greeting}${title ? ' ' + title : ''}${contactName !== 'there' ? ' ' + contactName : ''},${liNote}\n\n${openers[pitchCat]}\n\n${bridges[pitchCat]}\n\n${goalLines[goal]}${personalTouch}\n\n${ci.signoff}\n[Rep Name]\nFlashLabs - OrcaRouter`;
+  }
+
+  document.getElementById('msgBody').textContent = pitchBody;
+  document.getElementById('msgOutput').style.display = 'block';
+  btn.textContent = '✨ Generate Outreach Message';
+  btn.disabled = false;
+  document.getElementById('msgCopied').style.display = 'none';
+}
+
+function copyMessage() {
+  const text = document.getElementById('msgBody').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    document.getElementById('msgCopied').style.display = 'inline';
+    setTimeout(() => document.getElementById('msgCopied').style.display = 'none', 2000);
+  });
+}
+
+function regenerate() {
+  generateMessage();
+}
+
+function copyToTracker() {
+  const acct = document.getElementById('msgAccount').value;
+  const t = getTracker();
+  const tr = t.find(x => x.id === acct);
+  if(tr) {
+    const msg = document.getElementById('msgBody').textContent;
+    tr.pitchUsed = msg.slice(0, 500);
+    tr.notes = (tr.notes ? tr.notes + '\n---\n' : '') + 'Generated message (' + new Date().toLocaleDateString() + '): ' + msg.slice(0, 200);
+    localStorage.setItem('orcaT', JSON.stringify(t));
+    document.getElementById('msgCopied').textContent = '✅ Saved to Tracker!';
+    document.getElementById('msgCopied').style.display = 'inline';
+    setTimeout(() => {
+      document.getElementById('msgCopied').textContent = '✅ Copied!';
+      setTimeout(() => document.getElementById('msgCopied').style.display = 'none', 2000);
+    }, 2000);
+  }
+}
+
 // ===== PROSPECTS =====
 function getProspects() {
   return JSON.parse(localStorage.getItem('orcaProspects') || '[]');
@@ -786,6 +993,7 @@ document.querySelectorAll('[data-tab]').forEach(btn=>{
     if(btn.dataset.tab==='tracker') renderTracker();
     if(btn.dataset.tab==='actions') renderActions();
     if(btn.dataset.tab==='prospects') renderProspects();
+    if(btn.dataset.tab==='messaging') initMessaging();
     if(btn.dataset.tab==='learn') renderDashboard();
   });
 });
