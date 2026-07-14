@@ -630,12 +630,14 @@ function promoteToAccount(id) {
 function importFromSheet() {
   const sheetId = '1plfEWmbqh1GcO35XHra4T3_rA6RzOyLd3SfzcX4xOQg';
   const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
+  // Use CORS proxy to bypass Google Sheets CORS block
+  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(csvUrl)}`;
   const btn = document.querySelector('[onclick="importFromSheet()"]');
   btn.textContent = '⏳ Importing...';
   btn.disabled = true;
 
-  fetch(csvUrl)
-    .then(r => r.text())
+  fetch(proxyUrl)
+    .then(r => { if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); })
     .then(csv => {
       const lines = csv.split('\n').filter(l => l.trim());
       if(lines.length < 2) { alert('No data rows found in the sheet.'); return; }
