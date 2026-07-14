@@ -1,0 +1,74 @@
+[
+  {
+    "company": "DoorDash",
+    "contact": "",
+    "type": "hiring",
+    "detail": "DoorDash hiring Sr. ML Infra Engineer \u2014 requires LLM gateways, model routing, vendor abstraction, cost attribution. EXACT OrcaRouter fit.",
+    "url": "https://www.linkedin.com/jobs/view/software-engineer-machine-learning-infrastructure-gen-ai-at-doordash-4427385823",
+    "angle": "Cost \u2014 DoorDash at scale needs zero-markup routing",
+    "score": 5
+  },
+  {
+    "company": "Anduril Industries",
+    "contact": "",
+    "type": "hiring",
+    "detail": "Anduril hiring Software Engineer, Agent Platform \u2014 agent architecture, backend infrastructure, applied AI. Defense contractor building AI agents.",
+    "url": "https://job-boards.greenhouse.io/andurilindustries/jobs/5174717007",
+    "angle": "Security \u2014 Defense-grade tool-call firewall and PII Shield",
+    "score": 4
+  },
+  {
+    "company": "Capstone Investment Advisors",
+    "contact": "",
+    "type": "hiring",
+    "detail": "Capstone (global asset manager) hiring AI Infrastructure Engineer \u2014 financial services, regulated.",
+    "url": "https://job-boards.greenhouse.io/capstoneinvestmentadvisors/jobs/8427813002",
+    "angle": "Compliance \u2014 Finance-grade compliance + PII Shield",
+    "score": 4
+  },
+  {
+    "company": "Sierra AI",
+    "contact": "",
+    "type": "funding",
+    "detail": "Sierra (Bret Taylor) raised $950M at $15B+ valuation. Enterprise AI agents \u2014 Ghostwriter launched April 2026.",
+    "url": "https://techcrunch.com/2026/05/04/sierra-raises-950m-as-the-race-to-own-enterprise-ai-gets-serious",
+    "angle": "Reliability \u2014 Enterprise AI agents at scale need model failover",
+    "score": 5
+  },
+  {
+    "company": "Anthropic Enterprise Customers",
+    "contact": "",
+    "type": "outage",
+    "detail": "Anthropic continued outages June-July 2026. Users keeping Grok/Gemini as backup when Claude falters.",
+    "url": "https://statusgator.com/services/anthropic/outage-history",
+    "angle": "Reliability \u2014 Enterprises manually building fallback",
+    "score": 5
+  },
+  {
+    "company": "DoorDash (confirmed)",
+    "contact": "",
+    "type": "hiring",
+    "detail": "DoorDash hiring ML Infra Engineer \u2014 LLM gateways, model routing, vendor abstraction, cost attribution, LLM observability",
+    "url": "https://www.linkedin.com/jobs/view/software-engineer-machine-learning-infrastructure-gen-ai-at-doordash-4427385823",
+    "angle": "Cost \u2014 zero-markup routing for DoorDash scale",
+    "score": 5
+  },
+  {
+    "company": "Hex Technologies",
+    "contact": "",
+    "type": "hiring",
+    "detail": "Hex hiring Engineering Director, Agent Context \u2014 agent reasoning, debugging agent failures, human-in-the-loop",
+    "url": "https://job-boards.greenhouse.io/hextechnologies/jobs/5971196004",
+    "angle": "Reliability \u2014 Agent platform needs model failover",
+    "score": 4
+  },
+  {
+    "company": "Instead (Tax AI)",
+    "contact": "",
+    "type": "hiring",
+    "detail": "Instead hiring Platform Engineer \u2014 AI agent for tax with IRS/government approval. First dedicated platform hire.",
+    "url": "https://job-boards.greenhouse.io/instead/jobs/7772739003",
+    "angle": "Compliance \u2014 Government-regulated AI needs PII Shield + audit trail",
+    "score": 4
+  }
+]

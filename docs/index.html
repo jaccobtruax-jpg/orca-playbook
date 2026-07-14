@@ -223,6 +223,7 @@ h2 small { font-size: 13px; color: var(--muted); font-weight: 400; }
   <div style="margin-bottom:16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px">
     <span style="font-size:12px;color:var(--muted)">🤖 <strong>OrcaRouter Signal Scout</strong> runs daily at 8 AM — finds hiring signals, news, funding, outages, and job posts matching OrcaRouter fit.</span>
     <button class="btn" onclick="importFromSheet()" style="background:rgba(0,212,170,0.1);border-color:var(--accent);color:var(--accent);font-size:11px">📥 Import from Scout Sheet</button>
+    <button class="btn" onclick="importFromJSON()" style="background:rgba(16,185,129,0.15);border-color:var(--green);color:var(--green);font-size:11px">📄 Import signals.json ✓</button>
     <a href="https://docs.google.com/spreadsheets/d/1plfEWmbqh1GcO35XHra4T3_rA6RzOyLd3SfzcX4xOQg/edit" target="_blank" style="font-size:11px;color:var(--blue)">Open Sheet →</a>
   </div>
 
@@ -689,6 +690,42 @@ function importFromSheet() {
     .catch(e => {
       alert('Could not load sheet: ' + e.message);
       btn.textContent = '📥 Import from Scout Sheet';
+      btn.disabled = false;
+    });
+}
+
+function importFromJSON() {
+  const btn = document.querySelector('[onclick="importFromJSON()"]');
+  btn.textContent = '⏳ Loading...';
+  btn.disabled = true;
+
+  fetch('signals.json')
+    .then(r => { if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+    .then(data => {
+      const p = getProspects();
+      let imported = 0;
+      data.forEach((s, i) => {
+        if(p.find(x => x.company === s.company && x.detail?.startsWith(s.detail?.slice(0,30)))) return;
+        p.push({
+          id: Date.now().toString() + '_' + i,
+          company: s.company,
+          contact: s.contact || '',
+          type: s.type || 'other',
+          detail: (s.detail || '') + (s.angle ? ' | Angle: ' + s.angle : ''),
+          date: new Date().toLocaleDateString(),
+          time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
+          status: 'new'
+        });
+        imported++;
+      });
+      localStorage.setItem('orcaProspects', JSON.stringify(p));
+      btn.textContent = '✅ ' + imported + ' imported';
+      setTimeout(() => { btn.textContent = '📄 Import signals.json ✓'; btn.disabled = false; }, 3000);
+      renderProspects();
+    })
+    .catch(e => {
+      alert('Could not load signals.json: ' + e.message + '\n\nMake sure signals.json exists in the same folder as the playbook.');
+      btn.textContent = '📄 Import signals.json ✓';
       btn.disabled = false;
     });
 }
