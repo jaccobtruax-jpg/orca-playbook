@@ -156,7 +156,7 @@ h2 small { font-size: 13px; color: var(--muted); font-weight: 400; }
   <h2>📝 Actions Per Account <small>From tracker status + manual log</small></h2>
   <div class="actions-wrap">
     <table class="actions-table">
-      <thead><tr><th style="width:140px">Account</th><th style="width:90px">Status</th><th>Actions Taken</th><th style="width:160px">Next Action</th></tr></thead>
+      <thead><tr><th style="width:140px">Account</th><th style="width:70px">AE</th><th style="width:90px">Status</th><th>Actions Taken</th><th style="width:160px">Next Action</th></tr></thead>
       <tbody id="actionsRoot"></tbody>
     </table>
   </div>
@@ -250,7 +250,7 @@ function renderAccounts() {
 function getTracker() {
   let t = JSON.parse(localStorage.getItem('orcaT') || '[]');
   if(t.length===0){
-    t = DATA.map(d => ({id:d.id,name:d.name,status:'todo',lastTouch:'',contactName:'',contactTitle:'',linkedinUrl:'',pitchUsed:'',pitchCategory:'',notes:''}));
+    t = DATA.map(d => ({id:d.id,name:d.name,status:'todo',lastTouch:'',contactName:'',contactTitle:'',linkedinUrl:'',pitchUsed:'',pitchCategory:'',assignedTo:'',notes:''}));
     localStorage.setItem('orcaT',JSON.stringify(t));
   }
   return t;
@@ -306,6 +306,10 @@ function renderTracker() {
             <label>📅 Last Touch</label>
             <input value="${x.lastTouch||''}" placeholder="e.g. Jul 15 email" onchange="updT('${x.id}','lastTouch',this.value)">
           </div>
+          <div class="field-group">
+            <label>👤 Assigned AE</label>
+            <input value="${x.assignedTo||''}" placeholder="e.g. Danny" onchange="updT('${x.id}','assignedTo',this.value)">
+          </div>
         </div>
 
         <div class="field-group">
@@ -360,14 +364,14 @@ function logAction(){
   const detail=document.getElementById('actDetail').value.trim();
   if(!acct||!detail){alert('Select account and add details');return;}
   const acts=getActions();
-  acts.push({account:acct,type:type,detail:detail,date:new Date().toLocaleDateString()});
+  acts.push({account:acct,type:type,detail:detail,date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});
   localStorage.setItem('orcaActs',JSON.stringify(acts));
   const t=getTracker();
   const tr=t.find(x=>x.id===acct);
   if(tr){
     const sm={emailed:'emailed',called:'called',linkedin:'emailed',demo:'meeting-done',followup:tr.status,meeting:'meeting-scheduled',declined:'declined'};
     if(sm[type]&&tr.status==='todo'){tr.status=sm[type];localStorage.setItem('orcaT',JSON.stringify(t));}
-    tr.lastTouch=new Date().toLocaleDateString()+' - '+detail.slice(0,40);
+    tr.lastTouch=new Date().toLocaleDateString()+' '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})+' - '+detail.slice(0,40);
     localStorage.setItem('orcaT',JSON.stringify(t));
   }
   document.getElementById('actDetail').value='';
@@ -385,11 +389,13 @@ function renderActions(){
     const tr=t.find(x=>x.id===d.id);
     const status=tr?tr.status:'todo';
     const aa=acts.filter(a=>a.account===d.id);
-    const ah=aa.length>0?aa.slice(-3).reverse().map(a=>`<div class="action-item"><span class="check">${getIcon(a.type)}</span><span class="date">${a.date}</span>${a.detail}</div>`).join(''):'<div class="action-item" style="color:var(--muted)">No actions yet</div>';
+    const ah=aa.length>0?aa.slice(-3).reverse().map(a=>`<div class="action-item"><span class="check">${getIcon(a.type)}</span><span class="date">${a.date} ${a.time||''}</span> ${a.detail}</div>`).join(''):'<div class="action-item" style="color:var(--muted)">No actions yet</div>';
     const nx={'todo':'📧 Send initial email','emailed':'📞 Follow up call (Day 3)','called':'📬 Follow-up with insight','meeting-scheduled':'🎤 Prep demo','meeting-done':'📬 Send recap','declined':'❌ Log & move','closed':'✅ Onboard'};
     const opts = ['todo','emailed','called','meeting-scheduled','meeting-done','declined','closed'];
     const statusOpts = opts.map(v => `<option value="${v}" ${status===v?'selected':''}>${v.replace(/-/g,' ')}</option>`).join('');
+    const ae = tr ? tr.assignedTo||'' : '';
     return `<tr><td style="font-weight:600">${d.name}<br><span style="font-size:11px;color:var(--muted);font-weight:400">${d.angle}</span></td>
+      <td><input value="${ae}" placeholder="-" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 5px;color:var(--text);font-size:11px;font-family:Inter" onchange="updT('${d.id}','assignedTo',this.value);renderActions();"></td>
       <td><select style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:4px 6px;color:var(--text);font-size:11px;font-family:Inter" onchange="updT('${d.id}','status',this.value);renderActions();renderTracker();">${statusOpts}</select></td><td>${ah}</td>
       <td style="font-size:12px;color:var(--muted)">${nx[status]||'Review'}</td></tr>`;
   }).join('');
