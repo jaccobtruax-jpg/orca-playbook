@@ -137,6 +137,7 @@ h2 small { font-size: 13px; color: var(--muted); font-weight: 400; }
   <button class="active" data-tab="accounts">📋 Accounts</button>
   <button data-tab="tracker">📊 Tracker + Contacts</button>
   <button data-tab="actions">📝 Actions</button>
+  <button data-tab="prospects">🎯 Prospects</button>
   <button data-tab="learn">📈 Dashboard</button>
 </div>
 
@@ -185,6 +186,41 @@ h2 small { font-size: 13px; color: var(--muted); font-weight: 400; }
     </div>
     <button class="btn" onclick="logAction()" style="margin-top:12px">+ Log</button>
   </div>
+</div>
+
+<div class="section" id="tab-prospects">
+  <h2>🎯 Prospect Signals <small>Scraped intent signals & new leads</small></h2>
+  
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:20px">
+    <div style="flex:1;min-width:150px">
+      <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:3px">Company</label>
+      <input id="psCompany" placeholder="e.g. Acme AI" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;font-family:Inter">
+    </div>
+    <div style="flex:1;min-width:150px">
+      <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:3px">Contact</label>
+      <input id="psContact" placeholder="Name / Title" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;font-family:Inter">
+    </div>
+    <div style="flex:1;min-width:120px">
+      <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:3px">Signal Type</label>
+      <select id="psType" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;font-family:Inter">
+        <option value="hiring">📡 Hiring signal</option>
+        <option value="product">🚀 Product launch</option>
+        <option value="funding">💰 Funding round</option>
+        <option value="outage">⚠️ Provider outage</option>
+        <option value="partnership">🤝 New partnership</option>
+        <option value="content">📝 Blog/post mention</option>
+        <option value="job">💼 Job posting</option>
+        <option value="other">📌 Other</option>
+      </select>
+    </div>
+    <div style="flex:2;min-width:200px">
+      <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:3px">Signal Detail / Context</label>
+      <input id="psDetail" placeholder="e.g. 'Hiring 3 AI infra engineers - multi-model routing experience required'" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;font-family:Inter">
+    </div>
+    <button class="btn" onclick="addProspect()" style="margin-top:14px">+ Save Signal</button>
+  </div>
+
+  <div id="prospectsRoot"></div>
 </div>
 
 <div class="section" id="tab-learn">
@@ -522,6 +558,97 @@ function addLearn(){
   renderDashboard();
 }
 
+// ===== PROSPECTS =====
+function getProspects() {
+  return JSON.parse(localStorage.getItem('orcaProspects') || '[]');
+}
+
+function addProspect() {
+  const company = document.getElementById('psCompany').value.trim();
+  const contact = document.getElementById('psContact').value.trim();
+  const type = document.getElementById('psType').value;
+  const detail = document.getElementById('psDetail').value.trim();
+  if(!company) { alert('Enter a company name'); return; }
+
+  const p = getProspects();
+  p.push({
+    id: Date.now().toString(),
+    company: company,
+    contact: contact,
+    type: type,
+    detail: detail,
+    date: new Date().toLocaleDateString(),
+    time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
+    status: 'new'
+  });
+  localStorage.setItem('orcaProspects', JSON.stringify(p));
+  document.getElementById('psCompany').value='';
+  document.getElementById('psContact').value='';
+  document.getElementById('psDetail').value='';
+  renderProspects();
+}
+
+function promoteToAccount(id) {
+  const p = getProspects();
+  const idx = p.findIndex(x => x.id === id);
+  if(idx === -1) return;
+  const item = p[idx];
+
+  // Add to tracker
+  const t = getTracker();
+  const newId = item.company.toLowerCase().replace(/[^a-z0-9]/g,'') + '_prospect';
+  if(!t.find(x => x.id === newId)) {
+    t.push({
+      id: newId,
+      name: item.company,
+      status: 'todo',
+      lastTouch: '',
+      contactName: item.contact.split('/')[0].trim(),
+      contactTitle: item.contact.includes('/') ? item.contact.split('/')[1].trim() : '',
+      linkedinUrl: '',
+      pitchUsed: '',
+      pitchCategory: '',
+      assignedTo: '',
+      notes: 'Promoted from prospect signal: ' + item.detail
+    });
+    localStorage.setItem('orcaT', JSON.stringify(t));
+  }
+
+  // Mark as promoted
+  p[idx].status = 'promoted';
+  localStorage.setItem('orcaProspects', JSON.stringify(p));
+  renderProspects();
+  renderTracker();
+}
+
+function renderProspects() {
+  const p = getProspects();
+  const root = document.getElementById('prospectsRoot');
+
+  if(p.length === 0) {
+    root.innerHTML = '<p style="color:var(--muted);font-size:13px">No prospect signals saved yet. Use the form above to add one.</p>';
+    return;
+  }
+
+  const typeIcons = {hiring:'📡',product:'🚀',funding:'💰',outage:'⚠️',partnership:'🤝',content:'📝',job:'💼',other:'📌'};
+
+  root.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px">` +
+    p.slice().reverse().map(x => {
+      const promoted = x.status === 'promoted';
+      return `<div style="background:var(--surface);border:1px solid ${promoted ? 'var(--green)' : 'var(--border)'};border-radius:10px;padding:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <div style="font-weight:600;font-size:14px">${x.company}</div>
+          <span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;background:${promoted ? 'rgba(16,185,129,0.15)' : 'rgba(245,158,11,0.15)'};color:${promoted ? 'var(--green)' : 'var(--orange)'}">${promoted ? '✅ Added' : '🆕 New'}</span>
+        </div>
+        ${x.contact ? `<div style="font-size:12px;color:var(--text);margin-bottom:4px">👤 ${x.contact}</div>` : ''}
+        <div style="font-size:11px;color:var(--accent);margin-bottom:6px">${typeIcons[x.type]||'📌'} ${x.type.charAt(0).toUpperCase()+x.type.slice(1)} signal</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:8px">${x.detail}</div>
+        <div style="font-size:10px;color:var(--muted)">${x.date} ${x.time}</div>
+        ${!promoted ? `<button class="btn btn-sm" onclick="promoteToAccount('${x.id}')" style="margin-top:8px;background:rgba(0,212,170,0.1);border-color:var(--accent);color:var(--accent)">+ Add to Accounts</button>` : ''}
+      </div>`;
+    }).join('') + `</div>`;
+}
+
 document.querySelectorAll('[data-tab]').forEach(btn=>{
   btn.addEventListener('click',()=>{
     document.querySelectorAll('[data-tab]').forEach(b=>b.classList.remove('active'));
@@ -530,6 +657,7 @@ document.querySelectorAll('[data-tab]').forEach(btn=>{
     document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
     if(btn.dataset.tab==='tracker') renderTracker();
     if(btn.dataset.tab==='actions') renderActions();
+    if(btn.dataset.tab==='prospects') renderProspects();
     if(btn.dataset.tab==='learn') renderDashboard();
   });
 });
