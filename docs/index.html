@@ -630,68 +630,79 @@ function promoteToAccount(id) {
 
 function importFromSheet() {
   const sheetId = '1plfEWmbqh1GcO35XHra4T3_rA6RzOyLd3SfzcX4xOQg';
-  const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
-  // Use CORS proxy to bypass Google Sheets CORS block
+  // Try the gviz endpoint which sometimes has better CORS/public access
+  const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`;
   const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(csvUrl)}`;
   const btn = document.querySelector('[onclick="importFromSheet()"]');
-  btn.textContent = '⏳ Importing...';
-  btn.disabled = true;
-
-  fetch(proxyUrl)
-    .then(r => { if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); })
-    .then(csv => {
-      const lines = csv.split('\n').filter(l => l.trim());
-      if(lines.length < 2) { alert('No data rows found in the sheet.'); return; }
-
-      const headers = lines[0].split(',').map(h => h.replace(/^"|"$/g,'').trim());
-      const p = getProspects();
-      let imported = 0;
-
-      for(let i = 1; i < lines.length; i++) {
-        // Parse CSV properly (handles quoted fields)
-        const vals = [];
-        let current = '', inQuotes = false;
-        for(const ch of lines[i]) {
-          if(ch === '"') { inQuotes = !inQuotes; continue; }
-          if(ch === ',' && !inQuotes) { vals.push(current.trim()); current = ''; continue; }
-          current += ch;
+  
+  const tryFetch = (url) => {
+    btn.textContent = '⏳ Importing...';
+    btn.disabled = true;
+    return fetch(url)
+      .then(r => {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.text();
+      })
+      .then(csv => {
+        if (csv.includes('ServiceLogin') || csv.includes('login-container')) {
+          throw new Error('Sheet is private. Please "Publish to the web" (File > Share > Publish to the web > CSV) or use the JSON import.');
         }
-        vals.push(current.trim());
+        const lines = csv.split('\n').filter(l => l.trim());
+        if (lines.length < 2) throw new Error('No data rows found.');
+        
+        const p = getProspects();
+        let imported = 0;
+        for (let i = 1; i < lines.length; i++) {
+          const vals = [];
+          let current = '', inQuotes = false;
+          for (const ch of lines[i]) {
+            if (ch === '"') { inQuotes = !inQuotes; continue; }
+            if (ch === ',' && !inQuotes) { vals.push(current.trim()); current = ''; continue; }
+            current += ch;
+          }
+          vals.push(current.trim());
+          
+          const company = vals[1] || ''; // Column B
+          const detail = vals[6] || '';  // Column G
+          if (!company && !detail) continue;
 
-        const company = vals[0] || vals[headers.indexOf('Company')] || '';
-        const detail = vals[6] || vals[headers.indexOf('Signal Detail')] || '';
-        if(!company && !detail) continue;
+          p.push({
+            id: Date.now().toString() + '_' + i,
+            company: company.replace(/^"|"$/g,''),
+            contact: (vals[2] || '').replace(/^"|"$/g,''),
+            type: (vals[4] || 'other').toLowerCase().replace(/^"|"$/g,''),
+            detail: detail.replace(/^"|"$/g,'') + (vals[7] ? ' | Angle: ' + vals[7].replace(/^"|"$/g,'') : ''),
+            date: new Date().toLocaleDateString(),
+            time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
+            status: 'new'
+          });
+          imported++;
+        }
+        localStorage.setItem('orcaProspects', JSON.stringify(p));
+        btn.textContent = '✅ ' + imported + ' imported';
+        setTimeout(() => { btn.textContent = '📥 Import from Scout Sheet'; btn.disabled = false; }, 3000);
+        renderProspects();
+      })
+      .catch(e => {
+        console.error(e);
+        alert('Import failed: ' + e.message);
+        btn.textContent = '📥 Import from Scout Sheet';
+        btn.disabled = false;
+        
+        // Fallback: Show a prompt to paste CSV
+        const manual = confirm('Would you like to paste the CSV data manually?');
+        if (manual) {
+          const data = prompt('Paste CSV data here (including headers):');
+          if (data) {
+            // Recursively call with a data URI or just handle it
+            const blob = new Blob([data], {type: 'text/csv'});
+            tryFetch(URL.createObjectURL(blob));
+          }
+        }
+      });
+  };
 
-        // Map columns by position: Timestamp,Company,Contact,Title,Signal,URL,Detail,Angle,Fit,Status
-        const contact = vals[2] || '';
-        const signalTypeRaw = (vals[4] || '').toLowerCase();
-        const typeMap = {hiring:'hiring',funding:'funding',outage:'outage',product:'product',partnership:'partnership',launch:'product',content:'content',job:'job'};
-        const type = typeMap[signalTypeRaw] || 'other';
-        const angle = vals[7] || '';
-
-        p.push({
-          id: Date.now().toString() + '_' + i,
-          company: company,
-          contact: contact,
-          type: type,
-          detail: detail + (angle ? ' | Angle: ' + angle : ''),
-          date: new Date().toLocaleDateString(),
-          time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
-          status: 'new'
-        });
-        imported++;
-      }
-
-      localStorage.setItem('orcaProspects', JSON.stringify(p));
-      btn.textContent = '✅ ' + imported + ' imported';
-      setTimeout(() => { btn.textContent = '📥 Import from Scout Sheet'; btn.disabled = false; }, 3000);
-      renderProspects();
-    })
-    .catch(e => {
-      alert('Could not load sheet: ' + e.message);
-      btn.textContent = '📥 Import from Scout Sheet';
-      btn.disabled = false;
-    });
+  tryFetch(proxyUrl);
 }
 
 function importFromJSON() {
