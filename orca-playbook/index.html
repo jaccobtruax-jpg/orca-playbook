@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OrcaRouter 19-Account Outreach Playbook</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0a0a0f; --surface: #12121a; --surface2: #1a1a2e; --border: #2a2a44;
+  --text: #e8e8f0; --muted: #8888aa; --accent: #00d4aa;
+  --red: #ef4444; --orange: #f59e0b; --blue: #3b82f6; --green: #10b981; --purple: #8b5cf6;
+}
+body { font-family: Inter, sans-serif; background: var(--bg); color: var(--text); }
+.hero { text-align: center; padding: 40px 20px 32px; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; top: -50%; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(0,212,170,0.06) 0%, transparent 70%); pointer-events: none; }
+.hero h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; }
+.hero h1 span { color: var(--accent); }
+.hero p { color: var(--muted); font-size: 14px; margin-top: 6px; }
+.hero-metrics { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+.metric { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 16px; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+.container { max-width: 1360px; margin: 0 auto; padding: 0 16px; }
+.controls { display: flex; gap: 8px; overflow-x: auto; padding: 16px 0; scrollbar-width: none; position: sticky; top: 0; z-index: 50; background: var(--bg); }
+.controls button { flex-shrink: 0; padding: 8px 18px; border-radius: 8px; border: 1px solid transparent; background: var(--surface); color: var(--muted); font-size: 12px; font-weight: 500; cursor: pointer; font-family: Inter; white-space: nowrap; }
+.controls button:hover { border-color: var(--border); color: var(--text); }
+.controls button.active { background: var(--surface2); border-color: var(--accent); color: var(--accent); }
+.section { display: none; padding: 20px 0 40px; }
+.section.active { display: block; }
+h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+h2 small { font-size: 13px; color: var(--muted); font-weight: 400; }
+
+.acct-row { display: grid; grid-template-columns: 1fr 80px 80px 90px; gap: 6px; align-items: start; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 6px; cursor: pointer; transition: all 0.15s; }
+.acct-row:hover { border-color: rgba(255,255,255,0.1); }
+.acct-row.open { border-color: var(--accent); }
+.acct-tag { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 100px; }
+.tag-hot { background: rgba(239,68,68,0.15); color: var(--red); }
+.tag-warm { background: rgba(245,158,11,0.15); color: var(--orange); }
+.tag-cold { background: rgba(59,130,246,0.15); color: var(--blue); }
+.acct-row .left { display: flex; flex-direction: column; gap: 2px; }
+.acct-name { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.acct-cluster { font-size: 10px; color: var(--muted); font-weight: 400; }
+.acct-angle { font-size: 11px; color: var(--accent); font-weight: 500; }
+.acct-detail { display: none; grid-column: 1 / -1; padding: 16px 0 8px; border-top: 1px solid var(--border); margin-top: 8px; }
+.acct-row.open .acct-detail { display: block; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 768px) { .detail-grid { grid-template-columns: 1fr; } }
+.detail-card { background: var(--surface2); border-radius: 8px; padding: 14px; }
+.detail-card h4 { font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 6px; }
+.detail-card p, .detail-card li { font-size: 12.5px; color: var(--muted); line-height: 1.6; list-style: none; }
+.detail-card li::before { content: '› '; color: var(--accent); }
+
+/* TRACKER CARDS */
+.tracker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
+.trk-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+.trk-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; justify-content: space-between; }
+.trk-card .meta { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+.trk-card .field-group { margin-bottom: 8px; }
+.trk-card label { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; display: block; margin-bottom: 3px; }
+.trk-card select, .trk-card textarea, .trk-card input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; color: var(--text); font-size: 12px; font-family: Inter; }
+.trk-card textarea { min-height: 44px; resize: vertical; }
+.trk-card .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.trk-card .enrich-btn { font-size: 10px; padding: 2px 8px; border-radius: 4px; background: var(--accent); color: #000; border: none; cursor: pointer; font-weight: 600; margin-left: 4px; }
+.trk-card .enrich-btn:hover { opacity: 0.8; }
+.trk-card .enrich-result { font-size: 11px; color: var(--accent); margin-top: 2px; }
+.trk-card .tag-pitch { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 4px; margin: 1px; }
+.tag-pitch.rel { background: rgba(59,130,246,0.15); color: var(--blue); }
+.tag-pitch.sec { background: rgba(139,92,246,0.15); color: var(--purple); }
+.tag-pitch.cost { background: rgba(16,185,129,0.15); color: var(--green); }
+.tag-pitch.comp { background: rgba(245,158,11,0.15); color: var(--orange); }
+
+.actions-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.actions-table th { text-align: left; padding: 10px 12px; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; border-bottom: 1px solid var(--border); }
+.actions-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.actions-table tr:hover td { background: rgba(255,255,255,0.02); }
+.actions-table .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+.actions-table .action-item { display: flex; gap: 6px; align-items: flex-start; margin-bottom: 4px; font-size: 12px; color: var(--muted); }
+.actions-table .action-item .check { color: var(--accent); flex-shrink: 0; }
+.actions-table .action-item .date { color: var(--text); font-weight: 500; }
+.status-dot.todo { background: var(--muted); }
+.status-dot.emailed { background: var(--blue); }
+.status-dot.called { background: var(--green); }
+.status-dot.meeting-scheduled { background: var(--orange); }
+.status-dot.meeting-done { background: var(--accent); }
+.status-dot.declined { background: var(--red); }
+.status-dot.closed { background: var(--green); }
+
+.dash-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.dash-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; text-align: center; }
+.dash-card .dash-num { font-size: 28px; font-weight: 700; color: var(--accent); }
+.dash-card .dash-label { font-size: 11px; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
+.dash-card .dash-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.dash-card.red .dash-num { color: var(--red); }
+.dash-card.orange .dash-num { color: var(--orange); }
+.dash-card.blue .dash-num { color: var(--blue); }
+.progress-bar { height: 6px; border-radius: 3px; background: var(--surface2); margin-top: 8px; overflow: hidden; }
+.progress-bar .fill { height: 100%; border-radius: 3px; transition: width 0.5s; }
+.fill.green { background: var(--green); }
+.fill.orange { background: var(--orange); }
+.fill.red { background: var(--red); }
+.fill.blue { background: var(--blue); }
+
+.msg-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 8px; }
+.msg-card .msg-pitch { font-size: 12px; color: var(--text); margin-bottom: 4px; font-style: italic; }
+.msg-card .msg-meta { font-size: 11px; color: var(--muted); }
+.msg-card .msg-result { font-size: 11px; display: inline-block; padding: 2px 8px; border-radius: 4px; margin-top: 4px; }
+.msg-result.worked { background: rgba(16,185,129,0.15); color: var(--green); }
+.msg-result.no { background: rgba(239,68,68,0.15); color: var(--red); }
+.msg-result.pending { background: rgba(245,158,11,0.15); color: var(--orange); }
+
+.learn-entry { padding: 8px 12px; background: var(--surface2); border-radius: 6px; margin-bottom: 6px; font-size: 12px; color: var(--muted); line-height: 1.5; }
+.learn-entry .date { color: var(--accent); font-weight: 500; }
+.learn-entry .acct-t { font-size: 10px; padding: 1px 6px; border-radius: 4px; background: rgba(0,212,170,0.1); color: var(--accent); margin-right: 4px; }
+
+.btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 6px 14px; color: var(--text); font-size: 12px; cursor: pointer; font-family: Inter; }
+.btn:hover { border-color: var(--accent); }
+.btn-sm { padding: 4px 10px; font-size: 10px; }
+.footer { text-align: center; padding: 32px 16px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--border); }
+.actions-wrap { overflow-x: auto; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>OrcaRouter <span>Outreach Playbook</span></h1>
+  <p>19 accounts · Track contacts, messages & LinkedIn · Analyze what works</p>
+  <div class="hero-metrics">
+    <span class="metric">🔥 5 Hot</span>
+    <span class="metric">🟡 11 Warm</span>
+    <span class="metric">🔵 3 Cold</span>
+    <span class="metric">4 Clusters</span>
+  </div>
+</div>
+
+<div class="container">
+<div class="controls">
+  <button class="active" data-tab="accounts">📋 Accounts</button>
+  <button data-tab="tracker">📊 Tracker + Contacts</button>
+  <button data-tab="actions">📝 Actions</button>
+  <button data-tab="learn">📈 Dashboard</button>
+</div>
+
+<div class="section active" id="tab-accounts">
+  <div style="display:grid;grid-template-columns:1fr 80px 80px 90px;gap:6px;padding:8px 16px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;margin-bottom:4px">
+    <span>Account & Angle <span style="font-weight:400;color:var(--muted)">(click to expand)</span></span><span>Priority</span><span>Week</span><span>Touch</span>
+  </div>
+  <div id="accountsRoot"></div>
+</div>
+
+<div class="section" id="tab-tracker">
+  <h2>📊 Tracker & Contacts <small>Contact info, LinkedIn, pitch used</small></h2>
+  <div id="trackerRoot"></div>
+</div>
+
+<div class="section" id="tab-actions">
+  <h2>📝 Actions Per Account <small>From tracker status + manual log</small></h2>
+  <div class="actions-wrap">
+    <table class="actions-table">
+      <thead><tr><th style="width:140px">Account</th><th style="width:90px">Status</th><th>Actions Taken</th><th style="width:160px">Next Action</th></tr></thead>
+      <tbody id="actionsRoot"></tbody>
+    </table>
+  </div>
+  <h2 style="margin-top:28px">✏️ Log an Action</h2>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:10px">
+    <div style="flex:1;min-width:160px">
+      <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px">Account</label>
+      <select id="actAcct" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px;font-family:Inter"></select>
+    </div>
+    <div style="flex:1;min-width:140px">
+      <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px">Type</label>
+      <select id="actType" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px;font-family:Inter">
+        <option value="emailed">📧 Emailed</option><option value="called">📞 Called</option>
+        <option value="linkedin">💼 LinkedIn message</option><option value="demo">🎤 Demo given</option>
+        <option value="followup">📬 Followed up</option><option value="meeting">🗓️ Meeting booked</option>
+        <option value="declined">❌ Declined</option><option value="other">📝 Other</option>
+      </select>
+    </div>
+    <div style="flex:2;min-width:200px">
+      <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px">Details</label>
+      <input id="actDetail" placeholder="e.g. VP Eng replied 'send docs'" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px;font-family:Inter">
+    </div>
+    <button class="btn" onclick="logAction()" style="margin-top:12px">+ Log</button>
+  </div>
+</div>
+
+<div class="section" id="tab-learn">
+  <h2>📈 Outreach Dashboard</h2>
+  <div id="dashRoot" class="dash-grid"></div>
+  <h2>📊 Messaging Analysis</h2>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Based on pitches logged in Tracker → Notes — what's working?</p>
+  <div id="msgAnalysis"></div>
+  <h2 style="margin-top:24px">📅 Weekly Progress</h2>
+  <div id="statsRoot"></div>
+  <h2 style="margin-top:24px">🧠 Learning Log</h2>
+  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+    <input id="li" placeholder="What did you learn?" style="flex:1;min-width:200px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--text);font-size:13px;font-family:Inter">
+    <input id="la" placeholder="Account" style="width:130px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--text);font-size:13px;font-family:Inter">
+    <button class="btn" onclick="addLearn()">Save</button>
+  </div>
+  <div id="learnRoot"><p style="color:var(--muted);font-size:13px">No learnings yet.</p></div>
+</div>
+</div>
+<div class="footer">OrcaRouter Outreach Playbook · FlashLabs · July 2026</div>
+
+<script>
+// Use backtick template literals to avoid escaping nightmares
+const DATA = [
+{id:'replit',name:'Replit',cl:'C1: Code',prio:'hot',wk:'W1',tch:'Call+Email',angle:'Claude single-provider → fallback',targets:'VP Eng · Head of AI Platform · CTO',signal:'9 AI/ML roles open (6x surge). Agent 4 uses Claude Sonnet 4.5 exclusively.',msg:'"Replit Agent runs on Claude exclusively. When Claude degrades, every session breaks. OrcaRouter adds invisible fallback chains."',notes:'Highest urgency. Call then email same day.'},
+{id:'sourcegraph',name:'Sourcegraph',cl:'C1: Code',prio:'hot',wk:'W1',tch:'Email→Call',angle:'Tool-call firewall for Cody',targets:'Head of Product, Cody · CTO · VP Eng',signal:'Pure enterprise ($59/seat, SOC2). BYO model on Enterprise tier.',msg:'Cody runs multi-model with code-exec tool access. OrcaRouter tool-call firewall blocks secrets before they hit the LLM.',notes:'Reference their published blog content.'},
+{id:'notion',name:'Notion 🔥',cl:'C2: Enterprise AI',prio:'hot',wk:'W1',tch:'Call→Email',angle:'June 7 outage — manual failover',targets:'Head of AI · VP Eng · CTO',signal:'June 7: Opus 4.7 degraded. Notion manually disabled ALL Claude models.',msg:'"June 7 — you manually disabled every Claude model. Next time, OrcaRouter auto-fails over before users notice."',notes:'Freshest pain on the list. Reference specific date.'},
+{id:'box',name:'Box',cl:'C2: Enterprise AI',prio:'hot',wk:'W1',tch:'Email→Call',angle:'HIPAA + PII Shield for Box AI',targets:'VP Product, AI · CISO · CTO',signal:'Box AI processes documents with PHI/PII. Claude enterprise customer.',msg:'"PHI hitting the LLM = compliance event. PII Shield scans every prompt — blocks, redacts, logs. HIPAA recipe out of the box."',notes:'Lead with compliance. Get security team onboard.'},
+{id:'intercom',name:'Intercom',cl:'C2: Enterprise AI',prio:'hot',wk:'W2',tch:'Call→Email',angle:'Cost optimization for Fin + PII',targets:'VP AI/ML · CTO · Head of Fin',signal:'6,000+ customers, $0.99/resolution. Every resolution = expensive tokens.',msg:'"Route simple tickets to Haiku/GPT-4o-mini — save 40-60% on inference. PII Shield keeps it safe."',notes:'Lead with cost savings, not security.'},
+{id:'airtable',name:'Airtable 🆕',cl:'C2: Enterprise AI',prio:'warm',wk:'W2',tch:'Email→Call',angle:'Multi-model governance',targets:'VP Product, AI · Head of AI Platform · CTO',signal:'5+ provider model picker. Just launched AI Agents + MCP.',msg:'"Your model picker has 5+ providers. Who governs each model? OrcaRouter adds governance + cost routing."',notes:'Model picker = they need governance layer.'},
+{id:'codeium',name:'Codeium',cl:'C1: Code',prio:'warm',wk:'W2',tch:'Email',angle:'Zero-markup for high-volume API',targets:'CEO · CTO · Head of Engineering',signal:'Millions of calls/day. Uses own small model + frontier APIs.',msg:'"Every marked-up API call is lost margin. OrcaRouter passes through at provider cost. No markup."',notes:'Clear cost play. Keep simple.'},
+{id:'databricks',name:'Databricks',cl:'C4: Infra',prio:'warm',wk:'W2',tch:'Email→LinkedIn',angle:'Zero-markup for customer models',targets:'VP AI/ML · GM, AI Products · Head of Mosaic AI',signal:'Serves thousands through Mosaic AI Gateway. Massive inference volume.',msg:'"Your customers pay marked-up inference. OrcaRouter gives zero-markup under your management."',notes:'Complement to Mosaic AI Gateway.'},
+{id:'gitlab',name:'GitLab',cl:'C4: Infra',prio:'warm',wk:'W2',tch:'Email',angle:'Platform play for GitLab customers',targets:'VP Product, AI · CTO · Head of Duo',signal:'Own AI Gateway + Vertex AI. Secrets Manager in beta.',msg:'"Your AI Gateway powers Duo. What about customers building on your platform? OrcaRouter for them."',notes:'Pitch for their customers, not themselves.'},
+{id:'temporal',name:'Temporal',cl:'C4: Infra',prio:'warm',wk:'W2',tch:'Email→Call',angle:'Durability + routing = complete stack',targets:'CTO · Head of Product · VP Eng',signal:'Agents need reliable model access. Temporal = durability. OrcaRouter = routing.',msg:'"You handle durability. We handle model availability + cost. Together: agents that never fail AND never overpay."',notes:'Clear complement pitch.'},
+{id:'grafana',name:'Grafana',cl:'C4: Infra',prio:'warm',wk:'W2',tch:'Email',angle:'PII in query logs',targets:'VP Product · CTO · Head of AI',signal:'PII in logs is known. Sift AI product live.',msg:'"Observability data → LLMs = PII in prompts. OrcaRouter PII Shield blocks it before the model."',notes:'Natural integration. Observability fits.'},
+{id:'hubspot',name:'HubSpot 🆕',cl:'C2: Enterprise AI',prio:'warm',wk:'W3',tch:'LinkedIn→Email',angle:'PII Shield for Breeze AI',targets:'VP AI/ML · CPTO (Duncan Lennox) · Head of Breeze',signal:'Breeze across 200K+ customers. 100% of eng use AI. Hiring AI engineers.',msg:'"Breeze agents process every customer interaction — PII everywhere. OrcaRouter adds PII Shield + audit trail."',notes:'Big account. PII Shield wedge.'},
+{id:'confluent',name:'Confluent',cl:'C4: Infra',prio:'warm',wk:'W3',tch:'Email',angle:'Guardrails for Kafka→LLM',targets:'VP Product, AI · CTO · Head of AI/ML',signal:'Kafka-scale streaming. AI features on streaming data.',msg:'"Streaming data → LLM = PII at scale. OrcaRouter adds guardrails between pipelines and providers."',notes:'Integration pitch.'},
+{id:'launchdarkly',name:'LaunchDarkly',cl:'C4: Infra',prio:'warm',wk:'W3',tch:'Email',angle:'Multi-model A/B testing',targets:'CTO · VP Product · Head of AI/ML',signal:'AI experimentation = multi-model testing. They toggle features.',msg:'"You toggle features. We toggle models. A/B test GPT-5 vs Opus with guardrails."',notes:'Synergy play.'},
+{id:'sentry',name:'Sentry',cl:'C4: Infra',prio:'warm',wk:'W3',tch:'Email',angle:'PII Shield for AI debugging',targets:'CTO · VP Product · Head of AI',signal:'Error traces contain PII/tokens. Sending to LLMs = leak risk.',msg:'"Error traces have secrets. When AI debugging hits an LLM, that data goes. OrcaRouter PII Shield protects it."',notes:'Clean fit.'},
+{id:'figma',name:'Figma',cl:'C2: Enterprise AI',prio:'warm',wk:'W3',tch:'LinkedIn→Email',angle:'Cost routing for design-to-code',targets:'CTO · VP Eng · Head of AI',signal:'Design-to-code = expensive compute. AI features on frontier models.',msg:'"Route simple gen tasks to cheaper models, keep frontier for complex. Half the inference bill."',notes:'IP protection is secondary angle.'},
+{id:'zapier',name:'Zapier 🆕',cl:'C4: Infra',prio:'cold',wk:'W3',tch:'Email',angle:'Enterprise guardrails complement',targets:'VP Product, AI · CTO · Head of Enterprise',signal:'Launched AI Guardrails Feb 2026. AI Central + multi-model. 9,000+ apps.',msg:'"Your Guardrails handle workflow safety. OrcaRouter adds enterprise PII Shield for regulated customers."',notes:'Partnership angle.'},
+{id:'benchling',name:'Benchling',cl:'C3: Regulated',prio:'warm',wk:'W3',tch:'Email→LinkedIn',angle:'PHI on top of Anthropic partnership',targets:'VP Product · CTO · Head of AI',signal:'Anthropic partnership (Claude for Life Sciences). Very regulated.',msg:'Anthropic gives the model. Who handles governance for multi-lab workflows? OrcaRouter adds PII Shield.',notes:'Complement, dont disrupt Anthropic.'},
+{id:'cockroach',name:'Cockroach Labs',cl:'C4: Infra',prio:'cold',wk:'W4',tch:'Email',angle:'Tool-call for AI SQL',targets:'CTO · VP Product',signal:'AI SQL generation = tool-call security needed.',msg:'"AI SQL is powerful — until a hallucinated DROP TABLE. OrcaRouter firewall reviews every query."',notes:'Low priority. Revisit later.'},
+];
+
+function renderAccounts() {
+  document.getElementById('accountsRoot').innerHTML = DATA.map(d => {
+    const tag = d.prio==='hot'?'tag-hot':d.prio==='warm'?'tag-warm':'tag-cold';
+    const touches = d.tch.split('+').map(t => `<span style="background:var(--surface2);padding:1px 6px;border-radius:4px;font-size:10px">${t}</span>`).join('');
+    return `<div class="acct-row open" onclick="this.classList.toggle('open')">
+      <div class="left"><div class="acct-name">${d.name} <span class="acct-cluster">${d.cl}</span></div><div class="acct-angle">${d.angle}</div></div>
+      <div><span class="acct-tag ${tag}">${d.prio.toUpperCase()}</span></div>
+      <div style="font-size:12px;color:var(--muted)">${d.wk}</div>
+      <div style="font-size:11px;color:var(--muted);display:flex;flex-wrap:wrap;gap:3px">${touches}</div>
+      <div class="acct-detail">
+        <div class="detail-grid">
+          <div class="detail-card"><h4>🎯 Targets</h4><ul>${d.targets.split(' · ').map(t => `<li>${t}</li>`).join('')}</ul></div>
+          <div class="detail-card"><h4>📡 Signal</h4><ul>${d.signal.split('. ').filter(s=>s.trim()).map(s => `<li>${s}</li>`).join('')}</ul></div>
+          <div class="detail-card" style="grid-column:1/-1"><h4>💬 Message</h4><p>${d.msg}</p></div>
+          <div class="detail-card" style="grid-column:1/-1"><h4>📝 Notes</h4><p>${d.notes}</p></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function getTracker() {
+  let t = JSON.parse(localStorage.getItem('orcaT') || '[]');
+  if(t.length===0){
+    t = DATA.map(d => ({id:d.id,name:d.name,status:'todo',lastTouch:'',contactName:'',contactTitle:'',linkedinUrl:'',pitchUsed:'',pitchCategory:'',notes:''}));
+    localStorage.setItem('orcaT',JSON.stringify(t));
+  }
+  return t;
+}
+
+function renderTracker() {
+  const t = getTracker();
+  const opts = ['todo','emailed','called','meeting-scheduled','meeting-done','declined','closed'];
+  document.getElementById('trackerRoot').innerHTML = `<div class="tracker-grid">` +
+    t.map(x => {
+      const d=DATA.find(a=>a.id===x.id);
+      const o=opts.map(v => `<option value="${v}" ${x.status===v?'selected':''}>${v.replace(/-/g,' ')}</option>`).join('');
+      const cats = [['','None'],['reliability','🔗 Reliability'],['security','🛡️ Security/Compliance'],['cost','💰 Cost'],['compliance','📋 Compliance']];
+      const catOpts = cats.map(([v,l]) => `<option value="${v}" ${x.pitchCategory===v?'selected':''}>${l}</option>`).join('');
+      const liUrl = x.linkedinUrl || '';
+      return `<div class="trk-card">
+        <h4>${x.name} <span class="acct-tag ${d.prio==='hot'?'tag-hot':d.prio==='warm'?'tag-warm':'tag-cold'}" style="font-size:9px;padding:1px 6px">${d.prio.toUpperCase()}</span></h4>
+        <div class="meta">${d?d.angle:''} · ${d?d.wk:''}</div>
+
+        <div class="field-group">
+          <label>Status</label>
+          <select onchange="updT('${x.id}','status',this.value)">${o}</select>
+        </div>
+
+        <div class="row2">
+          <div class="field-group">
+            <label>👤 Contact Name</label>
+            <input value="${x.contactName||''}" placeholder="e.g. Jane Smith" onchange="updT('${x.id}','contactName',this.value)">
+          </div>
+          <div class="field-group">
+            <label>💼 Title</label>
+            <input value="${x.contactTitle||''}" placeholder="e.g. VP Engineering" onchange="updT('${x.id}','contactTitle',this.value)">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>🔗 LinkedIn URL <button class="enrich-btn" onclick="enrichLinkedIn('${x.id}')">Enrich ↩</button></label>
+          <input id="li-${x.id}" value="${liUrl}" placeholder="https://linkedin.com/in/username" onchange="updT('${x.id}','linkedinUrl',this.value)">
+          <div id="enrich-${x.id}" class="enrich-result"></div>
+        </div>
+
+        <div class="field-group">
+          <label>📝 Pitch / Messaging Used</label>
+          <textarea placeholder="Paste your actual outreach message here..." onchange="updT('${x.id}','pitchUsed',this.value)">${x.pitchUsed||''}</textarea>
+        </div>
+
+        <div class="row2">
+          <div class="field-group">
+            <label>🏷️ Pitch Category</label>
+            <select onchange="updT('${x.id}','pitchCategory',this.value)">${catOpts}</select>
+          </div>
+          <div class="field-group">
+            <label>📅 Last Touch</label>
+            <input value="${x.lastTouch||''}" placeholder="e.g. Jul 15 email" onchange="updT('${x.id}','lastTouch',this.value)">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>📓 Notes</label>
+          <textarea placeholder="Outcome, response received, follow-up needed..." onchange="updT('${x.id}','notes',this.value)">${x.notes||''}</textarea>
+        </div>
+      </div>`;
+    }).join('') + `</div>`;
+}
+
+function updT(id,field,val){
+  const t=getTracker();
+  const item=t.find(x=>x.id===id);
+  if(item){item[field]=val;localStorage.setItem('orcaT',JSON.stringify(t));}
+}
+
+function enrichLinkedIn(id){
+  const input = document.getElementById('li-'+id);
+  const result = document.getElementById('enrich-'+id);
+  const url = input.value.trim();
+  if(!url){
+    result.innerHTML = 'Enter a LinkedIn URL first';
+    return;
+  }
+  result.innerHTML = '⏳ Looking up...';
+  // Extract username
+  const match = url.match(/linkedin\.com\/in\/([^\/\?#]+)/);
+  if(!match){
+    result.innerHTML = '⚠️ Could not parse LinkedIn URL. Expected format: https://linkedin.com/in/username';
+    return;
+  }
+  const username = match[1];
+
+  // Try web search for enrichment
+  fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://linkedin.com/in/'+username)}`)
+    .then(r => result.innerHTML = '⚠️ LinkedIn requires login. Try manually:')
+    .catch(() => result.innerHTML = '⚠️ LinkedIn requires login.')
+    .finally(() => {
+      result.innerHTML = `🔍 Parsed: <strong>${username}</strong>. LinkedIn requires authentication to scrape. 
+        <br>Try searching: <a href="https://www.google.com/search?q=${encodeURIComponent(username+' '+id)}" target="_blank" style="color:var(--accent)">Google search →</a>
+        <br>Then manually fill name & title above.`;
+    });
+}
+
+function getActions(){
+  return JSON.parse(localStorage.getItem('orcaActs')||'[]');
+}
+
+function logAction(){
+  const acct=document.getElementById('actAcct').value;
+  const type=document.getElementById('actType').value;
+  const detail=document.getElementById('actDetail').value.trim();
+  if(!acct||!detail){alert('Select account and add details');return;}
+  const acts=getActions();
+  acts.push({account:acct,type:type,detail:detail,date:new Date().toLocaleDateString()});
+  localStorage.setItem('orcaActs',JSON.stringify(acts));
+  const t=getTracker();
+  const tr=t.find(x=>x.id===acct);
+  if(tr){
+    const sm={emailed:'emailed',called:'called',linkedin:'emailed',demo:'meeting-done',followup:tr.status,meeting:'meeting-scheduled',declined:'declined'};
+    if(sm[type]&&tr.status==='todo'){tr.status=sm[type];localStorage.setItem('orcaT',JSON.stringify(t));}
+    tr.lastTouch=new Date().toLocaleDateString()+' - '+detail.slice(0,40);
+    localStorage.setItem('orcaT',JSON.stringify(t));
+  }
+  document.getElementById('actDetail').value='';
+  renderActions();renderTracker();
+}
+
+function getIcon(t){return{emailed:'📧',called:'📞',linkedin:'💼',demo:'🎤',followup:'📬',meeting:'🗓️',declined:'❌',other:'📝'}[t]||'📝';}
+
+function renderActions(){
+  const t=getTracker();
+  const acts=getActions();
+  const sel=document.getElementById('actAcct');
+  sel.innerHTML=DATA.map(d=>`<option value="${d.id}">${d.name}</option>`).join('');
+  document.getElementById('actionsRoot').innerHTML=DATA.map(d=>{
+    const tr=t.find(x=>x.id===d.id);
+    const status=tr?tr.status:'todo';
+    const aa=acts.filter(a=>a.account===d.id);
+    const ah=aa.length>0?aa.slice(-3).reverse().map(a=>`<div class="action-item"><span class="check">${getIcon(a.type)}</span><span class="date">${a.date}</span>${a.detail}</div>`).join(''):'<div class="action-item" style="color:var(--muted)">No actions yet</div>';
+    const nx={'todo':'📧 Send initial email','emailed':'📞 Follow up call (Day 3)','called':'📬 Follow-up with insight','meeting-scheduled':'🎤 Prep demo','meeting-done':'📬 Send recap','declined':'❌ Log & move','closed':'✅ Onboard'};
+    return `<tr><td style="font-weight:600">${d.name}<br><span style="font-size:11px;color:var(--muted);font-weight:400">${d.angle}</span></td>
+      <td><span class="status-dot ${status}"></span>${status.replace(/-/g,' ')}</td><td>${ah}</td>
+      <td style="font-size:12px;color:var(--muted)">${nx[status]||'Review'}</td></tr>`;
+  }).join('');
+}
+
+function renderDashboard(){
+  const t=getTracker();
+  const acts=getActions();
+  const l=JSON.parse(localStorage.getItem('orcaL')||'[]');
+  const total=t.length;
+  const todo=t.filter(x=>x.status==='todo').length;
+  const contacted=t.filter(x=>x.status!=='todo').length;
+  const meetings=t.filter(x=>x.status==='meeting-scheduled'||x.status==='meeting-done').length;
+  const declined=t.filter(x=>x.status==='declined').length;
+  const closed=t.filter(x=>x.status==='closed').length;
+
+  document.getElementById('dashRoot').innerHTML=`
+    <div class="dash-card"><div class="dash-num">${total}</div><div class="dash-label">Total</div></div>
+    <div class="dash-card orange"><div class="dash-num">${todo}</div><div class="dash-label">Not Contacted</div><div class="dash-sub">${Math.round(todo/total*100)}%</div></div>
+    <div class="dash-card"><div class="dash-num">${contacted}</div><div class="dash-label">Contacted</div><div class="dash-sub">${Math.round(contacted/total*100)}%</div></div>
+    <div class="dash-card"><div class="dash-num">${meetings}</div><div class="dash-label">Meetings</div><div class="dash-sub">${contacted>0?Math.round(meetings/contacted*100):0}% conv</div></div>
+    <div class="dash-card red"><div class="dash-num">${declined}</div><div class="dash-label">Declined</div></div>
+    <div class="dash-card"><div class="dash-num">${closed}</div><div class="dash-label">Closed Won</div></div>
+    <div class="dash-card blue"><div class="dash-num">${acts.length}</div><div class="dash-label">Actions</div></div>
+    <div class="dash-card"><div class="dash-num">${l.length}</div><div class="dash-label">Learnings</div></div>`;
+
+  // Messaging Analysis
+  const pitches = t.filter(x => x.pitchUsed && x.pitchCategory);
+  const byCategory = {};
+  pitches.forEach(p => {
+    const cat = p.pitchCategory || 'uncategorized';
+    if(!byCategory[cat]) byCategory[cat] = {total:0,worked:0,pending:0,no:0,examples:[]};
+    byCategory[cat].total++;
+    if(p.status==='meeting-scheduled'||p.status==='meeting-done'||p.status==='closed') byCategory[cat].worked++;
+    else if(p.status==='declined') byCategory[cat].no++;
+    else byCategory[cat].pending++;
+    if(p.pitchUsed) byCategory[cat].examples.push({name:p.name,pitch:p.pitchUsed.slice(0,120),status:p.status});
+  });
+
+  const catLabels = {reliability:'🔗 Reliability/Security',cost:'💰 Cost Optimization',compliance:'📋 Compliance',security:'🛡️ Security',uncategorized:'📝 Other'};
+  const catKeys = Object.keys(byCategory);
+  let msgHtml = '';
+  if(catKeys.length===0){
+    msgHtml = '<p style="color:var(--muted);font-size:13px">No pitches logged yet. Add pitch copy in Tracker to see analysis.</p>';
+  } else {
+    msgHtml = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px">` +
+      catKeys.map(k => {
+        const c = byCategory[k];
+        const rate = c.total > 0 ? Math.round(c.worked/c.total*100) : 0;
+        return `<div class="msg-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="font-weight:600;font-size:13px">${catLabels[k]||k}</span>
+            <span style="font-size:12px;color:var(--muted)">${c.total} pitches</span>
+          </div>
+          <div style="display:flex;gap:12px;margin-bottom:8px">
+            <span style="font-size:11px;color:var(--green)">✅ ${c.worked} worked</span>
+            <span style="font-size:11px;color:var(--orange)">⏳ ${c.pending} pending</span>
+            <span style="font-size:11px;color:var(--red)">❌ ${c.no} no</span>
+          </div>
+          <div class="progress-bar"><div class="fill green" style="width:${rate}%"></div></div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">${rate}% meeting rate</div>
+          ${c.examples.slice(0,2).map(e => `
+            <div style="margin-top:8px;padding:6px 8px;background:var(--surface2);border-radius:4px;font-size:11px">
+              <div style="color:var(--text);font-weight:500">${e.name} <span class="msg-result ${e.status==='declined'?'no':e.status==='todo'||e.status==='emailed'?'pending':'worked'}">${e.status.replace(/-/g,' ')}</span></div>
+              <div style="color:var(--muted);font-style:italic;margin-top:2px">"${e.pitch}${e.pitch.length>=120?'...':''}"</div>
+            </div>
+          `).join('')}
+        </div>`;
+      }).join('') + `</div>`;
+  }
+  document.getElementById('msgAnalysis').innerHTML = msgHtml;
+
+  // Weekly
+  const w1=DATA.filter(d=>d.wk==='W1').length;
+  const w2=DATA.filter(d=>d.wk==='W2').length;
+  const w3=DATA.filter(d=>d.wk==='W3').length;
+  document.getElementById('statsRoot').innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px">
+      <h4 style="font-size:13px;font-weight:600;margin-bottom:12px">📅 Outreach by Week</h4>
+      ${[['W1 🔥 Hot',w1,DATA.filter(d=>d.wk==='W1'&&t.find(x=>x.id===d.id&&x.status!=='todo')).length,'green'],
+        ['W2 🟠 Hot+Warm',w2,DATA.filter(d=>d.wk==='W2'&&t.find(x=>x.id===d.id&&x.status!=='todo')).length,'orange'],
+        ['W3 🔵 Warm',w3,DATA.filter(d=>d.wk==='W3'&&t.find(x=>x.id===d.id&&x.status!=='todo')).length,'blue'],
+        ['W4 ⚪ Cold',DATA.filter(d=>d.wk==='W4').length,DATA.filter(d=>d.wk==='W4'&&t.find(x=>x.id===d.id&&x.status!=='todo')).length,'']]
+        .map(([l,total2,done,color])=>`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>${l}</span><span>${done}/${total2}</span></div><div class="progress-bar"><div class="fill ${color}" style="width:${total2>0?done/total2*100:0}%"></div></div></div>`).join('')}
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px">
+      <h4 style="font-size:13px;font-weight:600;margin-bottom:12px">🔄 Overall Funnel</h4>
+      ${[['📋 Total',total,100,'green'],['📧 Contacted',contacted,contacted/total*100,'orange'],['🗓️ Meetings',meetings,contacted>0?meetings/contacted*100:0,'green'],['✅ Closed',closed,meetings>0?closed/meetings*100:0,'green']]
+        .map(([l,n,p])=>`<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>${l}</span><span>${n}</span></div><div class="progress-bar"><div class="fill green" style="width:${p}%"></div></div></div>`).join('')}
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:12px;color:var(--muted)"><span>❌ Declined</span><span>${declined}</span></div>
+    </div>
+  </div>`;
+
+  const lr=document.getElementById('learnRoot');
+  if(l.length===0) lr.innerHTML='<p style="color:var(--muted);font-size:13px">No learnings yet.</p>';
+  else lr.innerHTML=l.slice().reverse().map(x=>`<div class="learn-entry"><span class="date">${x.date}</span><span class="acct-t">${x.acct}</span>${x.text}</div>`).join('');
+}
+
+function addLearn(){
+  const input=document.getElementById('li');
+  const acct=document.getElementById('la');
+  if(!input.value.trim())return;
+  const l=JSON.parse(localStorage.getItem('orcaL')||'[]');
+  l.push({date:new Date().toLocaleDateString(),text:input.value.trim(),acct:acct.value.trim()||'general'});
+  localStorage.setItem('orcaL',JSON.stringify(l));
+  input.value='';acct.value='';
+  renderDashboard();
+}
+
+document.querySelectorAll('[data-tab]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('[data-tab]').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+    if(btn.dataset.tab==='tracker') renderTracker();
+    if(btn.dataset.tab==='actions') renderActions();
+    if(btn.dataset.tab==='learn') renderDashboard();
+  });
+});
+
+renderAccounts();
+renderTracker();
+renderActions();
+renderDashboard();
+</script>
+</body>
+</html>
