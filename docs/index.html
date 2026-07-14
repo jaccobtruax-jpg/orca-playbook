@@ -175,6 +175,10 @@ h2 small { font-size: 13px; color: var(--muted); font-weight: 400; }
         <option value="declined">❌ Declined</option><option value="other">📝 Other</option>
       </select>
     </div>
+    <div style="flex:1;min-width:140px">
+      <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px">Contact Name</label>
+      <input id="actContact" placeholder="e.g. Jane Smith" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px;font-family:Inter">
+    </div>
     <div style="flex:2;min-width:200px">
       <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px">Details</label>
       <input id="actDetail" placeholder="e.g. VP Eng replied 'send docs'" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px;font-family:Inter">
@@ -326,6 +330,19 @@ function updT(id,field,val){
   if(item){item[field]=val;localStorage.setItem('orcaT',JSON.stringify(t));}
 }
 
+function usePrevContact(id){
+  const sel = document.getElementById('prevContacts-'+id);
+  const name = sel.value;
+  if(!name) return;
+  const t = getTracker();
+  const item = t.find(x => x.id === id);
+  if(item){
+    item.contactName = name;
+    localStorage.setItem('orcaT', JSON.stringify(t));
+    renderTracker();
+  }
+}
+
 function enrichLinkedIn(id){
   const input = document.getElementById('li-'+id);
   const result = document.getElementById('enrich-'+id);
@@ -364,7 +381,7 @@ function logAction(){
   const detail=document.getElementById('actDetail').value.trim();
   if(!acct||!detail){alert('Select account and add details');return;}
   const acts=getActions();
-  acts.push({account:acct,type:type,detail:detail,date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});
+  const cName = document.getElementById('actContact').value.trim(); acts.push({account:acct,type:type,contact:cName,detail:detail,date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}); document.getElementById('actContact').value='';
   localStorage.setItem('orcaActs',JSON.stringify(acts));
   const t=getTracker();
   const tr=t.find(x=>x.id===acct);
@@ -389,7 +406,7 @@ function renderActions(){
     const tr=t.find(x=>x.id===d.id);
     const status=tr?tr.status:'todo';
     const aa=acts.filter(a=>a.account===d.id);
-    const ah=aa.length>0?aa.slice(-3).reverse().map(a=>`<div class="action-item"><span class="check">${getIcon(a.type)}</span><span class="date">${a.date} ${a.time||''}</span> ${a.detail}</div>`).join(''):'<div class="action-item" style="color:var(--muted)">No actions yet</div>';
+    const ah=aa.length>0?aa.slice(-3).reverse().map(a=>`<div class="action-item"><span class="check">${getIcon(a.type)}</span><span class="date">${a.date} ${a.time||''}</span> ${a.contact ? '👤'+a.contact+' ' : ''}${a.detail}</div>`).join(''):'<div class="action-item" style="color:var(--muted)">No actions yet</div>';
     const nx={'todo':'📧 Send initial email','emailed':'📞 Follow up call (Day 3)','called':'📬 Follow-up with insight','meeting-scheduled':'🎤 Prep demo','meeting-done':'📬 Send recap','declined':'❌ Log & move','closed':'✅ Onboard'};
     const opts = ['todo','emailed','called','meeting-scheduled','meeting-done','declined','closed'];
     const statusOpts = opts.map(v => `<option value="${v}" ${status===v?'selected':''}>${v.replace(/-/g,' ')}</option>`).join('');
