@@ -525,7 +525,6 @@ function enrichLinkedIn(id){
     result.innerHTML = 'Enter a LinkedIn URL first';
     return;
   }
-  result.innerHTML = '⏳ Looking up...';
   // Extract username
   const match = url.match(/linkedin\.com\/in\/([^\/\?#]+)/);
   if(!match){
@@ -546,13 +545,6 @@ function enrichLinkedIn(id){
 }
 
 
-function enrichLinkedIn(id){
-  const input = document.getElementById('li-'+id);
-  const result = document.getElementById('enrich-'+id);
-  const url = input.value.trim();
-    result.innerHTML = 'Enter a LinkedIn URL first';
-    return;
-  }
   result.innerHTML = '⏳ Looking up...';
   // Extract username
   const match = url.match(/linkedin\.com\/in\/([^\/\?#]+)/);
@@ -571,13 +563,6 @@ function enrichLinkedIn(id){
 }
 
 
-function enrichLinkedIn(id){
-  const input = document.getElementById('li-'+id);
-  const result = document.getElementById('enrich-'+id);
-  const url = input.value.trim();
-    result.innerHTML = 'Enter a LinkedIn URL first';
-    return;
-  }
   result.innerHTML = '⏳ Looking up...';
   // Extract username
   const match = url.match(/linkedin\.com\/in\/([^\/\?#]+)/);
