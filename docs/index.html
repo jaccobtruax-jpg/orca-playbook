@@ -923,8 +923,14 @@ function importFromJSON() {
     .then(data => {
       const p = getProspects();
       let imported = 0;
+      let skipped = 0;
       data.forEach((s, i) => {
-        if(p.find(x => x.company === s.company && x.detail?.startsWith(s.detail?.slice(0,30)))) return;
+        // Check for duplicates by company name (case-insensitive) + detail prefix
+        const dup = p.find(x =>
+          x.company.toLowerCase() === s.company.toLowerCase() &&
+          (x.detail || '').slice(0, 40) === (s.detail || '').slice(0, 40)
+        );
+        if(dup) { skipped++; return; }
         p.push({
           id: Date.now().toString() + '_' + i,
           company: s.company,
@@ -938,7 +944,7 @@ function importFromJSON() {
         imported++;
       });
       localStorage.setItem('orcaProspects', JSON.stringify(p));
-      btn.textContent = '✅ ' + imported + ' imported';
+      btn.textContent = '✅ ' + imported + ' new, ' + skipped + ' skipped';
       setTimeout(() => { btn.textContent = '📄 Import signals.json ✓'; btn.disabled = false; }, 3000);
       renderProspects();
     })
