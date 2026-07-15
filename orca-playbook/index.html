@@ -441,6 +441,7 @@ function renderTracker() {
   document.getElementById('trackerRoot').innerHTML = `<div class="tracker-grid">` +
     t.map(x => {
       const d=DATA.find(a=>a.id===x.id);
+      if(!d) return '';
       const o=opts.map(v => `<option value="${v}" ${x.status===v?'selected':''}>${v.replace(/-/g,' ')}</option>`).join('');
       const cats = [['','None'],['reliability','🔗 Reliability'],['security','🛡️ Security/Compliance'],['cost','💰 Cost'],['compliance','📋 Compliance']];
       const catOpts = cats.map(([v,l]) => `<option value="${v}" ${x.pitchCategory===v?'selected':''}>${l}</option>`).join('');
