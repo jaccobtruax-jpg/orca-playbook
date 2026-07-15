@@ -545,6 +545,31 @@ function enrichLinkedIn(id){
     });
 }
 
+
+function enrichLinkedIn(id){
+  const input = document.getElementById('li-'+id);
+  const result = document.getElementById('enrich-'+id);
+  const url = input.value.trim();
+    result.innerHTML = 'Enter a LinkedIn URL first';
+    return;
+  }
+  result.innerHTML = '⏳ Looking up...';
+  // Extract username
+  const match = url.match(/linkedin\.com\/in\/([^\/\?#]+)/);
+    result.innerHTML = '⚠️ Could not parse LinkedIn URL. Expected format: https://linkedin.com/in/username';
+    return;
+  }
+  const username = match[1];
+
+  // Try web search for enrichment
+  fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://linkedin.com/in/' + username))
+    .then(r => result.innerHTML = '⚠️ LinkedIn requires login. Try manually:')
+    .catch(() => result.innerHTML = '⚠️ LinkedIn requires login.')
+    .finally(() => {
+      result.innerHTML = '🔍 Parsed: <strong>' + username + '</strong>. LinkedIn requires authentication to scrape. <br>Try searching: <a href="https://www.google.com/search?q=' + encodeURIComponent(username + ' ' + id) + '" target="_blank" style="color:var(--accent)">Google search →</a><br>Then manually fill name & title above.';
+    });
+}
+
 function getActions(){
   return JSON.parse(localStorage.getItem('orcaActs')||'[]');
 }
