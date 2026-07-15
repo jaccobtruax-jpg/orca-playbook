@@ -428,7 +428,7 @@ function renderAccounts() {
 function getTracker() {
   let t = JSON.parse(localStorage.getItem('orcaT') || '[]');
   if(t.length===0){
-    t = DATA.map(d => ({id:d.id,name:d.name,status:'todo',lastTouch:'',contactName:'',contactTitle:'',linkedinUrl:'',pitchUsed:'',pitchCategory:'',assignedTo:'',notes:''}));
+    t = DATA.map(d => ({id:d.id,name:d.name,status:'todo',lastTouch:'',contactName:'',contactTitle:'',linkedinUrl:'',pitchUsed:'',pitchCategory:'',assignedTo:'',notes:'',linkedinProfileData:null}));
     localStorage.setItem('orcaT',JSON.stringify(t));
   }
   return t;
