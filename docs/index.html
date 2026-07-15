@@ -301,6 +301,44 @@ h2 small { font-size: 13px; color: var(--muted); font-weight: 400; }
     </div>
   </div>
 
+  <!-- CREATIVE OUTREACH TOGGLE -->
+  <div style="display:flex;align-items:center;gap:12px;padding:14px 20px;background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:20px">
+    <span style="font-size:12px;font-weight:600;color:var(--text)">💡 Outreach Style</span>
+    <button id="styleToggle" class="btn" onclick="toggleOutreachStyle()" style="background:rgba(0,212,170,0.1);border-color:var(--accent);color:var(--accent);font-size:11px">Switch to Creative</button>
+    <span style="font-size:11px;color:var(--muted)">Standard template → <strong>Creative / outside-the-box</strong></span>
+  </div>
+
+  <!-- CREATIVE SECTION (hidden by default) -->
+  <div id="creativeSection" style="display:none;background:var(--surface);border:1px solid var(--accent);border-radius:12px;padding:20px;margin-bottom:20px">
+    <h3 style="font-size:15px;font-weight:600;margin-bottom:14px">🚀 Creative Outreach Playbook</h3>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6">The standard template works for volume, but <strong>creative plays win the enterprise.</strong> Pick a proven approach below — we'll generate the full outreach concept, messaging, and assets list. <span style="color:var(--accent);font-weight:500">Examples from real sales: Loom videos of candidate lists, personalized data drops, "we built this for you" micro-apps, physical mailers.</span></p>
+    
+    <div class="field-group" style="margin-bottom:14px">
+      <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:4px">🎯 Choose Your Creative Approach</label>
+      <select id="creativeApproach" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px;font-family:Inter">
+        <option value="loom">🎥 Loom Video — Personalized walkthrough or insight drop</option>
+        <option value="datadrop">📊 Data Drop — Share a relevant dataset or benchmark</option>
+        <option value="microsite">🌐 Micro-Site — Build a 1-page site just for their team</option>
+        <option value="gift">🎁 Physical Mailer — Send something memorable</option>
+        <option value="social">💬 Social Proof Bomb — Curated customer wins in their space</option>
+        <option value="audit">🔍 Free Audit — "We analyzed your AI stack, here's what we found"</option>
+        <option value="event">🎪 Co-Marketing — Propose a joint webinar or white paper</option>
+        <option value="meme">😂 Humor / Meme — Break through with personality</option>
+        <option value="custom">✨ Custom — Describe your own creative idea</option>
+      </select>
+    </div>
+
+    <div class="field-group" style="margin-bottom:14px">
+      <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:4px">💭 Describe Your Creative Idea (optional — skip for templates)</label>
+      <textarea id="creativeIdea" placeholder="e.g. 'Send a Loom showing their Claude API spending vs what it would be with OrcaRouter — then offer to do a full cost audit live on a call'" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;font-family:Inter;min-height:50px;resize:vertical"></textarea>
+    </div>
+
+    <div class="field-group" style="margin-bottom:10px">
+      <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:4px">📦 What do you have to work with? (data, tools, budget, team)</label>
+      <textarea id="creativeAssets" placeholder="e.g. 'Can build a Loom, have access to public API pricing data, graphic designer available, $200 gift budget per account'" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;font-family:Inter;min-height:40px;resize:vertical"></textarea>
+    </div>
+  </div>
+
   <!-- GENERATE BUTTON -->
   <div style="text-align:center;margin-bottom:20px">
     <button id="msgGenerateBtn" class="btn" onclick="generateMessage()" style="padding:10px 32px;font-size:14px;background:rgba(0,212,170,0.1);border-color:var(--accent);color:var(--accent)">✨ Generate Outreach Message</button>
@@ -674,7 +712,160 @@ function initMessaging() {
 }
 initMessaging();
 
+function toggleOutreachStyle() {
+  const section = document.getElementById('creativeSection');
+  const btn = document.getElementById('styleToggle');
+  if(section.style.display === 'none') {
+    section.style.display = 'block';
+    btn.textContent = 'Switch to Standard';
+    btn.style.borderColor = 'var(--orange)';
+    btn.style.color = 'var(--orange)';
+    btn.style.background = 'rgba(245,158,11,0.1)';
+  } else {
+    section.style.display = 'none';
+    btn.textContent = 'Switch to Creative';
+    btn.style.borderColor = 'var(--accent)';
+    btn.style.color = 'var(--accent)';
+    btn.style.background = 'rgba(0,212,170,0.1)';
+  }
+}
+
+function generateCreativeMessage() {
+  const acct = document.getElementById('msgAccount').value;
+  const d = DATA.find(x => x.id === acct);
+  const contactName = document.getElementById('msgContactName').value.trim() || 'there';
+  const title = document.getElementById('msgContactTitle').value.trim();
+  const linkedin = document.getElementById('msgLinkedIn').value.trim();
+  const context = document.getElementById('msgContext').value.trim();
+  const approach = document.getElementById('creativeApproach').value;
+  const idea = document.getElementById('creativeIdea').value.trim();
+  const assets = document.getElementById('creativeAssets').value.trim();
+  const companyContext = document.getElementById('msgContext2').value.trim() || (d ? d.signal : '');
+  const channel = document.getElementById('msgChannel').value;
+  const goal = document.getElementById('msgGoal').value;
+  const pitchCat = document.getElementById('msgPitchCat').value;
+
+  const btn = document.getElementById('msgGenerateBtn');
+  btn.textContent = '⏳ Crafting creative play...';
+  btn.disabled = true;
+
+  const company = d ? d.name : 'this company';
+  const signal = d ? d.angle : '';
+
+  // Creative play templates
+  const approachNames = {
+    loom: '🎥 Loom Video',
+    datadrop: '📊 Data Drop',
+    microsite: '🌐 Micro-Site',
+    gift: '🎁 Physical Mailer',
+    social: '💬 Social Proof Bomb',
+    audit: '🔍 Free Audit',
+    event: '🎪 Co-Marketing',
+    meme: '😂 Humor / Meme',
+    custom: '✨ Custom Creative'
+  };
+
+  const playbooks = {
+    loom: {
+      concept: `Record a 2-3 minute Loom video showing ${contactName !== 'there' ? contactName + ' ' : ''}something specific to ${company}. For example: pull up their product, highlight their AI features, then show a quick mockup of how OrcaRouter would seamlessly fit into their architecture. End with a specific insight — not a generic pitch.`,
+      script: `"Hey ${contactName !== 'there' ? contactName : title || 'there'} — I wanted to show you something. [Open their product/site] You guys are doing [specific thing] with AI here. I mapped out what your model routing setup probably looks like today vs what it could be with OrcaRouter. [Show quick diagram or overlay] The key insight: [1 specific thing they're missing]. I'll send this over — no need to watch now. Happy to walk through it live if it's interesting."`,
+      assets: 'Loom link, 1-slide visual overlay or annotation',
+      followup: 'Day 3: "Did you get a chance to watch? The most important part is at 1:30 — happy to expand on that live."'
+    },
+    datadrop: {
+      concept: `Pull together a relevant dataset or benchmark specifically useful for ${company}. Example: a comparison of model pricing/performance across providers they use, or an analysis of inference costs at their scale. The key is making it valuable regardless of whether they buy.`,
+      script: `${contactName !== 'there' ? contactName + ', ' : ''}I put together something I thought would be useful for your team at ${company}. [Attached dataset/analysis] — it's a real-world comparison of latency, cost and reliability across the top 8 LLM providers at [relevant scale]. No agenda here — just data I thought would help with your [specific challenge]. If it sparks any questions, I'm happy to chat.`,
+      assets: 'Curated dataset, benchmark spreadsheet, or analysis PDF',
+      followup: 'Day 5: "Did the data land? Happy to walk through the methodology if helpful."'
+    },
+    microsite: {
+      concept: `Build a single HTML page tailored specifically to ${company}. Show their name, their specific use case, a mockup of OrcaRouter in their stack, and projected cost/reliability improvements. URL: orcarouter.ai/for/${d ? d.id : 'company'}. Send the link with zero context.`,
+      script: `${contactName !== 'there' ? contactName : 'Hey'}, I built something for your team at ${company}. No pitch — just a page showing what your AI stack looks like with and without OrcaRouter.\n\nhttps://orcarouter.ai/for/${d ? d.id : 'company'}\n\nWorth 3 minutes?`,
+      assets: 'Custom 1-page micro-site with their branding, use case, and ROI projection',
+      followup: 'Day 3: "Curious what you think of the architecture on that page. The fallback chain design specifically."'
+    },
+    gift: {
+      concept: `Send a memorable physical item related to model reliability or AI infrastructure. Ideas: A "Model Fallback" emergency kit (small pouch with a backup battery, a note saying "Your AI shouldn't need a backup plan — but if it does, we've got you"), or a custom-engraved notebook with "${company}'s AI Reliability Playbook" on the cover. Include a QR code to a personalized video.`,
+      script: `(No email — let the physical item do the work. Follow up 3 days after delivery.)\n\n"Hey ${contactName !== 'there' ? contactName : title || 'there'} — did a package show up? Hope it got a smile. The QR code inside links to a 90-second thought on something I think you're dealing with at ${company}. Worth a look?"`,
+      assets: 'Physical item ($50-100 range), QR code linking to personalized video',
+      followup: 'Day 5 after delivery: call. Reference the item as the opener.'
+    },
+    social: {
+      concept: `Curate 3-5 customer wins or case studies specifically relevant to ${company}'s industry or use case ${signal}. Package them as a "Peer Success Brief" — not from us, but from their peers. Add specific numbers and quotes.`,
+      script: `${contactName !== 'there' ? contactName + ', ' : ''}I put together something I think you'll find useful — ${company} is in a similar position to a few of our customers who solved [specific problem]. \n\nHere are 3 anonymized examples of companies at your stage who were dealing with the same [reliability/cost/compliance] challenge:\n\n[Example 1]: Company A — similar volume, saved 32% on inference\n[Example 2]: Company B — eliminated single-provider risk\n[Example 3]: Company C — passed HIPAA audit first time\n\nWould a 15-min rundown of what they did be useful?`,
+      assets: 'Curated case studies with peer-level context',
+      followup: 'Day 4: "The most relevant one to your setup was probably [specific example]. Want me to share the full playbook?"'
+    },
+    audit: {
+      concept: 'Offer a completely free, no-strings-attached audit of their current AI infrastructure. Use publicly available info (their published stack, job postings, engineering blogs) to identify gaps. Present findings in a clean format.',
+      script: `${contactName !== 'there' ? contactName : title || 'there'} — we analyzed ${company}'s publicly available AI infrastructure based on your engineering blog posts, job listings, and published architecture. Here's what we found:\n\n✅ What you're doing well: [2-3 things]\n⚠️ Potential gaps: [1-2 risks we identified]\n💡 Opportunities: [1-2 quick wins]\n\nNo obligation whatsoever — just sharing what we found. Want the full breakdown? It's 3 pages.`,
+      assets: '3-page audit report with findings, risks, and recommendations',
+      followup: 'Day 5: "The most critical finding was [specific gap]. Want to discuss it?"'
+    },
+    event: {
+      concept: `Propose a co-marketing initiative — not a sales call. Suggest a joint webinar, white paper, or podcast episode about ${signal}. Position it as "let's create something valuable for both our audiences."`,
+      script: `${contactName !== 'there' ? contactName : 'Hey'} — I have an idea for ${company} that's not a sales pitch.\n\nWe're seeing huge demand for content around [specific topic — e.g., "multi-model AI reliability" or "PII governance in LLM pipelines"], and ${company} has a unique perspective here. I'd love to propose a joint webinar / white paper co-authored by our teams.\n\nWe handle production, promotion to our audience, and logistics. You bring the expertise and a case study. Sound interesting?\n\n(No purchase necessary — genuinely think this would be valuable for both communities.)`,
+      assets: 'Event proposal one-pager, audience reach data, production timeline',
+      followup: 'Day 7: "Even if a webinar isn\'t right, would a joint blog post work?"'
+    },
+    meme: {
+      concept: `Use humor to break through the noise. The AI infrastructure space is dry — laugh about it. A self-deprecating meme about model outages, API pricing surprises, or the "make vs buy" debate. Make it genuinely funny, not cringey.`,
+      script: `${contactName !== 'there' ? contactName : 'Hey'} — saw [their recent post/news] and couldn't resist. [Send meme/image]\n\nOkay, sales pitch over. But seriously — if you ever want to chat about [relevant topic with zero pressure], I'm here.`,
+      assets: 'A genuinely funny meme or GIF tailored to their situation',
+      followup: 'Day 3: "My meme game is better than my sales pitch. Let me know if you want to chat properly!"'
+    },
+    custom: {
+      concept: idea || 'Custom creative concept — describe your idea above and I will flesh it out.',
+      script: idea ? `Custom concept: "${idea}"\n\nAssets available: ${assets || 'Not specified'}\n\nBased on your idea for reaching out to ${contactName !== 'there' ? contactName : contactName} at ${company}, here is the recommended execution plan, messaging, and follow-up sequence tailored to their [${pitchCat}] pain point.` : 'Describe your creative idea above and regenerate.',
+      assets: assets || 'Custom — varies based on concept',
+      followup: 'Custom follow-up based on the concept chosen.'
+    }
+  };
+
+  const pb = playbooks[approach];
+  const approachName = approachNames[approach] || 'Creative';
+
+  const pitchBody = `🧠 CREATIVE OUTREACH: ${approachName}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎯 Target: ${company}
+👤 Contact: ${contactName !== 'there' ? contactName : '[Contact Name]'}${title ? ', ' + title : ''}
+📡 Signal: ${signal}
+
+💡 THE CONCEPT
+${pb.concept}
+
+📝 SUGGESTED MESSAGING
+${pb.script}
+
+📦 ASSETS NEEDED
+${pb.assets}
+
+📅 FOLLOW-UP SEQUENCE
+${pb.followup}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${idea ? `\n✏️ YOUR CUSTOM IDEA:\n${idea}\n` : ''}
+${assets ? `\n📦 AVAILABLE RESOURCES:\n${assets}` : ''}
+⚡ Tip: The standard template generates copy. Creative plays win meetings. Pick the one that fits your personality and their culture.`;
+
+  document.getElementById('msgBody').textContent = pitchBody;
+  document.getElementById('msgOutput').style.display = 'block';
+  btn.textContent = '✨ Generate Outreach Message';
+  btn.disabled = false;
+  document.getElementById('msgCopied').style.display = 'none';
+}
+
 function generateMessage() {
+  const creativeSection = document.getElementById('creativeSection');
+  if(creativeSection.style.display !== 'none') {
+    generateCreativeMessage();
+  } else {
+    generateStandardMessage();
+  }
+}
+
+// Rename original generateMessage to generateStandardMessage
+function generateStandardMessage() {
   const acct = document.getElementById('msgAccount').value;
   const d = DATA.find(x => x.id === acct);
   const contactName = document.getElementById('msgContactName').value.trim() || 'there';
