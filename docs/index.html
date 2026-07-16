@@ -7,53 +7,55 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 * { margin: 0; padding: 0; box-sizing: border-box; }
-:root { --bg: #0a0a0f; --surface: #12121a; --surface2: #1a1a2e; --border: #2a2a44; --text: #e8e8f0; --muted: #8888aa; --accent: #00d4aa; --red: #ef4444; --orange: #f59e0b; --blue: #3b82f6; --green: #10b981; }
+:root { --bg: #0a0a0f; --surface: #12121a; --surface2: #1a1a2e; --border: #2a2a44; --text: #e8e8f0; --muted: #8888aa; --accent: #00d4aa; --red: #ef4444; --orange: #f59e0b; --blue: #3b82f6; --green: #10b981; --purple: #8b5cf6; }
 body { font-family: Inter, sans-serif; background: var(--bg); color: var(--text); }
-.hero { text-align: center; padding: 40px 20px 32px; border-bottom: 1px solid var(--border); }
-.hero h1 { font-size: 32px; font-weight: 800; }
+.hero { text-align: center; padding: 40px 20px 32px; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; top: -50%; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(0,212,170,0.06) 0%, transparent 70%); pointer-events: none; }
+.hero h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; }
 .hero h1 span { color: var(--accent); }
 .hero p { color: var(--muted); font-size: 14px; margin-top: 6px; }
-.hero-metrics { display: flex; justify-content: center; gap: 10px; margin-top: 16px; }
-.metric { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 16px; font-size: 13px; }
+.hero-metrics { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+.metric { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 16px; font-size: 13px; display: flex; align-items: center; gap: 6px; }
 .container { max-width: 1360px; margin: 0 auto; padding: 0 16px; }
-.controls { display: flex; gap: 8px; overflow-x: auto; padding: 16px 0; position: sticky; top: 0; z-index: 50; background: var(--bg); }
-.controls button { flex-shrink: 0; padding: 8px 18px; border-radius: 8px; border: 1px solid transparent; background: var(--surface); color: var(--muted); font-size: 12px; font-weight: 500; cursor: pointer; }
+.controls { display: flex; gap: 8px; overflow-x: auto; padding: 16px 0; scrollbar-width: none; position: sticky; top: 0; z-index: 50; background: var(--bg); }
+.controls button { flex-shrink: 0; padding: 8px 18px; border-radius: 8px; border: 1px solid transparent; background: var(--surface); color: var(--muted); font-size: 12px; font-weight: 500; cursor: pointer; font-family: Inter; white-space: nowrap; }
 .controls button:hover { border-color: var(--border); color: var(--text); }
 .controls button.active { background: var(--surface2); border-color: var(--accent); color: var(--accent); }
 .section { display: none; padding: 20px 0 40px; }
 .section.active { display: block; }
-h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
-.acct-row { display: grid; grid-template-columns: 1fr 80px 80px 90px; gap: 6px; align-items: start; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 6px; cursor: pointer; }
+h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+h2 small { font-size: 13px; color: var(--muted); font-weight: 400; }
+.acct-row { display: grid; grid-template-columns: 1fr 80px 80px 90px; gap: 6px; align-items: start; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 6px; cursor: pointer; transition: all 0.15s; }
 .acct-row:hover { border-color: rgba(255,255,255,0.1); }
 .acct-row.open { border-color: var(--accent); }
 .acct-tag { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 100px; }
 .tag-hot { background: rgba(239,68,68,0.15); color: var(--red); }
 .tag-warm { background: rgba(245,158,11,0.15); color: var(--orange); }
 .tag-cold { background: rgba(59,130,246,0.15); color: var(--blue); }
-.acct-name { font-size: 14px; font-weight: 600; }
-.acct-cluster { font-size: 10px; color: var(--muted); }
+.acct-row .left { display: flex; flex-direction: column; gap: 2px; }
+.acct-name { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.acct-cluster { font-size: 10px; color: var(--muted); font-weight: 400; }
 .acct-angle { font-size: 11px; color: var(--accent); font-weight: 500; }
 .acct-detail { display: none; grid-column: 1 / -1; padding: 16px 0 8px; border-top: 1px solid var(--border); margin-top: 8px; }
 .acct-row.open .acct-detail { display: block; }
 .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 768px) { .detail-grid { grid-template-columns: 1fr; } }
 .detail-card { background: var(--surface2); border-radius: 8px; padding: 14px; }
-.detail-card h4 { font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; margin-bottom: 6px; }
+.detail-card h4 { font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 6px; }
 .detail-card p, .detail-card li { font-size: 12.5px; color: var(--muted); line-height: 1.6; list-style: none; }
+.detail-card li::before { content: '> '; color: var(--accent); }
 .trk-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 10px; }
-.trk-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+.trk-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; justify-content: space-between; }
 .trk-card .meta { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
 .trk-card .field-group { margin-bottom: 8px; }
-.trk-card label { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; display: block; margin-bottom: 3px; }
-.trk-card select, .trk-card textarea, .trk-card input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; color: var(--text); font-size: 12px; }
+.trk-card label { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; display: block; margin-bottom: 3px; }
+.trk-card select, .trk-card textarea, .trk-card input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; color: var(--text); font-size: 12px; font-family: Inter; }
 .trk-card textarea { min-height: 44px; resize: vertical; }
 .trk-card .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.dash-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px; }
-.dash-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; text-align: center; }
-.dash-card .dash-num { font-size: 28px; font-weight: 700; color: var(--accent); }
-.dash-card .dash-label { font-size: 11px; color: var(--muted); margin-top: 4px; }
 .actions-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-.actions-table th { text-align: left; padding: 10px 12px; font-size: 11px; font-weight: 600; color: var(--muted); border-bottom: 1px solid var(--border); }
-.actions-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.actions-table th { text-align: left; padding: 10px 12px; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; border-bottom: 1px solid var(--border); }
+.actions-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.actions-table tr:hover td { background: rgba(255,255,255,0.02); }
 .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
 .status-dot.todo { background: var(--muted); }
 .status-dot.emailed { background: var(--blue); }
@@ -62,9 +64,28 @@ h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
 .status-dot.meeting-done { background: var(--accent); }
 .status-dot.declined { background: var(--red); }
 .status-dot.closed { background: var(--green); }
-.btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 6px 14px; color: var(--text); font-size: 12px; cursor: pointer; }
+.dash-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.dash-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; text-align: center; }
+.dash-card .dash-num { font-size: 28px; font-weight: 700; color: var(--accent); }
+.dash-card .dash-label { font-size: 11px; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
+.dash-card .dash-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.dash-card.red .dash-num { color: var(--red); }
+.dash-card.orange .dash-num { color: var(--orange); }
+.dash-card.blue .dash-num { color: var(--blue); }
+.msg-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 8px; }
+.msg-card h4 { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+.msg-card .body { font-size: 12px; color: var(--text); background: rgba(0,0,0,0.2); padding: 12px; border-radius: 6px; white-space: pre-wrap; font-family: monospace; }
+.progress-bar { height: 6px; border-radius: 3px; background: var(--surface2); margin-top: 8px; overflow: hidden; }
+.progress-bar .fill { height: 100%; border-radius: 3px; transition: width 0.5s; }
+.fill.green { background: var(--green); }
+.fill.orange { background: var(--orange); }
+.fill.red { background: var(--red); }
+.fill.blue { background: var(--blue); }
+.btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 6px 14px; color: var(--text); font-size: 12px; cursor: pointer; font-family: Inter; }
 .btn:hover { border-color: var(--accent); }
+.btn-sm { padding: 4px 10px; font-size: 10px; }
 .footer { text-align: center; padding: 32px 16px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--border); }
+.actions-wrap { overflow-x: auto; }
 </style>
 </head>
 <body>
@@ -76,36 +97,169 @@ h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
     <span class="metric">8 Hot</span>
     <span class="metric">10 Warm</span>
     <span class="metric">2 Cold</span>
+    <span class="metric">4 Clusters</span>
   </div>
 </div>
 
 <div class="container">
 <div class="controls">
-  <button class="active">Accounts</button>
-  <button onclick="switchTab('tracker')">Tracker</button>
+  <button class="active" onclick="switchTab('accounts')">Accounts</button>
+  <button onclick="switchTab('tracker')">Tracker + Contacts</button>
   <button onclick="switchTab('actions')">Actions</button>
   <button onclick="switchTab('prospects')">Prospects</button>
-  <button onclick="switchTab('messaging')">Messaging</button>
+  <button onclick="switchTab('messaging')">Messaging Assistant</button>
+  <button onclick="switchTab('dashboard')">Dashboard</button>
 </div>
 
 <div id="tab-accounts" class="section active">
+  <div style="display:grid;grid-template-columns:1fr 80px 80px 90px;gap:6px;padding:8px 16px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;margin-bottom:4px">
+    <span>Account and Angle (click to expand)</span><span>Priority</span><span>Week</span><span>Touch</span>
+  </div>
   <div id="accountsRoot"></div>
 </div>
+
 <div id="tab-tracker" class="section">
   <h2>Tracker and Contacts</h2>
   <div id="trackerRoot"></div>
 </div>
+
 <div id="tab-actions" class="section">
-  <h2>Actions</h2>
-  <div id="actionsRoot"></div>
+  <h2>Actions Per Account</h2>
+  <div class="actions-wrap">
+    <table class="actions-table">
+      <thead><tr><th style="width:140px">Account</th><th style="width:70px">AE</th><th style="width:90px">Status</th><th>Actions Taken</th><th style="width:160px">Next Action</th></tr></thead>
+      <tbody id="actionsRoot"></tbody>
+    </table>
+  </div>
+  
+  <h2 style="margin-top:28px">Log an Action</h2>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:10px">
+    <div style="flex:1;min-width:160px">
+      <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px">Account</label>
+      <select id="actAcct" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px"></select>
+    </div>
+    <div style="flex:1;min-width:140px">
+      <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px">Type</label>
+      <select id="actType" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px">
+        <option value="emailed">Emailed</option><option value="called">Called</option>
+        <option value="linkedin">LinkedIn message</option><option value="demo">Demo given</option>
+        <option value="followup">Followed up</option><option value="meeting">Meeting booked</option>
+        <option value="declined">Declined</option><option value="other">Other</option>
+      </select>
+    </div>
+    <div style="flex:1;min-width:140px">
+      <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px">Contact Name</label>
+      <input id="actContact" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px">
+    </div>
+    <div style="flex:2;min-width:200px">
+      <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px">Details</label>
+      <input id="actDetail" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px">
+    </div>
+    <button class="btn" onclick="logAction()" style="margin-top:12px">+ Log</button>
+  </div>
 </div>
+
 <div id="tab-prospects" class="section">
   <h2>Prospect Signals</h2>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:20px">
+    <div style="flex:1;min-width:150px">
+      <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:3px">Company</label>
+      <input id="psCompany" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px">
+    </div>
+    <div style="flex:1;min-width:150px">
+      <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:3px">Contact</label>
+      <input id="psContact" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px">
+    </div>
+    <div style="flex:1;min-width:120px">
+      <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:3px">Signal Type</label>
+      <select id="psType" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px">
+        <option value="hiring">Hiring signal</option>
+        <option value="product">Product launch</option>
+        <option value="funding">Funding round</option>
+        <option value="outage">Provider outage</option>
+        <option value="partnership">New partnership</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    <div style="flex:2;min-width:200px">
+      <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:3px">Detail</label>
+      <input id="psDetail" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px">
+    </div>
+    <button class="btn" onclick="addProspect()" style="margin-top:14px">+ Save Signal</button>
+  </div>
   <div id="prospectsRoot"></div>
 </div>
+
 <div id="tab-messaging" class="section">
   <h2>Messaging Assistant</h2>
-  <p style="color:var(--muted);font-size:13px">Coming soon</p>
+  <p style="color:var(--muted);margin-bottom:16px">Select a contact and generate a tailored outreach message.</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px">
+      <h3 style="font-size:15px;font-weight:600;margin-bottom:14px">Select Contact</h3>
+      <div style="margin-bottom:10px">
+        <label style="font-size:10px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px">Choose Account</label>
+        <select id="msgAccount" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px"></select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+        <div><label style="font-size:10px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px">Contact Name</label>
+          <input id="msgContactName" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px"></div>
+        <div><label style="font-size:10px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px">Title</label>
+          <input id="msgContactTitle" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px"></div>
+      </div>
+      <div style="margin-bottom:10px">
+        <label style="font-size:10px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px">Company Context</label>
+        <textarea id="msgContext" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;min-height:50px;resize:vertical" placeholder="What do they do? Any relevant news or signals?"></textarea>
+      </div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px">
+      <h3 style="font-size:15px;font-weight:600;margin-bottom:14px">Channel and Objective</h3>
+      <div style="margin-bottom:12px">
+        <label style="font-size:10px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px">Channel</label>
+        <select id="msgChannel" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px">
+          <option value="email">Email</option>
+          <option value="linkedin">LinkedIn Message</option>
+          <option value="call">Phone Call</option>
+        </select>
+      </div>
+      <div style="margin-bottom:12px">
+        <label style="font-size:10px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px">Objective</label>
+        <select id="msgGoal" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px">
+          <option value="meeting">Book a meeting</option>
+          <option value="demo">Schedule a demo</option>
+          <option value="intro">Get an intro</option>
+          <option value="followup">Follow up</option>
+        </select>
+      </div>
+      <div style="margin-bottom:12px">
+        <label style="font-size:10px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px">Pitch Category</label>
+        <select id="msgPitchCat" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px">
+          <option value="reliability">Reliability / Fallback</option>
+          <option value="security">Security / Compliance</option>
+          <option value="cost">Cost Optimization</option>
+          <option value="platform">Platform Play</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-bottom:20px">
+    <button class="btn" onclick="generateMessage()" style="padding:10px 32px;font-size:14px;background:rgba(0,212,170,0.1);border-color:var(--accent);color:var(--accent)">Generate Outreach Message</button>
+  </div>
+  <div id="msgOutput" style="display:none">
+    <h2>Generated Message</h2>
+    <div style="background:var(--surface);border:1px solid var(--accent);border-radius:12px;padding:24px;line-height:1.8;font-size:14px">
+      <div id="msgBody" style="color:var(--text);white-space:pre-wrap"></div>
+    </div>
+  </div>
+</div>
+
+<div id="tab-dashboard" class="section">
+  <h2>Outreach Dashboard</h2>
+  <div id="dashRoot" class="dash-grid"></div>
+  <h2>Messaging Analysis</h2>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Based on pitches logged in Tracker.</p>
+  <div id="msgAnalysis"></div>
+  <h2 style="margin-top:24px">Weekly Progress</h2>
+  <div id="statsRoot"></div>
 </div>
 </div>
 
@@ -164,16 +318,26 @@ function upd(id, f, v) {
 
 function switchTab(id) {
   var btns = document.querySelectorAll('.controls button');
-  for (var i = 0; i < btns.length; i++) btns[i].className = '';
   var secs = document.querySelectorAll('.section');
+  for (var i = 0; i < btns.length; i++) btns[i].className = '';
   for (var j = 0; j < secs.length; j++) secs[j].className = 'section';
-  document.querySelector('.controls button:nth-child(' + (['accounts','tracker','actions','prospects','messaging'].indexOf(id)+1) + ')').className = 'active';
+  var targetBtn = null;
+  for (var k = 0; k < btns.length; k++) {
+    if (btns[k].textContent.toLowerCase().indexOf(id) >= 0) { targetBtn = btns[k]; break; }
+  }
+  if (targetBtn) targetBtn.className = 'active';
   document.getElementById('tab-' + id).className = 'section active';
-  if (id === 'accounts') renderAccounts();
+  
   if (id === 'tracker') renderTracker();
-  if (id === 'actions') renderActions();
+  if (id === 'actions') { renderActions(); }
   if (id === 'prospects') renderProspects();
-  if (id === 'messaging') document.getElementById('messagingRoot').innerHTML = '<p style="color:var(--muted)">Messaging assistant coming soon</p>';
+  if (id === 'accounts') renderAccounts();
+  if (id === 'dashboard') renderDashboard();
+}
+
+function sc(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
 function renderAccounts() {
@@ -185,23 +349,23 @@ function renderAccounts() {
     for (var j = 0; j < DATA.length; j++) { if (DATA[j].id === x.id) { d = DATA[j]; break; } }
     if (!d) d = { name: x.name, cl: 'Prospect', prio: 'warm', wk: 'New', tch: 'Manual', angle: 'Prospect', targets: '', signal: '', msg: '', notes: '' };
     var tc = d.prio === 'hot' ? 'tag-hot' : (d.prio === 'warm' ? 'tag-warm' : 'tag-cold');
-    var th = '';
     var ts = d.tch.split('+');
-    for (var k = 0; k < ts.length; k++) th += '<span style="background:var(--surface2);padding:1px 6px;border-radius:4px;font-size:10px">' + ts[k] + '</span>';
+    var th = '';
+    for (var k = 0; k < ts.length; k++) th += '<span style="background:var(--surface2);padding:1px 6px;border-radius:4px;font-size:10px">' + sc(ts[k]) + '</span>';
     var tar = d.targets.split(', ');
     var tah = '';
-    for (var m = 0; m < tar.length; m++) tah += '<li>' + tar[m] + '</li>';
+    for (var m = 0; m < tar.length; m++) tah += '<li>' + sc(tar[m]) + '</li>';
     var sig = d.signal.split('. ');
     var sih = '';
-    for (var n = 0; n < sig.length; n++) { if (sig[n].trim()) sih += '<li>' + sig[n] + '</li>'; }
+    for (var n = 0; n < sig.length; n++) { if (sig[n].trim()) sih += '<li>' + sc(sig[n]) + '</li>'; }
     h += '<div class="acct-row" onclick="this.classList.toggle(\'open\')">';
-    h += '<div class="left"><div class="acct-name">' + d.name + ' <span class="acct-cluster">' + d.cl + '</span></div><div class="acct-angle">' + d.angle + '</div></div>';
-    h += '<div><span class="acct-tag ' + tc + '">' + d.prio.toUpperCase() + '</span></div><div style="font-size:12px;color:var(--muted)">' + d.wk + '</div>';
+    h += '<div class="left"><div class="acct-name">' + sc(d.name) + ' <span class="acct-cluster">' + sc(d.cl) + '</span></div><div class="acct-angle">' + sc(d.angle) + '</div></div>';
+    h += '<div><span class="acct-tag ' + tc + '">' + d.prio.toUpperCase() + '</span></div><div style="font-size:12px;color:var(--muted)">' + sc(d.wk) + '</div>';
     h += '<div style="font-size:11px;display:flex;flex-wrap:wrap;gap:3px">' + th + '</div>';
     h += '<div class="acct-detail"><div class="detail-grid"><div class="detail-card"><h4>Targets</h4><ul>' + tah + '</ul></div>';
     h += '<div class="detail-card"><h4>Signal</h4><ul>' + sih + '</ul></div>';
-    h += '<div class="detail-card" style="grid-column:1/-1"><h4>Message</h4><p>' + d.msg + '</p></div>';
-    h += '<div class="detail-card" style="grid-column:1/-1"><h4>Notes</h4><p>' + d.notes + '</p></div></div></div></div>';
+    h += '<div class="detail-card" style="grid-column:1/-1"><h4>Message</h4><p>' + sc(d.msg) + '</p></div>';
+    h += '<div class="detail-card" style="grid-column:1/-1"><h4>Notes</h4><p>' + sc(d.notes) + '</p></div></div></div></div>';
   }
   document.getElementById('accountsRoot').innerHTML = h;
 }
@@ -220,14 +384,16 @@ function renderTracker() {
     for (var k = 0; k < opts.length; k++) so += '<option value="' + opts[k] + '"' + (x.status === opts[k] ? ' selected' : '') + '>' + opts[k].replace(/-/g,' ') + '</option>';
     var an = d ? d.angle : 'Prospect';
     var wk = d ? d.wk : 'New';
-    var ids = x.id.replace(/'/g, "\\'");
-    h += '<div class="trk-card"><h4>' + x.name + ' <span class="acct-tag ' + tc + '" style="font-size:9px;padding:1px 6px">' + pr.toUpperCase() + '</span></h4>';
-    h += '<div class="meta">' + an + ' - ' + wk + '</div>';
-    h += '<div class="field-group"><label>Status</label><select onchange="upd(\'' + ids + '\',\'status\',this.value)">' + so + '</select></div>';
-    h += '<div class="row2"><div class="field-group"><label>Contact</label><input value="' + (x.contactName||'') + '" onchange="upd(\'' + ids + '\',\'contactName\',this.value)"></div>';
-    h += '<div class="field-group"><label>Title</label><input value="' + (x.contactTitle||'') + '" onchange="upd(\'' + ids + '\',\'contactTitle\',this.value)"></div></div>';
-    h += '<div class="field-group"><label>LinkedIn</label><input value="' + (x.linkedinUrl||'') + '" onchange="upd(\'' + ids + '\',\'linkedinUrl\',this.value)"></div>';
-    h += '<div class="field-group"><label>Notes</label><textarea onchange="upd(\'' + ids + '\',\'notes\',this.value)">' + (x.notes||'') + '</textarea></div></div>';
+    var idx = i;
+    h += '<div class="trk-card"><h4>' + sc(x.name) + ' <span class="acct-tag ' + tc + '" style="font-size:9px;padding:1px 6px">' + pr.toUpperCase() + '</span></h4>';
+    h += '<div class="meta">' + sc(an) + ' - ' + sc(wk) + '</div>';
+    h += '<div class="field-group"><label>Status</label><select onchange="upd(\'' + x.id + '\',\'status\',this.value)">' + so + '</select></div>';
+    h += '<div class="row2"><div class="field-group"><label>Contact</label><input value="' + sc(x.contactName) + '" onchange="upd(\'' + x.id + '\',\'contactName\',this.value)"></div>';
+    h += '<div class="field-group"><label>Title</label><input value="' + sc(x.contactTitle) + '" onchange="upd(\'' + x.id + '\',\'contactTitle\',this.value)"></div></div>';
+    h += '<div class="field-group"><label>LinkedIn</label><input value="' + sc(x.linkedinUrl) + '" onchange="upd(\'' + x.id + '\',\'linkedinUrl\',this.value)"></div>';
+    h += '<div class="field-group"><label>Pitch Used</label><textarea onchange="upd(\'' + x.id + '\',\'pitchUsed\',this.value)">' + sc(x.pitchUsed) + '</textarea></div>';
+    h += '<div class="field-group"><label>Pitch Category</label><input value="' + sc(x.pitchCategory) + '" onchange="upd(\'' + x.id + '\',\'pitchCategory\',this.value)"></div>';
+    h += '<div class="field-group"><label>Notes</label><textarea onchange="upd(\'' + x.id + '\',\'notes\',this.value)">' + sc(x.notes) + '</textarea></div></div>';
   }
   document.getElementById('trackerRoot').innerHTML = h;
 }
@@ -237,18 +403,56 @@ function getActs() {
   try { return JSON.parse(r) || []; } catch(e) { return []; }
 }
 
+function sf(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
+
+function logAction() {
+  var acct = document.getElementById('actAcct').value;
+  var type = document.getElementById('actType').value;
+  var detail = document.getElementById('actDetail').value.trim();
+  var contact = document.getElementById('actContact').value.trim();
+  if (!acct || !detail) { alert('Select account and add details'); return; }
+  var acts = getActs();
+  acts.push({ account: acct, type: type, contact: contact, detail: detail, date: new Date().toLocaleDateString() });
+  sf(AK, acts);
+  var t = getT();
+  for (var i = 0; i < t.length; i++) { if (t[i].id === acct) { t[i].lastTouch = new Date().toLocaleDateString() + ' - ' + detail.slice(0, 30); break; } }
+  st(TK, t);
+  document.getElementById('actDetail').value = '';
+  document.getElementById('actContact').value = '';
+  renderActions();
+}
+
 function renderActions() {
   var t = getT();
-  var h = '<table class="actions-table"><thead><tr><th>Account</th><th>Status</th><th>AE</th></tr></thead><tbody>';
+  var acts = getActs();
+  var sel = document.getElementById('actAcct');
+  if (sel) {
+    sel.innerHTML = '';
+    for (var i = 0; i < t.length; i++) {
+      var opt = document.createElement('option');
+      opt.value = t[i].id;
+      opt.textContent = t[i].name;
+      sel.appendChild(opt);
+    }
+  }
+  var h = '';
   for (var i = 0; i < t.length; i++) {
     var tr = t[i];
     var d = null;
     for (var j = 0; j < DATA.length; j++) { if (DATA[j].id === tr.id) { d = DATA[j]; break; } }
     var nm = d ? d.name : tr.name;
-    var ids = tr.id.replace(/'/g, "\\'");
-    h += '<tr><td>' + nm + '</td><td><span class="status-dot ' + (tr.status||'todo') + '"></span>' + (tr.status||'todo').replace(/-/g,' ') + '</td><td>' + (tr.assignedTo||'-') + '</td></tr>';
+    var an = d ? d.angle : 'Prospect';
+    var acctActs = [];
+    for (var k = 0; k < acts.length; k++) { if (acts[k].account === tr.id) acctActs.push(acts[k]); }
+    var ah = acctActs.slice(-3).reverse().map(function(a) { return '<div style="font-size:11px;color:var(--muted);margin:2px 0">' + a.date + ' ' + (a.contact || '') + ' ' + a.detail.slice(0, 60) + '</div>'; }).join('');
+    if (!ah) ah = '<div style="color:var(--muted);font-size:11px">No actions yet</div>';
+    var nx = { 'todo': 'Send initial email', 'emailed': 'Follow up call (Day 3)', 'called': 'Follow-up with insight', 'meeting-scheduled': 'Prep demo', 'meeting-done': 'Send recap', 'declined': 'Log and move', 'closed': 'Onboard' };
+    h += '<tr><td style="font-weight:600">' + sc(nm) + '<br><small style="color:var(--muted);font-weight:400">' + sc(an) + '</small></td>';
+    h += '<td>' + sc(tr.assignedTo) + '</td>';
+    h += '<td><span class="status-dot ' + (tr.status || 'todo') + '"></span>' + (tr.status || 'todo').replace(/-/g, ' ') + '</td>';
+    h += '<td>' + ah + '</td>';
+    h += '<td style="font-size:12px;color:var(--muted)">' + (nx[tr.status] || 'Review') + '</td></tr>';
   }
-  h += '</tbody></table>';
   document.getElementById('actionsRoot').innerHTML = h;
 }
 
@@ -257,17 +461,135 @@ function getProsp() {
   try { return JSON.parse(r) || []; } catch(e) { return []; }
 }
 
+function addProspect() {
+  var company = document.getElementById('psCompany').value.trim();
+  if (!company) return;
+  var p = getProsp();
+  p.push({ id: Date.now().toString(), company: company, contact: document.getElementById('psContact').value, type: document.getElementById('psType').value, detail: document.getElementById('psDetail').value });
+  sf(PK, p);
+  renderProspects();
+}
+
 function renderProspects() {
   var p = getProsp();
   if (p.length === 0) { document.getElementById('prospectsRoot').innerHTML = '<p style="color:var(--muted);font-size:13px">No prospects yet.</p>'; return; }
   var h = '';
   for (var i = 0; i < p.length; i++) {
     h += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:8px">';
-    h += '<div style="font-weight:600">' + p[i].company + '</div>';
-    h += '<div style="font-size:12px;color:var(--muted)">' + (p[i].detail||'') + '</div></div>';
+    h += '<div style="font-weight:600;margin-bottom:4px">' + sc(p[i].company) + '</div>';
+    h += '<div style="font-size:12px;color:var(--accent);margin-bottom:4px">' + sc(p[i].type) + ' signal</div>';
+    h += '<div style="font-size:12px;color:var(--muted)">' + sc(p[i].detail) + '</div></div>';
   }
   document.getElementById('prospectsRoot').innerHTML = h;
 }
+
+function generateMessage() {
+  var acct = document.getElementById('msgAccount').value;
+  var d = null;
+  for (var j = 0; j < DATA.length; j++) { if (DATA[j].id === acct) { d = DATA[j]; break; } }
+  var contactName = document.getElementById('msgContactName').value || 'there';
+  var channel = document.getElementById('msgChannel').value;
+  var goal = document.getElementById('msgGoal').value;
+  var pitchCat = document.getElementById('msgPitchCat').value;
+  var company = d ? d.name : 'this company';
+  
+  var openers = {
+    reliability: 'I noticed you are running AI features that depend on model availability.',
+    security: 'Given the sensitive data flowing through your AI pipeline, I imagine governance is top of mind.',
+    cost: 'At your scale, every inference call adds up.',
+    platform: 'You have built a platform that others build on.'
+  };
+  
+  var bridges = {
+    reliability: 'OrcaRouter sits between your app and every LLM provider with intelligent fallback chains. Traffic auto-routes before users notice latency.',
+    security: 'PII Shield scans every prompt and response in real-time. Blocks secrets, PHI, and credentials before they hit the model.',
+    cost: 'OrcaRouter is a zero-markup passthrough. Route simple requests to cheaper models automatically.',
+    platform: 'OrcaRouter gives your users enterprise-grade model governance under your ecosystem.'
+  };
+  
+  var goals = {
+    meeting: 'Would you be open to a 15-minute call this week?',
+    demo: 'I would love to show you how OrcaRouter works in 20 minutes.',
+    intro: 'Would you be open to connecting me with your AI platform team?',
+    followup: 'Following up on my note from last week.'
+  };
+  
+  var msg = 'Hi ' + contactName + ',\n\n' + openers[pitchCat] + '\n\n' + bridges[pitchCat] + '\n\n' + goals[goal] + '\n\nBest,\n[Rep Name]\nFlashLabs - OrcaRouter';
+  
+  document.getElementById('msgBody').textContent = msg;
+  document.getElementById('msgOutput').style.display = 'block';
+}
+
+function renderDashboard() {
+  var t = getT();
+  var acts = getActs();
+  var total = t.length;
+  var contacted = 0;
+  var meetings = 0;
+  var declined = 0;
+  for (var i = 0; i < t.length; i++) {
+    if (t[i].status !== 'todo') contacted++;
+    if (t[i].status.indexOf('meeting') >= 0) meetings++;
+    if (t[i].status === 'declined') declined++;
+  }
+  document.getElementById('dashRoot').innerHTML = 
+    '<div class="dash-card"><div class="dash-num">' + total + '</div><div class="dash-label">Total</div></div>' +
+    '<div class="dash-card"><div class="dash-num">' + contacted + '</div><div class="dash-label">Contacted</div><div class="dash-sub">' + Math.round(contacted/total*100) + '%</div></div>' +
+    '<div class="dash-card"><div class="dash-num">' + meetings + '</div><div class="dash-label">Meetings</div></div>' +
+    '<div class="dash-card red"><div class="dash-num">' + declined + '</div><div class="dash-label">Declined</div></div>' +
+    '<div class="dash-card blue"><div class="dash-num">' + acts.length + '</div><div class="dash-label">Actions</div></div>';
+  
+  var w1 = 0, w2 = 0, w3 = 0, w4 = 0;
+  var c1 = 0, c2 = 0, c3 = 0, c4 = 0;
+  for (var i = 0; i < DATA.length; i++) {
+    if (DATA[i].wk === 'W1') w1++;
+    if (DATA[i].wk === 'W2') w2++;
+    if (DATA[i].wk === 'W3') w3++;
+    if (DATA[i].wk === 'W4') w4++;
+  }
+  for (var i = 0; i < DATA.length; i++) {
+    var tr = null;
+    for (var j = 0; j < t.length; j++) { if (t[j].id === DATA[i].id) { tr = t[j]; break; } }
+    if (tr && tr.status !== 'todo') {
+      if (DATA[i].wk === 'W1') c1++;
+      if (DATA[i].wk === 'W2') c2++;
+      if (DATA[i].wk === 'W3') c3++;
+      if (DATA[i].wk === 'W4') c4++;
+    }
+  }
+  
+  document.getElementById('msgAnalysis').innerHTML = '<p style="color:var(--muted);font-size:13px">No pitches logged yet. Add pitch copy in Tracker to see analysis.</p>';
+  
+  document.getElementById('statsRoot').innerHTML =
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">' +
+    '<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px">' +
+    '<h4 style="font-size:13px;font-weight:600;margin-bottom:12px">Outreach by Week</h4>' +
+    '<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>W1 Hot</span><span>' + c1 + '/' + w1 + '</span></div><div class="progress-bar"><div class="fill green" style="width:' + (w1 > 0 ? c1/w1*100 : 0) + '%"></div></div></div>' +
+    '<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>W2 Hot+Warm</span><span>' + c2 + '/' + w2 + '</span></div><div class="progress-bar"><div class="fill orange" style="width:' + (w2 > 0 ? c2/w2*100 : 0) + '%"></div></div></div>' +
+    '<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>W3 Warm</span><span>' + c3 + '/' + w3 + '</span></div><div class="progress-bar"><div class="fill blue" style="width:' + (w3 > 0 ? c3/w3*100 : 0) + '%"></div></div></div>' +
+    '<div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>W4 Cold</span><span>' + c4 + '/' + w4 + '</span></div><div class="progress-bar"><div class="fill" style="width:' + (w4 > 0 ? c4/w4*100 : 0) + '%"></div></div></div>' +
+    '</div>' +
+    '<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px">' +
+    '<h4 style="font-size:13px;font-weight:600;margin-bottom:12px">Overall Funnel</h4>' +
+    '<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px"><span>Total</span><span>' + total + '</span></div></div>' +
+    '<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px"><span>Contacted</span><span>' + contacted + '</span></div><div class="progress-bar"><div class="fill green" style="width:' + (contacted/total*100) + '%"></div></div></div>' +
+    '<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px"><span>Meetings</span><span>' + meetings + '</span></div><div class="progress-bar"><div class="fill green" style="width:' + (contacted > 0 ? meetings/contacted*100 : 0) + '%"></div></div></div>' +
+    '</div></div>';
+}
+
+// Init messaging dropdown
+(function() {
+  var t = getT();
+  var sel = document.getElementById('msgAccount');
+  if (sel) {
+    for (var i = 0; i < t.length; i++) {
+      var opt = document.createElement('option');
+      opt.value = t[i].id;
+      opt.textContent = t[i].name;
+      sel.appendChild(opt);
+    }
+  }
+})();
 
 renderAccounts();
 renderTracker();
