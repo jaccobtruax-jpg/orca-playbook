@@ -25,6 +25,7 @@ body { font-family: Inter, sans-serif; background: var(--bg); color: var(--text)
 .section.active { display: block; }
 h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 h2 small { font-size: 13px; color: var(--muted); font-weight: 400; }
+h3 { font-size: 17px; font-weight: 700; margin: 24px 0 12px; color: var(--accent); }
 .acct-row { display: grid; grid-template-columns: 1fr 80px 80px 90px; gap: 6px; align-items: start; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 6px; cursor: pointer; transition: all 0.15s; }
 .acct-row:hover { border-color: rgba(255,255,255,0.1); }
 .acct-row.open { border-color: var(--accent); }
@@ -52,6 +53,9 @@ h2 small { font-size: 13px; color: var(--muted); font-weight: 400; }
 .trk-card select, .trk-card textarea, .trk-card input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; color: var(--text); font-size: 12px; font-family: Inter; }
 .trk-card textarea { min-height: 44px; resize: vertical; }
 .trk-card .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.cluster-header { background: var(--surface2); padding: 16px 20px; border-radius: 12px; margin: 24px 0 8px; border-left: 3px solid var(--accent); }
+.cluster-header h4 { font-size: 16px; font-weight: 700; }
+.cluster-header p { font-size: 13px; color: var(--muted); margin-top: 4px; }
 .actions-table { width: 100%; border-collapse: collapse; font-size: 12px; }
 .actions-table th { text-align: left; padding: 10px 12px; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; border-bottom: 1px solid var(--border); }
 .actions-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
@@ -72,11 +76,22 @@ h2 small { font-size: 13px; color: var(--muted); font-weight: 400; }
 .dash-card.red .dash-num { color: var(--red); }
 .dash-card.orange .dash-num { color: var(--orange); }
 .dash-card.blue .dash-num { color: var(--blue); }
-.msg-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 8px; }
-.msg-card h4 { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
-.msg-card .body { font-size: 12px; color: var(--text); background: rgba(0,0,0,0.2); padding: 12px; border-radius: 6px; white-space: pre-wrap; font-family: monospace; }
+.msg-box { background: var(--surface); border-left: 4px solid var(--accent); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+.msg-box h4 { font-size: 14px; font-weight: 700; margin-bottom: 10px; }
+.msg-box .body { font-size: 13px; color: var(--text); background: rgba(0,0,0,0.2); padding: 14px; border-radius: 8px; white-space: pre-wrap; font-family: monospace; line-height: 1.7; }
+.pillar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.pillar-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+.pillar-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.pillar-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.pillar-card .who { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 12px; }
+.timeline { position: relative; padding-left: 28px; margin-top: 24px; }
+.timeline::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--border); }
+.timeline-item { position: relative; margin-bottom: 32px; }
+.timeline-item::before { content: ''; position: absolute; left: -33px; top: 0; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); border: 4px solid var(--bg); }
+.timeline-item h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--accent); }
+.timeline-item p { font-size: 13px; color: var(--muted); margin-bottom: 4px; line-height: 1.6; }
 .progress-bar { height: 6px; border-radius: 3px; background: var(--surface2); margin-top: 8px; overflow: hidden; }
-.progress-bar .fill { height: 100%; border-radius: 3px; transition: width 0.5s; }
+.progress-bar .fill { height: 100%; border-radius: 3px; }
 .fill.green { background: var(--green); }
 .fill.orange { background: var(--orange); }
 .fill.red { background: var(--red); }
@@ -86,6 +101,9 @@ h2 small { font-size: 13px; color: var(--muted); font-weight: 400; }
 .btn-sm { padding: 4px 10px; font-size: 10px; }
 .footer { text-align: center; padding: 32px 16px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--border); }
 .actions-wrap { overflow-x: auto; }
+.learn-entry { padding: 8px 12px; background: var(--surface2); border-radius: 6px; margin-bottom: 6px; font-size: 12px; color: var(--muted); line-height: 1.5; }
+.learn-entry .date { color: var(--accent); font-weight: 500; }
+.learn-entry .acct-t { font-size: 10px; padding: 1px 6px; border-radius: 4px; background: rgba(0,212,170,0.1); color: var(--accent); margin-right: 4px; }
 </style>
 </head>
 <body>
@@ -106,8 +124,8 @@ h2 small { font-size: 13px; color: var(--muted); font-weight: 400; }
   <button class="active" onclick="switchTab('accounts')">Accounts</button>
   <button onclick="switchTab('tracker')">Tracker + Contacts</button>
   <button onclick="switchTab('actions')">Actions</button>
-  <button onclick="switchTab('prospects')">Prospects</button>
-  <button onclick="switchTab('messaging')">Messaging Assistant</button>
+  <button onclick="switchTab('overview')">Playbook</button>
+  <button onclick="switchTab('messaging')">Messaging</button>
   <button onclick="switchTab('dashboard')">Dashboard</button>
 </div>
 
@@ -120,6 +138,7 @@ h2 small { font-size: 13px; color: var(--muted); font-weight: 400; }
 
 <div id="tab-tracker" class="section">
   <h2>Tracker and Contacts</h2>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Track contacts, LinkedIn URLs, pitch copy, and status for each account.</p>
   <div id="trackerRoot"></div>
 </div>
 
@@ -131,123 +150,207 @@ h2 small { font-size: 13px; color: var(--muted); font-weight: 400; }
       <tbody id="actionsRoot"></tbody>
     </table>
   </div>
-  
   <h2 style="margin-top:28px">Log an Action</h2>
   <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:10px">
-    <div style="flex:1;min-width:160px">
-      <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px">Account</label>
-      <select id="actAcct" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px"></select>
-    </div>
-    <div style="flex:1;min-width:140px">
-      <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px">Type</label>
+    <div style="flex:1;min-width:160px"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px">Account</label>
+      <select id="actAcct" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px"></select></div>
+    <div style="flex:1;min-width:140px"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px">Type</label>
       <select id="actType" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px">
         <option value="emailed">Emailed</option><option value="called">Called</option>
         <option value="linkedin">LinkedIn message</option><option value="demo">Demo given</option>
         <option value="followup">Followed up</option><option value="meeting">Meeting booked</option>
-        <option value="declined">Declined</option><option value="other">Other</option>
-      </select>
-    </div>
-    <div style="flex:1;min-width:140px">
-      <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px">Contact Name</label>
-      <input id="actContact" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px">
-    </div>
-    <div style="flex:2;min-width:200px">
-      <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px">Details</label>
-      <input id="actDetail" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px">
-    </div>
+        <option value="declined">Declined</option><option value="other">Other</option></select></div>
+    <div style="flex:1;min-width:140px"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px">Contact Name</label>
+      <input id="actContact" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px"></div>
+    <div style="flex:2;min-width:200px"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px">Details</label>
+      <input id="actDetail" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px"></div>
     <button class="btn" onclick="logAction()" style="margin-top:12px">+ Log</button>
   </div>
+  <div id="actionLog" style="margin-top:16px"></div>
 </div>
 
-<div id="tab-prospects" class="section">
-  <h2>Prospect Signals</h2>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:20px">
-    <div style="flex:1;min-width:150px">
-      <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:3px">Company</label>
-      <input id="psCompany" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px">
+<div id="tab-overview" class="section">
+  <h2>Playbook Overview</h2>
+  
+  <h3>Three Core Pillars</h3>
+  <p style="color:var(--muted);margin-bottom:16px">Every pitch maps to at least one of these.</p>
+  <div class="pillar-grid">
+    <div class="pillar-card">
+      <h4>Reliability</h4>
+      <p>Model fallback chains: no outage when a provider goes dark. Traffic auto-routes before users notice latency.</p>
+      <div class="who">Who cares: Anyone with customer-facing AI</div>
     </div>
-    <div style="flex:1;min-width:150px">
-      <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:3px">Contact</label>
-      <input id="psContact" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px">
+    <div class="pillar-card">
+      <h4>Security</h4>
+      <p>PII Shield + Tool-Call Firewall + compliance recipes (SOC2, HIPAA). Blocks secrets before they hit the LLM.</p>
+      <div class="who">Who cares: Enterprise, Fintech, Healthcare</div>
     </div>
-    <div style="flex:1;min-width:120px">
-      <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:3px">Signal Type</label>
-      <select id="psType" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px">
-        <option value="hiring">Hiring signal</option>
-        <option value="product">Product launch</option>
-        <option value="funding">Funding round</option>
-        <option value="outage">Provider outage</option>
-        <option value="partnership">New partnership</option>
-        <option value="other">Other</option>
-      </select>
+    <div class="pillar-card">
+      <h4>Cost</h4>
+      <p>Auto-route simple tasks to cheaper models. Zero-markup passthrough. Save 30-50% on inference.</p>
+      <div class="who">Who cares: High-volume API consumers</div>
     </div>
-    <div style="flex:2;min-width:200px">
-      <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:3px">Detail</label>
-      <input id="psDetail" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px">
-    </div>
-    <button class="btn" onclick="addProspect()" style="margin-top:14px">+ Save Signal</button>
   </div>
-  <div id="prospectsRoot"></div>
+
+  <h3>Outreach Sequencing</h3>
+  <div class="timeline">
+    <div class="timeline-item">
+      <h4>Week 1: Hot + High Urgency</h4>
+      <p><strong>Replit</strong> - Call then email same day. Reference Claude Code integration.</p>
+      <p><strong>Sourcegraph</strong> - Lead with tool-call firewall.</p>
+      <p><strong>Intercom</strong> - Lead with PII in support tickets.</p>
+      <p><strong>Box</strong> - Lead with HIPAA + PII Shield.</p>
+    </div>
+    <div class="timeline-item">
+      <h4>Week 2: Hot + Medium Urgency</h4>
+      <p><strong>Cursor</strong> - Same play as Replit. <strong>Notion</strong> - Claude outage angle. <strong>GitLab</strong> - Secrets in code prompts + SOC2. <strong>Databricks</strong> - Platform-scale cost optimization.</p>
+    </div>
+    <div class="timeline-item">
+      <h4>Week 3: Warm</h4>
+      <p>Benchling, Plaid, Temporal, Grafana, Confluent, LaunchDarkly, Sentry, Figma.</p>
+    </div>
+  </div>
+
+  <h3>Messaging Frameworks</h3>
+  
+  <div class="msg-box">
+    <h4>Framework A: The Trigger (Call Version)</h4>
+    <div class="body">"Hey [Name] - I saw you are hiring [AI platform / agent infra] engineers and shipping multi-model AI features. My name is [Rep], I am with FlashLabs. We built OrcaRouter to solve the exact problem your job posts describe: model availability, tool-call security, and cost at scale. Could I get 15 minutes to show you how it works?"</div>
+  </div>
+  
+  <div class="msg-box">
+    <h4>Framework B: The Pattern-Break (Email)</h4>
+    <div class="body">Subject: Your [Claude/GPT-4o] users do not care whose model answers. They care that it works.
+
+[Name] - When [Provider X] has degraded performance, your AI features break. Your users do not blame Anthropic. They blame [Company].
+
+OrcaRouter sits between your app and every LLM provider with intelligent fallback chains - traffic auto-routes to the next-best model before your users notice latency.
+
+15 minutes to show you the stack? I can also show you the PII Shield for [specific compliance need].
+
+[Rep]</div>
+  </div>
+  
+  <div class="msg-box">
+    <h4>Framework C: The Cost Conversation (LinkedIn/Email)</h4>
+    <div class="body">Subject: 30-50% on inference without touching quality
+
+[Name] - Every AI code completion / document analysis / support response is hitting an expensive model by default. The simple ones (syntax, Q and A) do not need Claude 4.
+
+OrcaRouter auto-classifies requests and routes simple ones to cheaper models. Zero quality loss on the complex stuff. No markup on API calls - we are a passthrough, not a proxy adding margin.
+
+Worth 15 minutes?</div>
+  </div>
+
+  <h3>Discovery Call Structure (15 min)</h3>
+  <div class="pillar-grid">
+    <div class="pillar-card">
+      <h4>0-2m: Open</h4>
+      <p>"I reached out because [specific signal]. We have been helping companies in your exact position ship multi-model AI safely."</p>
+    </div>
+    <div class="pillar-card">
+      <h4>2-5m: Diagnostic</h4>
+      <p>1. When [primary model] degrades, what is your failover?<br>2. Any PII/PHI/secrets concerns?<br>3. What are you spending on inference?</p>
+    </div>
+    <div class="pillar-card">
+      <h4>10-13m: The Close</h4>
+      <p>"We typically do a 90-day POC, monthly payments. If it does not deliver by day 90, you walk. Sound worth exploring?"</p>
+    </div>
+  </div>
+
+  <h3>Objection Handling</h3>
+  <div class="msg-box" style="margin-top:8px">
+    <p style="margin-bottom:8px"><strong>"We built failover internally"</strong><br>-> "How are you handling degraded performance vs. full outage? What about partial failures where the model returns garbage?"</p>
+    <p style="margin-bottom:8px"><strong>"Security team wont approve a proxy"</strong><br>-> "We deploy in your VPC. Data never leaves your perimeter. We are the firewall, not a man-in-the-middle."</p>
+    <p><strong>"Too early - still building features"</strong><br>-> "This is the right time. It is harder to bolt on compliance and fallback after you have shipped."</p>
+  </div>
+
+  <h3>Quick-Reference Card</h3>
+  <div class="pillar-grid">
+    <div class="pillar-card"><h4>Claude enterprise customer</h4><p>Replit, Cursor, Notion, Box</p><div class="who">"When Claude degrades, your product degrades. We prevent that."</div></div>
+    <div class="pillar-card"><h4>Hiring agent infra engineers</h4><p>Sourcegraph, Replit, Cursor, Codeium</p><div class="who">"Your job post describes the problem we solve."</div></div>
+    <div class="pillar-card"><h4>HIPAA / Regulated</h4><p>Box, Benchling</p><div class="who">"PII Shield + HIPAA recipe out of the box."</div></div>
+    <div class="pillar-card"><h4>High API volume</h4><p>Codeium, Databricks, Confluent</p><div class="who">"Zero-markup passthrough. We do not add margin to your inference bill."</div></div>
+    <div class="pillar-card"><h4>Infrastructure tool-calling</h4><p>HashiCorp, Temporal, Cockroach Labs</p><div class="who">"Tool-call firewall. Generated code should not execute unchecked."</div></div>
+    <div class="pillar-card"><h4>Customer-facing AI agents</h4><p>Intercom</p><div class="who">"PII in support tickets + multi-model routing. We do both."</div></div>
+  </div>
 </div>
 
 <div id="tab-messaging" class="section">
   <h2>Messaging Assistant</h2>
-  <p style="color:var(--muted);margin-bottom:16px">Select a contact and generate a tailored outreach message.</p>
+  <p style="color:var(--muted);margin-bottom:16px">Craft tailored outreach aligned with Straight Line Selling.</p>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px">
       <h3 style="font-size:15px;font-weight:600;margin-bottom:14px">Select Contact</h3>
-      <div style="margin-bottom:10px">
-        <label style="font-size:10px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px">Choose Account</label>
-        <select id="msgAccount" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px"></select>
-      </div>
+      <div style="margin-bottom:10px"><label style="font-size:10px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px">Choose Account</label>
+        <select id="msgAccount" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px"></select></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
         <div><label style="font-size:10px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px">Contact Name</label>
           <input id="msgContactName" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px"></div>
         <div><label style="font-size:10px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px">Title</label>
           <input id="msgContactTitle" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px"></div>
       </div>
-      <div style="margin-bottom:10px">
-        <label style="font-size:10px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px">Company Context</label>
-        <textarea id="msgContext" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;min-height:50px;resize:vertical" placeholder="What do they do? Any relevant news or signals?"></textarea>
-      </div>
+      <div style="margin-bottom:10px"><label style="font-size:10px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px">LinkedIn URL</label>
+        <input id="msgLinkedIn" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px"></div>
+      <div style="margin-bottom:10px"><label style="font-size:10px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px">Additional Context</label>
+        <textarea id="msgContext" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;min-height:50px;resize:vertical" placeholder="Recent post they made, shared connection..."></textarea></div>
     </div>
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px">
       <h3 style="font-size:15px;font-weight:600;margin-bottom:14px">Channel and Objective</h3>
-      <div style="margin-bottom:12px">
-        <label style="font-size:10px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px">Channel</label>
+      <div style="margin-bottom:12px"><label style="font-size:10px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px">Channel</label>
         <select id="msgChannel" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px">
-          <option value="email">Email</option>
-          <option value="linkedin">LinkedIn Message</option>
-          <option value="call">Phone Call</option>
-        </select>
-      </div>
-      <div style="margin-bottom:12px">
-        <label style="font-size:10px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px">Objective</label>
+          <option value="email">Email</option><option value="linkedin">LinkedIn Message</option><option value="call">Phone Call</option><option value="inmail">LinkedIn InMail</option></select></div>
+      <div style="margin-bottom:12px"><label style="font-size:10px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px">Objective</label>
         <select id="msgGoal" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px">
-          <option value="meeting">Book a meeting</option>
-          <option value="demo">Schedule a demo</option>
-          <option value="intro">Get an intro</option>
-          <option value="followup">Follow up</option>
-        </select>
-      </div>
-      <div style="margin-bottom:12px">
-        <label style="font-size:10px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px">Pitch Category</label>
+          <option value="meeting">Book a meeting</option><option value="demo">Schedule a demo</option>
+          <option value="intro">Get an intro</option><option value="followup">Follow up</option></select></div>
+      <div style="margin-bottom:12px"><label style="font-size:10px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px">Pitch Category</label>
         <select id="msgPitchCat" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px">
-          <option value="reliability">Reliability / Fallback</option>
-          <option value="security">Security / Compliance</option>
-          <option value="cost">Cost Optimization</option>
-          <option value="platform">Platform Play</option>
-        </select>
-      </div>
+          <option value="reliability">Reliability / Fallback</option><option value="security">Security / Compliance</option>
+          <option value="cost">Cost Optimization</option><option value="platform">Platform Play</option></select></div>
+      <div style="margin-bottom:10px"><label style="font-size:10px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px">Company Context</label>
+        <textarea id="msgContext2" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;min-height:50px;resize:vertical" placeholder="What do they do? Any relevant news?"></textarea></div>
     </div>
   </div>
+  
+  <div style="display:flex;align-items:center;gap:12px;padding:14px 20px;background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:20px">
+    <span style="font-size:12px;font-weight:600">Outreach Style</span>
+    <button id="styleToggle" class="btn" onclick="toggleCreative()" style="background:rgba(0,212,170,0.1);border-color:var(--accent);color:var(--accent);font-size:11px">Switch to Creative</button>
+    <span style="font-size:11px;color:var(--muted)">Standard template to creative/outside-the-box</span>
+  </div>
+  
+  <div id="creativeSection" style="display:none;background:var(--surface);border:1px solid var(--accent);border-radius:12px;padding:20px;margin-bottom:20px">
+    <h3 style="font-size:15px;font-weight:600;margin-bottom:14px">Creative Outreach Playbook</h3>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6">The standard template works for volume, but creative plays win the enterprise. Examples: Loom videos, personalized data drops, micro-apps, physical mailers.</p>
+    <div style="margin-bottom:14px"><label style="font-size:10px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Choose Your Creative Approach</label>
+      <select id="creativeApproach" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px">
+        <option value="loom">Loom Video - Personalized walkthrough</option>
+        <option value="datadrop">Data Drop - Share a relevant dataset</option>
+        <option value="microsite">Micro-Site - Build a 1-page site for their team</option>
+        <option value="gift">Physical Mailer - Send something memorable</option>
+        <option value="social">Social Proof Bomb - Curated wins in their space</option>
+        <option value="audit">Free Audit - We analyzed your AI stack</option>
+        <option value="event">Co-Marketing - Joint webinar or white paper</option>
+        <option value="meme">Humor / Meme - Break through with personality</option>
+        <option value="custom">Custom - Describe your own idea</option></select></div>
+    <div style="margin-bottom:10px"><label style="font-size:10px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Describe Your Idea (optional)</label>
+      <textarea id="creativeIdea" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;min-height:50px;resize:vertical"></textarea></div>
+  </div>
+  
   <div style="text-align:center;margin-bottom:20px">
     <button class="btn" onclick="generateMessage()" style="padding:10px 32px;font-size:14px;background:rgba(0,212,170,0.1);border-color:var(--accent);color:var(--accent)">Generate Outreach Message</button>
   </div>
   <div id="msgOutput" style="display:none">
-    <h2>Generated Message</h2>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <h2>Generated Message</h2>
+      <button class="btn" onclick="copyMsg()" style="background:rgba(59,130,246,0.15);border-color:var(--blue);color:var(--blue);font-size:11px">Copy to Clipboard</button>
+    </div>
     <div style="background:var(--surface);border:1px solid var(--accent);border-radius:12px;padding:24px;line-height:1.8;font-size:14px">
       <div id="msgBody" style="color:var(--text);white-space:pre-wrap"></div>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" onclick="document.getElementById('msgOutput').style.display='none'" style="background:rgba(0,212,170,0.05);border-color:var(--border);font-size:11px">Dismiss</button>
+      <span id="msgCopied" style="font-size:12px;color:var(--accent);display:none">Copied!</span>
     </div>
   </div>
 </div>
@@ -255,11 +358,17 @@ h2 small { font-size: 13px; color: var(--muted); font-weight: 400; }
 <div id="tab-dashboard" class="section">
   <h2>Outreach Dashboard</h2>
   <div id="dashRoot" class="dash-grid"></div>
-  <h2>Messaging Analysis</h2>
-  <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Based on pitches logged in Tracker.</p>
-  <div id="msgAnalysis"></div>
-  <h2 style="margin-top:24px">Weekly Progress</h2>
-  <div id="statsRoot"></div>
+  
+  <h2>Weekly Progress</h2>
+  <div id="statsRoot" style="margin-bottom:24px"></div>
+  
+  <h2>Learning Log</h2>
+  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+    <input id="li" placeholder="What did you learn?" style="flex:1;min-width:200px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--text);font-size:13px">
+    <input id="la" placeholder="Account" style="width:130px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--text);font-size:13px">
+    <button class="btn" onclick="addLearn()">Save</button>
+  </div>
+  <div id="learnRoot"><p style="color:var(--muted);font-size:13px">No learnings yet.</p></div>
 </div>
 </div>
 
@@ -291,7 +400,7 @@ var DATA = [
 
 var TK = 'orcaT';
 var AK = 'orcaA';
-var PK = 'orcaP';
+var LK = 'orcaL';
 
 function getT() {
   var raw = localStorage.getItem(TK);
@@ -307,13 +416,16 @@ function getT() {
   return t;
 }
 
-function st(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
-
 function upd(id, f, v) {
   var t = getT();
   for (var i = 0; i < t.length; i++) {
-    if (t[i].id === id) { t[i][f] = v; st(TK, t); break; }
+    if (t[i].id === id) { t[i][f] = v; localStorage.setItem(TK, JSON.stringify(t)); break; }
   }
+}
+
+function sc(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
 function switchTab(id) {
@@ -321,23 +433,14 @@ function switchTab(id) {
   var secs = document.querySelectorAll('.section');
   for (var i = 0; i < btns.length; i++) btns[i].className = '';
   for (var j = 0; j < secs.length; j++) secs[j].className = 'section';
-  var targetBtn = null;
-  for (var k = 0; k < btns.length; k++) {
-    if (btns[k].textContent.toLowerCase().indexOf(id) >= 0) { targetBtn = btns[k]; break; }
-  }
-  if (targetBtn) targetBtn.className = 'active';
+  var map = { 'accounts': 0, 'tracker': 1, 'actions': 2, 'overview': 3, 'messaging': 4, 'dashboard': 5 };
+  if (map[id] !== undefined && btns[map[id]]) btns[map[id]].className = 'active';
   document.getElementById('tab-' + id).className = 'section active';
-  
   if (id === 'tracker') renderTracker();
-  if (id === 'actions') { renderActions(); }
-  if (id === 'prospects') renderProspects();
+  if (id === 'actions') { initActionSelect(); renderActions(); }
   if (id === 'accounts') renderAccounts();
   if (id === 'dashboard') renderDashboard();
-}
-
-function sc(str) {
-  if (!str) return '';
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  if (id === 'messaging') initMessaging();
 }
 
 function renderAccounts() {
@@ -373,7 +476,7 @@ function renderAccounts() {
 function renderTracker() {
   var t = getT();
   var opts = ['todo','emailed','called','meeting-scheduled','meeting-done','declined','closed'];
-  var h = '';
+  var h = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px">';
   for (var i = 0; i < t.length; i++) {
     var x = t[i];
     var d = null;
@@ -382,28 +485,43 @@ function renderTracker() {
     var tc = pr === 'hot' ? 'tag-hot' : (pr === 'warm' ? 'tag-warm' : 'tag-cold');
     var so = '';
     for (var k = 0; k < opts.length; k++) so += '<option value="' + opts[k] + '"' + (x.status === opts[k] ? ' selected' : '') + '>' + opts[k].replace(/-/g,' ') + '</option>';
+    var cats = [['','None'],['reliability','Reliability'],['security','Security/Compliance'],['cost','Cost'],['compliance','Compliance']];
+    var co = '';
+    for (var m = 0; m < cats.length; m++) co += '<option value="' + cats[m][0] + '"' + (x.pitchCategory === cats[m][0] ? ' selected' : '') + '>' + cats[m][1] + '</option>';
     var an = d ? d.angle : 'Prospect';
     var wk = d ? d.wk : 'New';
-    var idx = i;
     h += '<div class="trk-card"><h4>' + sc(x.name) + ' <span class="acct-tag ' + tc + '" style="font-size:9px;padding:1px 6px">' + pr.toUpperCase() + '</span></h4>';
     h += '<div class="meta">' + sc(an) + ' - ' + sc(wk) + '</div>';
     h += '<div class="field-group"><label>Status</label><select onchange="upd(\'' + x.id + '\',\'status\',this.value)">' + so + '</select></div>';
-    h += '<div class="row2"><div class="field-group"><label>Contact</label><input value="' + sc(x.contactName) + '" onchange="upd(\'' + x.id + '\',\'contactName\',this.value)"></div>';
+    h += '<div class="row2"><div class="field-group"><label>Contact Name</label><input value="' + sc(x.contactName) + '" onchange="upd(\'' + x.id + '\',\'contactName\',this.value)"></div>';
     h += '<div class="field-group"><label>Title</label><input value="' + sc(x.contactTitle) + '" onchange="upd(\'' + x.id + '\',\'contactTitle\',this.value)"></div></div>';
-    h += '<div class="field-group"><label>LinkedIn</label><input value="' + sc(x.linkedinUrl) + '" onchange="upd(\'' + x.id + '\',\'linkedinUrl\',this.value)"></div>';
-    h += '<div class="field-group"><label>Pitch Used</label><textarea onchange="upd(\'' + x.id + '\',\'pitchUsed\',this.value)">' + sc(x.pitchUsed) + '</textarea></div>';
-    h += '<div class="field-group"><label>Pitch Category</label><input value="' + sc(x.pitchCategory) + '" onchange="upd(\'' + x.id + '\',\'pitchCategory\',this.value)"></div>';
+    h += '<div class="field-group"><label>LinkedIn URL</label><input value="' + sc(x.linkedinUrl) + '" onchange="upd(\'' + x.id + '\',\'linkedinUrl\',this.value)"></div>';
+    h += '<div class="field-group"><label>Pitch / Messaging Used</label><textarea onchange="upd(\'' + x.id + '\',\'pitchUsed\',this.value)">' + sc(x.pitchUsed) + '</textarea></div>';
+    h += '<div class="row2"><div class="field-group"><label>Pitch Category</label><select onchange="upd(\'' + x.id + '\',\'pitchCategory\',this.value)">' + co + '</select></div>';
+    h += '<div class="field-group"><label>Assigned AE</label><input value="' + sc(x.assignedTo) + '" onchange="upd(\'' + x.id + '\',\'assignedTo\',this.value)"></div></div>';
     h += '<div class="field-group"><label>Notes</label><textarea onchange="upd(\'' + x.id + '\',\'notes\',this.value)">' + sc(x.notes) + '</textarea></div></div>';
   }
+  h += '</div>';
   document.getElementById('trackerRoot').innerHTML = h;
+}
+
+function initActionSelect() {
+  var t = getT();
+  var sel = document.getElementById('actAcct');
+  if (sel && sel.options.length === 0) {
+    for (var i = 0; i < t.length; i++) {
+      var opt = document.createElement('option');
+      opt.value = t[i].id;
+      opt.textContent = t[i].name;
+      sel.appendChild(opt);
+    }
+  }
 }
 
 function getActs() {
   var r = localStorage.getItem(AK);
   try { return JSON.parse(r) || []; } catch(e) { return []; }
 }
-
-function sf(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
 
 function logAction() {
   var acct = document.getElementById('actAcct').value;
@@ -413,10 +531,10 @@ function logAction() {
   if (!acct || !detail) { alert('Select account and add details'); return; }
   var acts = getActs();
   acts.push({ account: acct, type: type, contact: contact, detail: detail, date: new Date().toLocaleDateString() });
-  sf(AK, acts);
+  localStorage.setItem(AK, JSON.stringify(acts));
   var t = getT();
   for (var i = 0; i < t.length; i++) { if (t[i].id === acct) { t[i].lastTouch = new Date().toLocaleDateString() + ' - ' + detail.slice(0, 30); break; } }
-  st(TK, t);
+  localStorage.setItem(TK, JSON.stringify(t));
   document.getElementById('actDetail').value = '';
   document.getElementById('actContact').value = '';
   renderActions();
@@ -425,16 +543,6 @@ function logAction() {
 function renderActions() {
   var t = getT();
   var acts = getActs();
-  var sel = document.getElementById('actAcct');
-  if (sel) {
-    sel.innerHTML = '';
-    for (var i = 0; i < t.length; i++) {
-      var opt = document.createElement('option');
-      opt.value = t[i].id;
-      opt.textContent = t[i].name;
-      sel.appendChild(opt);
-    }
-  }
   var h = '';
   for (var i = 0; i < t.length; i++) {
     var tr = t[i];
@@ -446,44 +554,46 @@ function renderActions() {
     for (var k = 0; k < acts.length; k++) { if (acts[k].account === tr.id) acctActs.push(acts[k]); }
     var ah = acctActs.slice(-3).reverse().map(function(a) { return '<div style="font-size:11px;color:var(--muted);margin:2px 0">' + a.date + ' ' + (a.contact || '') + ' ' + a.detail.slice(0, 60) + '</div>'; }).join('');
     if (!ah) ah = '<div style="color:var(--muted);font-size:11px">No actions yet</div>';
-    var nx = { 'todo': 'Send initial email', 'emailed': 'Follow up call (Day 3)', 'called': 'Follow-up with insight', 'meeting-scheduled': 'Prep demo', 'meeting-done': 'Send recap', 'declined': 'Log and move', 'closed': 'Onboard' };
+    var nxs = { 'todo': 'Send initial email', 'emailed': 'Follow up call', 'called': 'Follow-up with insight', 'meeting-scheduled': 'Prep demo', 'meeting-done': 'Send recap', 'declined': 'Log and move', 'closed': 'Onboard' };
     h += '<tr><td style="font-weight:600">' + sc(nm) + '<br><small style="color:var(--muted);font-weight:400">' + sc(an) + '</small></td>';
     h += '<td>' + sc(tr.assignedTo) + '</td>';
-    h += '<td><span class="status-dot ' + (tr.status || 'todo') + '"></span>' + (tr.status || 'todo').replace(/-/g, ' ') + '</td>';
-    h += '<td>' + ah + '</td>';
-    h += '<td style="font-size:12px;color:var(--muted)">' + (nx[tr.status] || 'Review') + '</td></tr>';
+    h += '<td><select onchange="upd(\'' + tr.id + '\',\'status\',this.value);renderActions();" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:4px 6px;color:var(--text);font-size:11px">';
+    var opts = ['todo','emailed','called','meeting-scheduled','meeting-done','declined','closed'];
+    for (var m = 0; m < opts.length; m++) h += '<option value="' + opts[m] + '"' + (tr.status === opts[m] ? ' selected' : '') + '>' + opts[m].replace(/-/g,' ') + '</option>';
+    h += '</select></td><td>' + ah + '</td>';
+    h += '<td style="font-size:12px;color:var(--muted)">' + (nxs[tr.status] || 'Review') + '</td></tr>';
   }
   document.getElementById('actionsRoot').innerHTML = h;
 }
 
-function getProsp() {
-  var r = localStorage.getItem(PK);
-  try { return JSON.parse(r) || []; } catch(e) { return []; }
-}
-
-function addProspect() {
-  var company = document.getElementById('psCompany').value.trim();
-  if (!company) return;
-  var p = getProsp();
-  p.push({ id: Date.now().toString(), company: company, contact: document.getElementById('psContact').value, type: document.getElementById('psType').value, detail: document.getElementById('psDetail').value });
-  sf(PK, p);
-  renderProspects();
-}
-
-function renderProspects() {
-  var p = getProsp();
-  if (p.length === 0) { document.getElementById('prospectsRoot').innerHTML = '<p style="color:var(--muted);font-size:13px">No prospects yet.</p>'; return; }
-  var h = '';
-  for (var i = 0; i < p.length; i++) {
-    h += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:8px">';
-    h += '<div style="font-weight:600;margin-bottom:4px">' + sc(p[i].company) + '</div>';
-    h += '<div style="font-size:12px;color:var(--accent);margin-bottom:4px">' + sc(p[i].type) + ' signal</div>';
-    h += '<div style="font-size:12px;color:var(--muted)">' + sc(p[i].detail) + '</div></div>';
+function toggleCreative() {
+  var sec = document.getElementById('creativeSection');
+  var btn = document.getElementById('styleToggle');
+  if (sec.style.display === 'none') {
+    sec.style.display = 'block';
+    btn.textContent = 'Switch to Standard';
+  } else {
+    sec.style.display = 'none';
+    btn.textContent = 'Switch to Creative';
   }
-  document.getElementById('prospectsRoot').innerHTML = h;
+}
+
+function initMessaging() {
+  var t = getT();
+  var sel = document.getElementById('msgAccount');
+  if (sel && sel.options.length === 0) {
+    for (var i = 0; i < t.length; i++) {
+      var opt = document.createElement('option');
+      opt.value = t[i].id;
+      opt.textContent = t[i].name;
+      sel.appendChild(opt);
+    }
+  }
 }
 
 function generateMessage() {
+  var isCreative = document.getElementById('creativeSection').style.display !== 'none';
+  if (isCreative) { generateCreative(); return; }
   var acct = document.getElementById('msgAccount').value;
   var d = null;
   for (var j = 0; j < DATA.length; j++) { if (DATA[j].id === acct) { d = DATA[j]; break; } }
@@ -492,32 +602,36 @@ function generateMessage() {
   var goal = document.getElementById('msgGoal').value;
   var pitchCat = document.getElementById('msgPitchCat').value;
   var company = d ? d.name : 'this company';
+  var ctx = document.getElementById('msgContext').value;
+  var ctx2 = document.getElementById('msgContext2').value;
   
-  var openers = {
-    reliability: 'I noticed you are running AI features that depend on model availability.',
-    security: 'Given the sensitive data flowing through your AI pipeline, I imagine governance is top of mind.',
-    cost: 'At your scale, every inference call adds up.',
-    platform: 'You have built a platform that others build on.'
-  };
-  
-  var bridges = {
-    reliability: 'OrcaRouter sits between your app and every LLM provider with intelligent fallback chains. Traffic auto-routes before users notice latency.',
-    security: 'PII Shield scans every prompt and response in real-time. Blocks secrets, PHI, and credentials before they hit the model.',
-    cost: 'OrcaRouter is a zero-markup passthrough. Route simple requests to cheaper models automatically.',
-    platform: 'OrcaRouter gives your users enterprise-grade model governance under your ecosystem.'
-  };
-  
-  var goals = {
-    meeting: 'Would you be open to a 15-minute call this week?',
-    demo: 'I would love to show you how OrcaRouter works in 20 minutes.',
-    intro: 'Would you be open to connecting me with your AI platform team?',
-    followup: 'Following up on my note from last week.'
-  };
-  
-  var msg = 'Hi ' + contactName + ',\n\n' + openers[pitchCat] + '\n\n' + bridges[pitchCat] + '\n\n' + goals[goal] + '\n\nBest,\n[Rep Name]\nFlashLabs - OrcaRouter';
+  var openers = { reliability: 'I noticed you are running AI features that depend on model availability - when a provider degrades, it directly impacts your users.', security: 'Given the sensitive data flowing through your AI pipeline, I imagine governance and compliance are top of mind.', cost: 'At your scale, every inference call adds up. I am curious how you are thinking about cost-to-serve.', platform: 'You have built a platform that others build on. I would love to talk about how OrcaRouter could complement your ecosystem.' };
+  var bridges = { reliability: 'OrcaRouter sits between your app and every LLM provider with intelligent fallback chains - traffic auto-routes before users notice latency. No single-provider risk.', security: 'PII Shield scans every prompt and response in real-time - blocks secrets, PHI, and credentials before they hit the model. Full audit trail. Deploy in your VPC.', cost: 'OrcaRouter is a zero-markup passthrough. We do not add margin to your inference bill. Route simple requests to cheaper models automatically. Same quality, lower cost.', platform: 'OrcaRouter gives your users enterprise-grade model governance under your ecosystem - PII Shield, compliance recipes, and cost-optimized routing.' };
+  var goals = { meeting: 'Would you be open to a 15-minute call this week to discuss?', demo: 'I would love to show you how OrcaRouter works in 20 minutes. Bring your toughest use case.', intro: 'Would you be open to connecting me with your team responsible for AI infrastructure?', followup: 'Following up on my note from last week - any thoughts?' };
+  var ct = ctx ? '\n\nI also saw that ' + ctx + ' - thought it was worth mentioning.' : '';
+  var msg = 'Hi ' + contactName + ',\n\n' + openers[pitchCat] + '\n\n' + bridges[pitchCat] + '\n\n' + goals[goal] + ct + '\n\nBest,\n[Rep Name]\nFlashLabs - OrcaRouter';
   
   document.getElementById('msgBody').textContent = msg;
   document.getElementById('msgOutput').style.display = 'block';
+}
+
+function generateCreative() {
+  var acct = document.getElementById('msgAccount').value;
+  var contactName = document.getElementById('msgContactName').value || 'there';
+  var approach = document.getElementById('creativeApproach').value;
+  var approachNames = { loom: 'Loom Video', datadrop: 'Data Drop', microsite: 'Micro-Site', gift: 'Physical Mailer', social: 'Social Proof', audit: 'Free Audit', event: 'Co-Marketing', meme: 'Humor/Meme', custom: 'Custom' };
+  var name = approachNames[approach] || 'Creative';
+  var msg = 'CREATIVE OUTREACH: ' + name + '\n\nTarget: ' + acct + '\nContact: ' + contactName + '\n\nThis is a creative outreach play. Adapt the concept to the specific account and execute with personality.';
+  document.getElementById('msgBody').textContent = msg;
+  document.getElementById('msgOutput').style.display = 'block';
+}
+
+function copyMsg() {
+  var text = document.getElementById('msgBody').textContent;
+  navigator.clipboard.writeText(text).then(function() {
+    document.getElementById('msgCopied').style.display = 'inline';
+    setTimeout(function() { document.getElementById('msgCopied').style.display = 'none'; }, 2000);
+  });
 }
 
 function renderDashboard() {
@@ -535,66 +649,49 @@ function renderDashboard() {
   document.getElementById('dashRoot').innerHTML = 
     '<div class="dash-card"><div class="dash-num">' + total + '</div><div class="dash-label">Total</div></div>' +
     '<div class="dash-card"><div class="dash-num">' + contacted + '</div><div class="dash-label">Contacted</div><div class="dash-sub">' + Math.round(contacted/total*100) + '%</div></div>' +
-    '<div class="dash-card"><div class="dash-num">' + meetings + '</div><div class="dash-label">Meetings</div></div>' +
+    '<div class="dash-card"><div class="dash-num">' + meetings + '</div><div class="dash-label">Meetings</div><div class="dash-sub">' + (contacted > 0 ? Math.round(meetings/contacted*100) : 0) + '% conv</div></div>' +
     '<div class="dash-card red"><div class="dash-num">' + declined + '</div><div class="dash-label">Declined</div></div>' +
-    '<div class="dash-card blue"><div class="dash-num">' + acts.length + '</div><div class="dash-label">Actions</div></div>';
+    '<div class="dash-card blue"><div class="dash-num">' + acts.length + '</div><div class="dash-label">Actions Logged</div></div>';
   
-  var w1 = 0, w2 = 0, w3 = 0, w4 = 0;
-  var c1 = 0, c2 = 0, c3 = 0, c4 = 0;
+  var wTotals = { W1: 0, W2: 0, W3: 0, W4: 0 };
+  var wDone = { W1: 0, W2: 0, W3: 0, W4: 0 };
   for (var i = 0; i < DATA.length; i++) {
-    if (DATA[i].wk === 'W1') w1++;
-    if (DATA[i].wk === 'W2') w2++;
-    if (DATA[i].wk === 'W3') w3++;
-    if (DATA[i].wk === 'W4') w4++;
-  }
-  for (var i = 0; i < DATA.length; i++) {
+    if (wTotals[DATA[i].wk] !== undefined) wTotals[DATA[i].wk]++;
     var tr = null;
     for (var j = 0; j < t.length; j++) { if (t[j].id === DATA[i].id) { tr = t[j]; break; } }
-    if (tr && tr.status !== 'todo') {
-      if (DATA[i].wk === 'W1') c1++;
-      if (DATA[i].wk === 'W2') c2++;
-      if (DATA[i].wk === 'W3') c3++;
-      if (DATA[i].wk === 'W4') c4++;
-    }
+    if (tr && tr.status !== 'todo' && wDone[DATA[i].wk] !== undefined) wDone[DATA[i].wk]++;
   }
+  var labels = { W1: 'W1 Hot', W2: 'W2 Hot+Warm', W3: 'W3 Warm', W4: 'W4 Cold' };
+  var colors = { W1: 'green', W2: 'orange', W3: 'blue', W4: '' };
+  var ws = ['W1','W2','W3','W4'];
+  var wh = '';
+  for (var m = 0; m < ws.length; m++) {
+    var wk = ws[m];
+    var pct = wTotals[wk] > 0 ? Math.round(wDone[wk]/wTotals[wk]*100) : 0;
+    wh += '<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>' + labels[wk] + '</span><span>' + wDone[wk] + '/' + wTotals[wk] + '</span></div><div class="progress-bar"><div class="fill ' + colors[wk] + '" style="width:' + pct + '%"></div></div></div>';
+  }
+  var funnelPct = contacted > 0 ? Math.round(meetings/contacted*100) : 0;
+  document.getElementById('statsRoot').innerHTML = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px"><div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px"><h4 style="font-size:13px;font-weight:600;margin-bottom:12px">Outreach by Week</h4>' + wh + '</div><div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px"><h4 style="font-size:13px;font-weight:600;margin-bottom:12px">Overall Funnel</h4><div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>Total</span><span>' + total + '</span></div></div><div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>Contacted</span><span>' + contacted + '</span></div><div class="progress-bar"><div class="fill green" style="width:' + (contacted/total*100) + '%"></div></div></div><div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>Meetings</span><span>' + meetings + '</span></div><div class="progress-bar"><div class="fill green" style="width:' + funnelPct + '%"></div></div></div><div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:12px;color:var(--muted)"><span>Declined</span><span>' + declined + '</span></div></div></div>';
   
-  document.getElementById('msgAnalysis').innerHTML = '<p style="color:var(--muted);font-size:13px">No pitches logged yet. Add pitch copy in Tracker to see analysis.</p>';
-  
-  document.getElementById('statsRoot').innerHTML =
-    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">' +
-    '<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px">' +
-    '<h4 style="font-size:13px;font-weight:600;margin-bottom:12px">Outreach by Week</h4>' +
-    '<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>W1 Hot</span><span>' + c1 + '/' + w1 + '</span></div><div class="progress-bar"><div class="fill green" style="width:' + (w1 > 0 ? c1/w1*100 : 0) + '%"></div></div></div>' +
-    '<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>W2 Hot+Warm</span><span>' + c2 + '/' + w2 + '</span></div><div class="progress-bar"><div class="fill orange" style="width:' + (w2 > 0 ? c2/w2*100 : 0) + '%"></div></div></div>' +
-    '<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>W3 Warm</span><span>' + c3 + '/' + w3 + '</span></div><div class="progress-bar"><div class="fill blue" style="width:' + (w3 > 0 ? c3/w3*100 : 0) + '%"></div></div></div>' +
-    '<div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>W4 Cold</span><span>' + c4 + '/' + w4 + '</span></div><div class="progress-bar"><div class="fill" style="width:' + (w4 > 0 ? c4/w4*100 : 0) + '%"></div></div></div>' +
-    '</div>' +
-    '<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px">' +
-    '<h4 style="font-size:13px;font-weight:600;margin-bottom:12px">Overall Funnel</h4>' +
-    '<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px"><span>Total</span><span>' + total + '</span></div></div>' +
-    '<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px"><span>Contacted</span><span>' + contacted + '</span></div><div class="progress-bar"><div class="fill green" style="width:' + (contacted/total*100) + '%"></div></div></div>' +
-    '<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px"><span>Meetings</span><span>' + meetings + '</span></div><div class="progress-bar"><div class="fill green" style="width:' + (contacted > 0 ? meetings/contacted*100 : 0) + '%"></div></div></div>' +
-    '</div></div>';
+  var l = JSON.parse(localStorage.getItem(LK) || '[]');
+  var lr = document.getElementById('learnRoot');
+  if (l.length === 0) lr.innerHTML = '<p style="color:var(--muted);font-size:13px">No learnings yet.</p>';
+  else lr.innerHTML = l.slice().reverse().map(function(x) { return '<div class="learn-entry"><span class="date">' + sc(x.date) + '</span><span class="acct-t">' + sc(x.acct) + '</span>' + sc(x.text) + '</div>'; }).join('');
 }
 
-// Init messaging dropdown
-(function() {
-  var t = getT();
-  var sel = document.getElementById('msgAccount');
-  if (sel) {
-    for (var i = 0; i < t.length; i++) {
-      var opt = document.createElement('option');
-      opt.value = t[i].id;
-      opt.textContent = t[i].name;
-      sel.appendChild(opt);
-    }
-  }
-})();
+function addLearn() {
+  var input = document.getElementById('li');
+  var acct = document.getElementById('la');
+  if (!input.value.trim()) return;
+  var l = JSON.parse(localStorage.getItem(LK) || '[]');
+  l.push({ date: new Date().toLocaleDateString(), text: input.value.trim(), acct: acct.value.trim() || 'general' });
+  localStorage.setItem(LK, JSON.stringify(l));
+  input.value = '';
+  acct.value = '';
+  renderDashboard();
+}
 
 renderAccounts();
-renderTracker();
-renderActions();
-renderProspects();
 </script>
 </body>
 </html>
