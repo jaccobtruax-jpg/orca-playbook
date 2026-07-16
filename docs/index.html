@@ -427,8 +427,8 @@ function renderAccounts() {
 
 function getTracker() {
   let t = JSON.parse(localStorage.getItem('orcaT') || '[]');
-  // If data is corrupt (wrong length or IDs don't match DATA), reinitialize
-  if(t.length===0 || t.length !== DATA.length || !t[0].hasOwnProperty('linkedinUrl')){
+  // Only reinitialize if completely empty or missing required fields
+  if(t.length===0 || !t[0].hasOwnProperty('linkedinUrl')){
     t = DATA.map(d => ({id:d.id,name:d.name,status:'todo',lastTouch:'',contactName:'',contactTitle:'',linkedinUrl:'',pitchUsed:'',pitchCategory:'',assignedTo:'',notes:'',linkedinProfileData:null}));
     localStorage.setItem('orcaT',JSON.stringify(t));
   }
