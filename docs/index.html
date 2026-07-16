@@ -7,76 +7,54 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 * { margin: 0; padding: 0; box-sizing: border-box; }
-:root {
-  --bg: #0a0a0f; --surface: #12121a; --surface2: #1a1a2e; --border: #2a2a44;
-  --text: #e8e8f0; --muted: #8888aa; --accent: #00d4aa;
-  --red: #ef4444; --orange: #f59e0b; --blue: #3b82f6; --green: #10b981; --purple: #8b5cf6;
-}
+:root { --bg: #0a0a0f; --surface: #12121a; --surface2: #1a1a2e; --border: #2a2a44; --text: #e8e8f0; --muted: #8888aa; --accent: #00d4aa; --red: #ef4444; --orange: #f59e0b; --blue: #3b82f6; --green: #10b981; }
 body { font-family: Inter, sans-serif; background: var(--bg); color: var(--text); }
-.hero { text-align: center; padding: 40px 20px 32px; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
-.hero::before { content: ''; position: absolute; top: -50%; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(0,212,170,0.06) 0%, transparent 70%); pointer-events: none; }
-.hero h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; }
+.hero { text-align: center; padding: 40px 20px 32px; border-bottom: 1px solid var(--border); }
+.hero h1 { font-size: 32px; font-weight: 800; }
 .hero h1 span { color: var(--accent); }
 .hero p { color: var(--muted); font-size: 14px; margin-top: 6px; }
-.hero-metrics { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
-.metric { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 16px; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+.hero-metrics { display: flex; justify-content: center; gap: 10px; margin-top: 16px; }
+.metric { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 16px; font-size: 13px; }
 .container { max-width: 1360px; margin: 0 auto; padding: 0 16px; }
-.controls { display: flex; gap: 8px; overflow-x: auto; padding: 16px 0; scrollbar-width: none; position: sticky; top: 0; z-index: 50; background: var(--bg); }
-.controls button { flex-shrink: 0; padding: 8px 18px; border-radius: 8px; border: 1px solid transparent; background: var(--surface); color: var(--muted); font-size: 12px; font-weight: 500; cursor: pointer; font-family: Inter; white-space: nowrap; }
+.controls { display: flex; gap: 8px; overflow-x: auto; padding: 16px 0; position: sticky; top: 0; z-index: 50; background: var(--bg); }
+.controls button { flex-shrink: 0; padding: 8px 18px; border-radius: 8px; border: 1px solid transparent; background: var(--surface); color: var(--muted); font-size: 12px; font-weight: 500; cursor: pointer; }
 .controls button:hover { border-color: var(--border); color: var(--text); }
 .controls button.active { background: var(--surface2); border-color: var(--accent); color: var(--accent); }
 .section { display: none; padding: 20px 0 40px; }
 .section.active { display: block; }
-h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-h2 small { font-size: 13px; color: var(--muted); font-weight: 400; }
-
-.acct-row { display: grid; grid-template-columns: 1fr 80px 80px 90px; gap: 6px; align-items: start; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 6px; cursor: pointer; transition: all 0.15s; }
+h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
+.acct-row { display: grid; grid-template-columns: 1fr 80px 80px 90px; gap: 6px; align-items: start; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 6px; cursor: pointer; }
 .acct-row:hover { border-color: rgba(255,255,255,0.1); }
 .acct-row.open { border-color: var(--accent); }
 .acct-tag { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 100px; }
 .tag-hot { background: rgba(239,68,68,0.15); color: var(--red); }
 .tag-warm { background: rgba(245,158,11,0.15); color: var(--orange); }
 .tag-cold { background: rgba(59,130,246,0.15); color: var(--blue); }
-.acct-row .left { display: flex; flex-direction: column; gap: 2px; }
-.acct-name { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-.acct-cluster { font-size: 10px; color: var(--muted); font-weight: 400; }
+.acct-name { font-size: 14px; font-weight: 600; }
+.acct-cluster { font-size: 10px; color: var(--muted); }
 .acct-angle { font-size: 11px; color: var(--accent); font-weight: 500; }
 .acct-detail { display: none; grid-column: 1 / -1; padding: 16px 0 8px; border-top: 1px solid var(--border); margin-top: 8px; }
 .acct-row.open .acct-detail { display: block; }
 .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-@media (max-width: 768px) { .detail-grid { grid-template-columns: 1fr; } }
 .detail-card { background: var(--surface2); border-radius: 8px; padding: 14px; }
-.detail-card h4 { font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 6px; }
+.detail-card h4 { font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; margin-bottom: 6px; }
 .detail-card p, .detail-card li { font-size: 12.5px; color: var(--muted); line-height: 1.6; list-style: none; }
-.detail-card li::before { content: '› '; color: var(--accent); }
-
-/* TRACKER CARDS */
-.tracker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
-.trk-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
-.trk-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; justify-content: space-between; }
+.trk-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 10px; }
+.trk-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
 .trk-card .meta { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
 .trk-card .field-group { margin-bottom: 8px; }
-.trk-card label { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; display: block; margin-bottom: 3px; }
-.trk-card select, .trk-card textarea, .trk-card input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; color: var(--text); font-size: 12px; font-family: Inter; }
+.trk-card label { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; display: block; margin-bottom: 3px; }
+.trk-card select, .trk-card textarea, .trk-card input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; color: var(--text); font-size: 12px; }
 .trk-card textarea { min-height: 44px; resize: vertical; }
 .trk-card .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.trk-card .enrich-btn { font-size: 10px; padding: 2px 8px; border-radius: 4px; background: var(--accent); color: #000; border: none; cursor: pointer; font-weight: 600; margin-left: 4px; }
-.trk-card .enrich-btn:hover { opacity: 0.8; }
-.trk-card .enrich-result { font-size: 11px; color: var(--accent); margin-top: 2px; }
-.trk-card .tag-pitch { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 4px; margin: 1px; }
-.tag-pitch.rel { background: rgba(59,130,246,0.15); color: var(--blue); }
-.tag-pitch.sec { background: rgba(139,92,246,0.15); color: var(--purple); }
-.tag-pitch.cost { background: rgba(16,185,129,0.15); color: var(--green); }
-.tag-pitch.comp { background: rgba(245,158,11,0.15); color: var(--orange); }
-
+.dash-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.dash-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; text-align: center; }
+.dash-card .dash-num { font-size: 28px; font-weight: 700; color: var(--accent); }
+.dash-card .dash-label { font-size: 11px; color: var(--muted); margin-top: 4px; }
 .actions-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-.actions-table th { text-align: left; padding: 10px 12px; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; border-bottom: 1px solid var(--border); }
-.actions-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
-.actions-table tr:hover td { background: rgba(255,255,255,0.02); }
-.actions-table .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
-.actions-table .action-item { display: flex; gap: 6px; align-items: flex-start; margin-bottom: 4px; font-size: 12px; color: var(--muted); }
-.actions-table .action-item .check { color: var(--accent); flex-shrink: 0; }
-.actions-table .action-item .date { color: var(--text); font-weight: 500; }
+.actions-table th { text-align: left; padding: 10px 12px; font-size: 11px; font-weight: 600; color: var(--muted); border-bottom: 1px solid var(--border); }
+.actions-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
 .status-dot.todo { background: var(--muted); }
 .status-dot.emailed { background: var(--blue); }
 .status-dot.called { background: var(--green); }
@@ -84,611 +62,216 @@ h2 small { font-size: 13px; color: var(--muted); font-weight: 400; }
 .status-dot.meeting-done { background: var(--accent); }
 .status-dot.declined { background: var(--red); }
 .status-dot.closed { background: var(--green); }
-
-.dash-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px; }
-.dash-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; text-align: center; }
-.dash-card .dash-num { font-size: 28px; font-weight: 700; color: var(--accent); }
-.dash-card .dash-label { font-size: 11px; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
-.dash-card .dash-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
-.dash-card.red .dash-num { color: var(--red); }
-.dash-card.orange .dash-num { color: var(--orange); }
-.dash-card.blue .dash-num { color: var(--blue); }
-.progress-bar { height: 6px; border-radius: 3px; background: var(--surface2); margin-top: 8px; overflow: hidden; }
-.progress-bar .fill { height: 100%; border-radius: 3px; transition: width 0.5s; }
-.fill.green { background: var(--green); }
-.fill.orange { background: var(--orange); }
-.fill.red { background: var(--red); }
-.fill.blue { background: var(--blue); }
-
-.msg-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 8px; }
-.msg-card .msg-pitch { font-size: 12px; color: var(--text); margin-bottom: 4px; font-style: italic; }
-.msg-card .msg-meta { font-size: 11px; color: var(--muted); }
-.msg-card .msg-result { font-size: 11px; display: inline-block; padding: 2px 8px; border-radius: 4px; margin-top: 4px; }
-.msg-result.worked { background: rgba(16,185,129,0.15); color: var(--green); }
-.msg-result.no { background: rgba(239,68,68,0.15); color: var(--red); }
-.msg-result.pending { background: rgba(245,158,11,0.15); color: var(--orange); }
-
-.learn-entry { padding: 8px 12px; background: var(--surface2); border-radius: 6px; margin-bottom: 6px; font-size: 12px; color: var(--muted); line-height: 1.5; }
-.learn-entry .date { color: var(--accent); font-weight: 500; }
-.learn-entry .acct-t { font-size: 10px; padding: 1px 6px; border-radius: 4px; background: rgba(0,212,170,0.1); color: var(--accent); margin-right: 4px; }
-
-.btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 6px 14px; color: var(--text); font-size: 12px; cursor: pointer; font-family: Inter; }
+.btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 6px 14px; color: var(--text); font-size: 12px; cursor: pointer; }
 .btn:hover { border-color: var(--accent); }
-.btn-sm { padding: 4px 10px; font-size: 10px; }
 .footer { text-align: center; padding: 32px 16px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--border); }
-.actions-wrap { overflow-x: auto; }
 </style>
 </head>
 <body>
 
 <div class="hero">
   <h1>OrcaRouter <span>Outreach Playbook</span></h1>
-  <p>20 accounts · Track contacts, messages & LinkedIn · Analyze what works</p>
+  <p>20 accounts - Track contacts, messages and LinkedIn</p>
   <div class="hero-metrics">
-    <span class="metric">🔥 8 Hot</span>
-    <span class="metric">🟡 10 Warm</span>
-    <span class="metric">🔵 2 Cold</span>
-    <span class="metric">4 Clusters</span>
+    <span class="metric">8 Hot</span>
+    <span class="metric">10 Warm</span>
+    <span class="metric">2 Cold</span>
   </div>
 </div>
 
 <div class="container">
 <div class="controls">
-  <button class="active" data-tab="accounts">📋 Accounts</button>
-  <button data-tab="tracker">📊 Tracker + Contacts</button>
-  <button data-tab="actions">📝 Actions</button>
-  <button data-tab="prospects">🎯 Prospects</button>
-  <button data-tab="messaging">✍️ Messaging Assistant</button>
-  <button data-tab="learn">📈 Dashboard</button>
+  <button class="active">Accounts</button>
+  <button onclick="switchTab('tracker')">Tracker</button>
+  <button onclick="switchTab('actions')">Actions</button>
+  <button onclick="switchTab('prospects')">Prospects</button>
+  <button onclick="switchTab('messaging')">Messaging</button>
 </div>
 
-<div class="section active" id="tab-accounts">
-  <div style="display:grid;grid-template-columns:1fr 80px 80px 90px;gap:6px;padding:8px 16px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;margin-bottom:4px">
-    <span>Account & Angle <span style="font-weight:400;color:var(--muted)">(click to expand)</span></span><span>Priority</span><span>Week</span><span>Touch</span>
-  </div>
+<div id="tab-accounts" class="section active">
   <div id="accountsRoot"></div>
 </div>
-
-<div class="section" id="tab-tracker">
-  <h2>📊 Tracker & Contacts <small>Contact info, LinkedIn, pitch used</small></h2>
+<div id="tab-tracker" class="section">
+  <h2>Tracker and Contacts</h2>
   <div id="trackerRoot"></div>
 </div>
-
-<div class="section" id="tab-actions">
-  <h2>📝 Actions Per Account <small>From tracker status + manual log</small></h2>
-  <div class="actions-wrap">
-    <table class="actions-table">
-      <thead><tr><th style="width:140px">Account</th><th style="width:70px">AE</th><th style="width:90px">Status</th><th>Actions Taken</th><th style="width:160px">Next Action</th></tr></thead>
-      <tbody id="actionsRoot"></tbody>
-    </table>
-  </div>
-  <h2 style="margin-top:28px">✏️ Log an Action</h2>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:10px">
-    <div style="flex:1;min-width:160px">
-      <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px">Account</label>
-      <select id="actAcct" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px;font-family:Inter"></select>
-    </div>
-    <div style="flex:1;min-width:140px">
-      <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px">Type</label>
-      <select id="actType" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px;font-family:Inter">
-        <option value="emailed">📧 Emailed</option><option value="called">📞 Called</option>
-        <option value="linkedin">💼 LinkedIn message</option><option value="demo">🎤 Demo given</option>
-        <option value="followup">📬 Followed up</option><option value="meeting">🗓️ Meeting booked</option>
-        <option value="declined">❌ Declined</option><option value="other">📝 Other</option>
-      </select>
-    </div>
-    <div style="flex:1;min-width:140px">
-      <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px">Contact Name</label>
-      <input id="actContact" placeholder="e.g. Jane Smith" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px;font-family:Inter">
-    </div>
-    <div style="flex:2;min-width:200px">
-      <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px">Details</label>
-      <input id="actDetail" placeholder="e.g. VP Eng replied 'send docs'" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px;font-family:Inter">
-    </div>
-    <button class="btn" onclick="logAction()" style="margin-top:12px">+ Log</button>
-  </div>
+<div id="tab-actions" class="section">
+  <h2>Actions</h2>
+  <div id="actionsRoot"></div>
 </div>
-
-<div class="section" id="tab-prospects">
-  <h2>🎯 Prospect Signals <small>Scraped intent signals & new leads</small></h2>
-  
-  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:20px">
-    <div style="flex:1;min-width:150px">
-      <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:3px">Company</label>
-      <input id="psCompany" placeholder="e.g. Acme AI" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;font-family:Inter">
-    </div>
-    <div style="flex:1;min-width:150px">
-      <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:3px">Contact</label>
-      <input id="psContact" placeholder="Name / Title" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;font-family:Inter">
-    </div>
-    <div style="flex:1;min-width:120px">
-      <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:3px">Signal Type</label>
-      <select id="psType" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;font-family:Inter">
-        <option value="hiring">📡 Hiring signal</option>
-        <option value="product">🚀 Product launch</option>
-        <option value="funding">💰 Funding round</option>
-        <option value="outage">⚠️ Provider outage</option>
-        <option value="partnership">🤝 New partnership</option>
-        <option value="content">📝 Blog/post mention</option>
-        <option value="job">💼 Job posting</option>
-        <option value="other">📌 Other</option>
-      </select>
-    </div>
-    <div style="flex:2;min-width:200px">
-      <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:3px">Signal Detail / Context</label>
-      <input id="psDetail" placeholder="e.g. 'Hiring 3 AI infra engineers - multi-model routing experience required'" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;font-family:Inter">
-    </div>
-    <button class="btn" onclick="addProspect()" style="margin-top:14px">+ Save Signal</button>
-  </div>
-
-  <div style="margin-bottom:16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px">
-    <span style="font-size:12px;color:var(--muted)">🤖 <strong>OrcaRouter Signal Scout</strong> runs daily at 8 AM — finds hiring signals, news, funding, outages, and job posts matching OrcaRouter fit.</span>
-    <button class="btn" onclick="importFromSheet()" style="background:rgba(0,212,170,0.1);border-color:var(--accent);color:var(--accent);font-size:11px">📥 Import from Scout Sheet</button>
-    <button class="btn" onclick="importFromJSON()" style="background:rgba(16,185,129,0.15);border-color:var(--green);color:var(--green);font-size:11px">📄 Import signals.json ✓</button>
-    <button class="btn" onclick="clearProspects()" style="background:rgba(239,68,68,0.1);border-color:var(--red);color:var(--red);font-size:11px">🗑️ Clear All</button>
-    <a href="https://docs.google.com/spreadsheets/d/1plfEWmbqh1GcO35XHra4T3_rA6RzOyLd3SfzcX4xOQg/edit" target="_blank" style="font-size:11px;color:var(--blue)">Open Sheet →</a>
-  </div>
-
+<div id="tab-prospects" class="section">
+  <h2>Prospect Signals</h2>
   <div id="prospectsRoot"></div>
 </div>
-
-<div class="section" id="tab-messaging">
-  <h2>✍️ Messaging Assistant <small>Craft tailored outreach aligned with Straight Line Selling</small></h2>
-
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
-    <!-- CONTACT SELECTOR -->
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px">
-      <h3 style="font-size:15px;font-weight:600;margin-bottom:14px">👤 Select Contact</h3>
-      <div class="field-group" style="margin-bottom:10px">
-        <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:3px">Choose Account</label>
-        <select id="msgAccount" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px;font-family:Inter"></select>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
-        <div class="field-group">
-          <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:3px">👤 Contact Name</label>
-          <input id="msgContactName" placeholder="Auto-fills from tracker" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;font-family:Inter">
-        </div>
-        <div class="field-group">
-          <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:3px">💼 Title</label>
-          <input id="msgContactTitle" placeholder="Auto-fills from tracker" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;font-family:Inter">
-        </div>
-      </div>
-      <div class="field-group" style="margin-bottom:10px">
-        <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:3px">🔗 LinkedIn URL</label>
-        <input id="msgLinkedIn" placeholder="Auto-fills from tracker" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;font-family:Inter">
-      </div>
-      <div class="field-group" style="margin-bottom:10px">
-        <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:3px">📝 Additional Context About Contact</label>
-        <textarea id="msgContext" placeholder="Recent post they made, thing they said, shared connection, anything relevant..." style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;font-family:Inter;min-height:50px;resize:vertical"></textarea>
-      </div>
-    </div>
-
-    <!-- CHANNEL + GOAL -->
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px">
-      <h3 style="font-size:15px;font-weight:600;margin-bottom:14px">📡 Channel & Objective</h3>
-      <div class="field-group" style="margin-bottom:12px">
-        <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:3px">Channel</label>
-        <select id="msgChannel" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px;font-family:Inter">
-          <option value="email">📧 Email</option>
-          <option value="linkedin">💼 LinkedIn Message</option>
-          <option value="call">📞 Phone Call</option>
-          <option value="inmail">📨 LinkedIn InMail</option>
-        </select>
-      </div>
-      <div class="field-group" style="margin-bottom:12px">
-        <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:3px">🎯 Objective</label>
-        <select id="msgGoal" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px;font-family:Inter">
-          <option value="meeting">🗓️ Book a meeting</option>
-          <option value="demo">🎤 Schedule a demo</option>
-          <option value="intro">🤝 Get an intro</option>
-          <option value="info">📋 Gather information</option>
-          <option value="followup">📬 Follow up</option>
-        </select>
-      </div>
-      <div class="field-group" style="margin-bottom:12px">
-        <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:3px">🏷️ Pitch Category</label>
-        <select id="msgPitchCat" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px;font-family:Inter">
-          <option value="reliability">🔗 Reliability / Fallback</option>
-          <option value="security">🛡️ Security / Compliance</option>
-          <option value="cost">💰 Cost Optimization</option>
-          <option value="platform">🏗️ Platform Play</option>
-        </select>
-      </div>
-      <div class="field-group" style="margin-bottom:10px">
-        <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:3px">📄 Company Context / Use Case</label>
-        <textarea id="msgContext2" placeholder="What do they do? What AI features do they ship? Any relevant news or signals?" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;font-family:Inter;min-height:70px;resize:vertical"></textarea>
-      </div>
-    </div>
-  </div>
-
-  <!-- CREATIVE OUTREACH TOGGLE -->
-  <div style="display:flex;align-items:center;gap:12px;padding:14px 20px;background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:20px">
-    <span style="font-size:12px;font-weight:600;color:var(--text)">💡 Outreach Style</span>
-    <button id="styleToggle" class="btn" onclick="toggleOutreachStyle()" style="background:rgba(0,212,170,0.1);border-color:var(--accent);color:var(--accent);font-size:11px">Switch to Creative</button>
-    <span style="font-size:11px;color:var(--muted)">Standard template → <strong>Creative / outside-the-box</strong></span>
-  </div>
-
-  <!-- CREATIVE SECTION (hidden by default) -->
-  <div id="creativeSection" style="display:none;background:var(--surface);border:1px solid var(--accent);border-radius:12px;padding:20px;margin-bottom:20px">
-    <h3 style="font-size:15px;font-weight:600;margin-bottom:14px">🚀 Creative Outreach Playbook</h3>
-    <p style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6">The standard template works for volume, but <strong>creative plays win the enterprise.</strong> Pick a proven approach below — we'll generate the full outreach concept, messaging, and assets list. <span style="color:var(--accent);font-weight:500">Examples from real sales: Loom videos of candidate lists, personalized data drops, "we built this for you" micro-apps, physical mailers.</span></p>
-    
-    <div class="field-group" style="margin-bottom:14px">
-      <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:4px">🎯 Choose Your Creative Approach</label>
-      <select id="creativeApproach" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px;font-family:Inter">
-        <option value="loom">🎥 Loom Video — Personalized walkthrough or insight drop</option>
-        <option value="datadrop">📊 Data Drop — Share a relevant dataset or benchmark</option>
-        <option value="microsite">🌐 Micro-Site — Build a 1-page site just for their team</option>
-        <option value="gift">🎁 Physical Mailer — Send something memorable</option>
-        <option value="social">💬 Social Proof Bomb — Curated customer wins in their space</option>
-        <option value="audit">🔍 Free Audit — "We analyzed your AI stack, here's what we found"</option>
-        <option value="event">🎪 Co-Marketing — Propose a joint webinar or white paper</option>
-        <option value="meme">😂 Humor / Meme — Break through with personality</option>
-        <option value="custom">✨ Custom — Describe your own creative idea</option>
-      </select>
-    </div>
-
-    <div class="field-group" style="margin-bottom:14px">
-      <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:4px">💭 Describe Your Creative Idea (optional — skip for templates)</label>
-      <textarea id="creativeIdea" placeholder="e.g. 'Send a Loom showing their Claude API spending vs what it would be with OrcaRouter — then offer to do a full cost audit live on a call'" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;font-family:Inter;min-height:50px;resize:vertical"></textarea>
-    </div>
-
-    <div class="field-group" style="margin-bottom:10px">
-      <label style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:4px">📦 What do you have to work with? (data, tools, budget, team)</label>
-      <textarea id="creativeAssets" placeholder="e.g. 'Can build a Loom, have access to public API pricing data, graphic designer available, $200 gift budget per account'" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;font-family:Inter;min-height:40px;resize:vertical"></textarea>
-    </div>
-  </div>
-
-  <!-- GENERATE BUTTON -->
-  <div style="text-align:center;margin-bottom:20px">
-    <button id="msgGenerateBtn" class="btn" onclick="generateMessage()" style="padding:10px 32px;font-size:14px;background:rgba(0,212,170,0.1);border-color:var(--accent);color:var(--accent)">✨ Generate Outreach Message</button>
-  </div>
-
-  <!-- OUTPUT -->
-  <div id="msgOutput" style="display:none">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <h2>📬 Generated Message</h2>
-      <button class="btn" onclick="copyMessage()" style="background:rgba(59,130,246,0.15);border-color:var(--blue);color:var(--blue);font-size:11px">📋 Copy to Clipboard</button>
-    </div>
-    <div style="background:var(--surface);border:1px solid var(--accent);border-radius:12px;padding:24px;line-height:1.8;font-size:14px">
-      <div id="msgBody" style="color:var(--text);white-space:pre-wrap"></div>
-    </div>
-    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn" onclick="regenerate()" style="background:rgba(0,212,170,0.05);border-color:var(--border);font-size:11px">🔄 Regenerate</button>
-      <button class="btn" onclick="copyToTracker()" style="background:rgba(16,185,129,0.1);border-color:var(--green);color:var(--green);font-size:11px">💾 Copy to Tracker Notes</button>
-      <span id="msgCopied" style="font-size:12px;color:var(--accent);display:none">✅ Copied!</span>
-    </div>
-  </div>
-</div>
-
-<div class="section" id="tab-learn">
-  <h2>📈 Outreach Dashboard</h2>
-  <div id="dashRoot" class="dash-grid"></div>
-  <h2>📊 Messaging Analysis</h2>
-  <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Based on pitches logged in Tracker → Notes — what's working?</p>
-  <div id="msgAnalysis"></div>
-  <h2 style="margin-top:24px">📅 Weekly Progress</h2>
-  <div id="statsRoot"></div>
-  <h2 style="margin-top:24px">🧠 Learning Log</h2>
-  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
-    <input id="li" placeholder="What did you learn?" style="flex:1;min-width:200px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--text);font-size:13px;font-family:Inter">
-    <input id="la" placeholder="Account" style="width:130px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--text);font-size:13px;font-family:Inter">
-    <button class="btn" onclick="addLearn()">Save</button>
-  </div>
-  <div id="learnRoot"><p style="color:var(--muted);font-size:13px">No learnings yet.</p></div>
+<div id="tab-messaging" class="section">
+  <h2>Messaging Assistant</h2>
+  <p style="color:var(--muted);font-size:13px">Coming soon</p>
 </div>
 </div>
-<div class="footer">OrcaRouter Outreach Playbook · FlashLabs · July 2026</div>
+
+<div class="footer">OrcaRouter Outreach Playbook - FlashLabs - July 2026</div>
 
 <script>
-const DATA = [
-{id:'sourcegraph',name:'Sourcegraph',cl:'C1: Code',prio:'hot',wk:'W1',tch:'Email→Call',angle:'Tool-call firewall for Cody',targets:'Head of Product, Cody · CTO · VP Eng',signal:'Pure enterprise ($59/seat, SOC2). BYO model on Enterprise tier.',msg:'Cody runs multi-model with code-exec tool access. OrcaRouter tool-call firewall blocks secrets before they hit the LLM.',notes:'Reference their published blog content.'},
-{id:'replit',name:'Replit',cl:'C1: Code',prio:'hot',wk:'W1',tch:'Call+Email',angle:'Claude single-provider → fallback',targets:'VP Eng · Head of AI Platform · CTO',signal:'9 AI/ML roles open. Agent 4 uses Claude Sonnet 4.5 exclusively.',msg:'"Replit Agent runs on Claude exclusively. When Claude degrades, every session breaks. OrcaRouter adds invisible fallback chains."',notes:'Highest urgency. Call then email same day.'},
-{id:'cursor',name:'Cursor',cl:'C1: Code',prio:'hot',wk:'W2',tch:'Email',angle:'PII leak risk + Claude fallback',targets:'CTO · VP Eng',signal:'Claude enterprise customer. File system access = PII leak risk.',msg:'"Cursor access to local files = PII leak risk. OrcaRouter tool-call firewall blocks secrets before they hit the LLM."',notes:'Same play as Replit.'},
-{id:'codeium',name:'Codeium',cl:'C1: Code',prio:'warm',wk:'W2',tch:'Email',angle:'Zero-markup for high-volume API',targets:'CEO · CTO · Head of Engineering',signal:'Millions of calls/day. Uses own small model + frontier APIs.',msg:'"Every marked-up API call is lost margin. OrcaRouter passes through at provider cost. No markup."',notes:'Clear cost play.'},
-{id:'notion',name:'Notion 🔥',cl:'C2: Enterprise AI',prio:'hot',wk:'W2',tch:'Call→Email',angle:'June 7 outage — manual failover',targets:'Head of AI · VP Eng · CTO',signal:'June 7: Opus 4.7 degraded. Notion manually disabled ALL Claude models.',msg:'"June 7 — you manually disabled every Claude model. Next time, OrcaRouter auto-fails over before users notice."',notes:'Freshest pain on the list.'},
-{id:'intercom',name:'Intercom',cl:'C2: Enterprise AI',prio:'hot',wk:'W1',tch:'Call→Email',angle:'Cost optimization for Fin + PII',targets:'VP AI/ML · CTO · Head of Fin',signal:'6,000+ customers, $0.99/resolution. Every resolution = expensive tokens.',msg:'"Route simple tickets to Haiku/GPT-4o-mini — save 40-60% on inference. PII Shield keeps it safe."',notes:'Lead with cost savings.'},
-{id:'gitlab',name:'GitLab',cl:'C2: Enterprise AI',prio:'hot',wk:'W2',tch:'Email',angle:'Secrets in code prompts + SOC2',targets:'VP Product, AI · CTO · Head of Duo',signal:'Own AI Gateway + Vertex AI. Secrets Manager in beta.',msg:'"Enterprise code = secrets in prompts. OrcaRouter guardrails block secrets before they hit the model."',notes:'SOC2 recipe play.'},
-{id:'box',name:'Box',cl:'C2: Enterprise AI',prio:'hot',wk:'W1',tch:'Email→Call',angle:'HIPAA + PII Shield for Box AI',targets:'VP Product, AI · CISO · CTO',signal:'Box AI processes documents with PHI/PII. Claude enterprise customer.',msg:'"PHI hitting the LLM = compliance event. PII Shield scans every prompt — blocks, redacts, logs."',notes:'Lead with compliance.'},
-{id:'figma',name:'Figma',cl:'C2: Enterprise AI',prio:'warm',wk:'W3',tch:'LinkedIn→Email',angle:'Cost routing for design-to-code',targets:'CTO · VP Eng · Head of AI',signal:'Design-to-code = expensive compute. AI features on frontier models.',msg:'"Route simple gen tasks to cheaper models, keep frontier for complex. Half the inference bill."',notes:'IP protection is secondary.'},
-{id:'benchling',name:'Benchling',cl:'C3: Regulated',prio:'warm',wk:'W3',tch:'Email→LinkedIn',angle:'PHI on top of Anthropic partnership',targets:'VP Product · CTO · Head of AI',signal:'Anthropic partnership (Claude for Life Sciences). Very regulated.',msg:'"Anthropic gives the model. Who handles governance for multi-lab workflows? OrcaRouter adds PII Shield."',notes:'Complement Anthropic.'},
-{id:'plaid',name:'Plaid',cl:'C3: Regulated',prio:'warm',wk:'W3',tch:'Email',angle:'Financial data in LLM prompts',targets:'CTO · VP Product · Head of AI',signal:'Financial data in LLM prompts. Finance-grade compliance recipe + PII Shield.',msg:'"Financial data in prompts = leak risk. OrcaRouter PII Shield redacts sensitive data in real-time."',notes:'Finance-grade compliance.'},
-{id:'hashicorp',name:'HashiCorp',cl:'C4: Infra',prio:'warm',wk:'W2',tch:'Email',angle:'Tool-call governance for IaC',targets:'CTO · VP Product · Head of AI',signal:'IaC generation = terraform apply is a tool call that can destroy infra.',msg:'"IaC generation is powerful — until a hallucinated apply destroys infra. OrcaRouter firewall reviews every call."',notes:'Firewall non-negotiable.'},
-{id:'grafana',name:'Grafana',cl:'C4: Infra',prio:'warm',wk:'W3',tch:'Email',angle:'PII in query logs',targets:'VP Product · CTO · Head of AI',signal:'PII in logs is known. Sift AI product live.',msg:'"Observability data → LLMs = PII in prompts. OrcaRouter PII Shield blocks it before the model."',notes:'Natural integration.'},
-{id:'temporal',name:'Temporal',cl:'C4: Infra',prio:'warm',wk:'W3',tch:'Email→Call',angle:'Durability + routing = complete stack',targets:'CTO · Head of Product · VP Eng',signal:'Agents need reliable model access. Temporal = durability. OrcaRouter = routing.',msg:'"You handle durability. We handle model availability + cost. Together: agents that never fail."',notes:'Clear complement.'},
-{id:'databricks',name:'Databricks',cl:'C4: Infra',prio:'warm',wk:'W2',tch:'Email→LinkedIn',angle:'Zero-markup for customer models',targets:'VP AI/ML · GM, AI Products · Head of Mosaic AI',signal:'Serves thousands through Mosaic AI Gateway. Massive inference volume.',msg:'"Your customers pay marked-up inference. OrcaRouter gives zero-markup under your management."',notes:'Complement Mosaic AI.'},
-{id:'confluent',name:'Confluent',cl:'C4: Infra',prio:'warm',wk:'W3',tch:'Email',angle:'Guardrails for Kafka→LLM',targets:'VP Product, AI · CTO · Head of AI/ML',signal:'Kafka-scale streaming. AI features on streaming data.',msg:'"Streaming data → LLM = PII at scale. OrcaRouter adds guardrails between pipelines and providers."',notes:'Integration pitch.'},
-{id:'launchdarkly',name:'LaunchDarkly',cl:'C4: Infra',prio:'warm',wk:'W3',tch:'Email',angle:'Multi-model A/B testing',targets:'CTO · VP Product · Head of AI/ML',signal:'AI experimentation = multi-model testing. They toggle features.',msg:'"You toggle features. We toggle models. A/B test GPT-5 vs Opus with guardrails."',notes:'Synergy play.'},
-{id:'sentry',name:'Sentry',cl:'C4: Infra',prio:'warm',wk:'W3',tch:'Email',angle:'PII Shield for AI debugging',targets:'CTO · VP Product · Head of AI',signal:'Error traces contain PII/tokens. Sending to LLMs = leak risk.',msg:'"Error traces have secrets. When AI debugging hits an LLM, that data goes. OrcaRouter PII Shield protects it."',notes:'Clean fit.'},
-{id:'cockroach',name:'Cockroach Labs',cl:'C4: Infra',prio:'cold',wk:'W4',tch:'Email',angle:'Tool-call for AI SQL',targets:'CTO · VP Product',signal:'AI SQL generation = tool-call security needed.',msg:'"AI SQL is powerful — until a hallucinated DROP TABLE. OrcaRouter firewall reviews every query."',notes:'Low priority.'},
-{id:'twilio',name:'Twilio Segment',cl:'C4: Infra',prio:'cold',wk:'W4',tch:'Email',angle:'Enterprise guardrails for CDP',targets:'VP Product · CTO',signal:'CDP data → LLM = PII risk. Large enterprise customer base.',msg:'"CDP data is full of PII. OrcaRouter PII Shield ensures that data never hits the model unredacted."',notes:'Low priority, parent too large.'},
+var DATA = [
+{id:'replit',name:'Replit',cl:'C1: Code',prio:'hot',wk:'W1',tch:'Call+Email',angle:'Claude single-provider to fallback',targets:'VP Eng, Head of AI Platform, CTO',signal:'9 AI/ML roles open. Agent 4 uses Claude Sonnet 4.5 exclusively.',msg:'Replit Agent runs on Claude exclusively. When Claude degrades, every session breaks. OrcaRouter adds invisible fallback chains.',notes:'Highest urgency'},
+{id:'sourcegraph',name:'Sourcegraph',cl:'C1: Code',prio:'hot',wk:'W1',tch:'Email to Call',angle:'Tool-call firewall for Cody',targets:'Head of Product Cody, CTO, VP Eng',signal:'Pure enterprise ($59/seat, SOC2). BYO model on Enterprise tier.',msg:'Cody runs multi-model with code-exec tool access. OrcaRouter tool-call firewall blocks secrets before they hit the LLM.',notes:'Reference their published blog content'},
+{id:'notion',name:'Notion',cl:'C2: Enterprise AI',prio:'hot',wk:'W2',tch:'Call to Email',angle:'June 7 outage - manual failover',targets:'Head of AI, VP Eng, CTO',signal:'June 7: Opus 4.7 degraded. Notion manually disabled ALL Claude models.',msg:'June 7 - you manually disabled every Claude model. Next time OrcaRouter auto-fails over before users notice.',notes:'Freshest pain on the list'},
+{id:'box',name:'Box',cl:'C2: Enterprise AI',prio:'hot',wk:'W1',tch:'Email to Call',angle:'HIPAA and PII Shield for Box AI',targets:'VP Product AI, CISO, CTO',signal:'Box AI processes documents with PHI/PII. Claude enterprise customer.',msg:'PHI hitting the LLM is a compliance event. PII Shield scans every prompt - blocks, redacts, logs.',notes:'Lead with compliance'},
+{id:'intercom',name:'Intercom',cl:'C2: Enterprise AI',prio:'hot',wk:'W1',tch:'Call to Email',angle:'Cost optimization for Fin and PII',targets:'VP AI/ML, CTO, Head of Fin',signal:'6,000+ customers. $0.99/resolution. Every resolution is expensive tokens.',msg:'Route simple tickets to Haiku/GPT-4o-mini - save 40-60% on inference. PII Shield keeps it safe.',notes:'Lead with cost savings'},
+{id:'cursor',name:'Cursor',cl:'C1: Code',prio:'hot',wk:'W2',tch:'Email',angle:'PII leak risk and Claude fallback',targets:'CTO, VP Eng',signal:'Claude enterprise customer. File system access equals PII leak risk.',msg:'Cursor access to local files equals PII leak risk. OrcaRouter tool-call firewall blocks secrets.',notes:'Same play as Replit'},
+{id:'gitlab',name:'GitLab',cl:'C2: Enterprise AI',prio:'hot',wk:'W2',tch:'Email',angle:'Secrets in code prompts and SOC2',targets:'VP Product AI, CTO, Head of Duo',signal:'Own AI Gateway and Vertex AI. Secrets Manager in beta.',msg:'Enterprise code equals secrets in prompts. OrcaRouter guardrails block secrets before they hit the model.',notes:'SOC2 recipe play'},
+{id:'codeium',name:'Codeium',cl:'C1: Code',prio:'warm',wk:'W2',tch:'Email',angle:'Zero-markup for high-volume API',targets:'CEO, CTO, Head of Engineering',signal:'Millions of calls/day. Uses own small model and frontier APIs.',msg:'Every marked-up API call is lost margin. OrcaRouter passes through at provider cost. No markup.',notes:'Clear cost play'},
+{id:'databricks',name:'Databricks',cl:'C4: Infra',prio:'warm',wk:'W2',tch:'Email to LinkedIn',angle:'Zero-markup for customer models',targets:'VP AI/ML, GM AI Products, Head of Mosaic AI',signal:'Serves thousands through Mosaic AI Gateway. Massive inference volume.',msg:'Your customers pay marked-up inference. OrcaRouter gives zero-markup under your management.',notes:'Complement Mosaic AI'},
+{id:'hashicorp',name:'HashiCorp',cl:'C4: Infra',prio:'warm',wk:'W2',tch:'Email',angle:'Tool-call governance for IaC',targets:'CTO, VP Product, Head of AI',signal:'IaC generation equals terraform apply is a tool call that can destroy infra.',msg:'IaC generation is powerful until a hallucinated apply destroys infra. OrcaRouter firewall reviews every call.',notes:'Firewall non-negotiable'},
+{id:'temporal',name:'Temporal',cl:'C4: Infra',prio:'warm',wk:'W3',tch:'Email to Call',angle:'Durability plus routing',targets:'CTO, Head of Product, VP Eng',signal:'Agents need reliable model access. Temporal equals durability. OrcaRouter equals routing.',msg:'You handle durability. We handle model availability plus cost. Together: agents that never fail.',notes:'Clear complement'},
+{id:'grafana',name:'Grafana',cl:'C4: Infra',prio:'warm',wk:'W3',tch:'Email',angle:'PII in query logs',targets:'VP Product, CTO, Head of AI',signal:'PII in logs is known. Sift AI product live.',msg:'Observability data to LLMs equals PII in prompts. OrcaRouter PII Shield blocks it before the model.',notes:'Natural integration'},
+{id:'confluent',name:'Confluent',cl:'C4: Infra',prio:'warm',wk:'W3',tch:'Email',angle:'Guardrails for Kafka to LLM',targets:'VP Product AI, CTO, Head of AI/ML',signal:'Kafka-scale streaming. AI features on streaming data.',msg:'Streaming data to LLM equals PII at scale. OrcaRouter adds guardrails between pipelines and providers.',notes:'Integration pitch'},
+{id:'launchdarkly',name:'LaunchDarkly',cl:'C4: Infra',prio:'warm',wk:'W3',tch:'Email',angle:'Multi-model A/B testing',targets:'CTO, VP Product, Head of AI/ML',signal:'AI experimentation equals multi-model testing. They toggle features.',msg:'You toggle features. We toggle models. A/B test GPT-5 vs Opus with guardrails.',notes:'Synergy play'},
+{id:'sentry',name:'Sentry',cl:'C4: Infra',prio:'warm',wk:'W3',tch:'Email',angle:'PII Shield for AI debugging',targets:'CTO, VP Product, Head of AI',signal:'Error traces contain PII/tokens. Sending to LLMs equals leak risk.',msg:'Error traces have secrets. When AI debugging hits an LLM that data goes. OrcaRouter PII Shield protects it.',notes:'Clean fit'},
+{id:'figma',name:'Figma',cl:'C2: Enterprise AI',prio:'warm',wk:'W3',tch:'LinkedIn to Email',angle:'Cost routing for design-to-code',targets:'CTO, VP Eng, Head of AI',signal:'Design-to-code equals expensive compute. AI features on frontier models.',msg:'Route simple gen tasks to cheaper models keep frontier for complex. Half the inference bill.',notes:'IP protection is secondary'},
+{id:'benchling',name:'Benchling',cl:'C3: Regulated',prio:'warm',wk:'W3',tch:'Email to LinkedIn',angle:'PHI on top of Anthropic partnership',targets:'VP Product, CTO, Head of AI',signal:'Anthropic partnership (Claude for Life Sciences). Very regulated.',msg:'Anthropic gives the model. Who handles governance for multi-lab workflows? OrcaRouter adds PII Shield.',notes:'Complement Anthropic'},
+{id:'plaid',name:'Plaid',cl:'C3: Regulated',prio:'warm',wk:'W3',tch:'Email',angle:'Financial data in LLM prompts',targets:'CTO, VP Product, Head of AI',signal:'Financial data in LLM prompts. Finance-grade compliance.',msg:'Financial data in prompts equals leak risk. OrcaRouter PII Shield redacts sensitive data in real-time.',notes:'Finance-grade compliance'},
+{id:'cockroach',name:'Cockroach Labs',cl:'C4: Infra',prio:'cold',wk:'W4',tch:'Email',angle:'Tool-call for AI SQL',targets:'CTO, VP Product',signal:'AI SQL generation equals tool-call security needed.',msg:'AI SQL is powerful until a hallucinated DROP TABLE. OrcaRouter firewall reviews every query.',notes:'Low priority'},
+{id:'twilio',name:'Twilio Segment',cl:'C4: Infra',prio:'cold',wk:'W4',tch:'Email',angle:'Enterprise guardrails for CDP',targets:'VP Product, CTO',signal:'CDP data to LLM equals PII risk. Large enterprise customer base.',msg:'CDP data is full of PII. OrcaRouter PII Shield ensures that data never hits the model unredacted.',notes:'Low priority parent too large'}
 ];
 
-function getTracker() {
-  let t = JSON.parse(localStorage.getItem('orcaT') || '[]');
-  if(t.length === 0 || !t[0] || !t[0].id){
-    t = DATA.map(d => ({
-      id: d.id,
-      name: d.name,
-      status: 'todo',
-      lastTouch: '',
-      contactName: '',
-      contactTitle: '',
-      linkedinUrl: '',
-      pitchUsed: '',
-      pitchCategory: '',
-      assignedTo: '',
-      notes: '',
-      linkedinProfileData: null
-    }));
-    localStorage.setItem('orcaT', JSON.stringify(t));
+var TK = 'orcaT';
+var AK = 'orcaA';
+var PK = 'orcaP';
+
+function getT() {
+  var raw = localStorage.getItem(TK);
+  var t = [];
+  try { t = JSON.parse(raw) || []; } catch(e) { t = []; }
+  if (!t || t.length === 0 || !t[0] || !t[0].id) {
+    t = [];
+    for (var i = 0; i < DATA.length; i++) {
+      t.push({ id: DATA[i].id, name: DATA[i].name, status: 'todo', lastTouch: '', contactName: '', contactTitle: '', linkedinUrl: '', pitchUsed: '', pitchCategory: '', assignedTo: '', notes: '' });
+    }
+    localStorage.setItem(TK, JSON.stringify(t));
   }
   return t;
 }
 
-function updT(id, field, val) {
-  const t = getTracker();
-  const item = t.find(x => x.id === id);
-  if(item) {
-    item[field] = val;
-    localStorage.setItem('orcaT', JSON.stringify(t));
+function st(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
+
+function upd(id, f, v) {
+  var t = getT();
+  for (var i = 0; i < t.length; i++) {
+    if (t[i].id === id) { t[i][f] = v; st(TK, t); break; }
   }
+}
+
+function switchTab(id) {
+  var btns = document.querySelectorAll('.controls button');
+  for (var i = 0; i < btns.length; i++) btns[i].className = '';
+  var secs = document.querySelectorAll('.section');
+  for (var j = 0; j < secs.length; j++) secs[j].className = 'section';
+  document.querySelector('.controls button:nth-child(' + (['accounts','tracker','actions','prospects','messaging'].indexOf(id)+1) + ')').className = 'active';
+  document.getElementById('tab-' + id).className = 'section active';
+  if (id === 'accounts') renderAccounts();
+  if (id === 'tracker') renderTracker();
+  if (id === 'actions') renderActions();
+  if (id === 'prospects') renderProspects();
+  if (id === 'messaging') document.getElementById('messagingRoot').innerHTML = '<p style="color:var(--muted)">Messaging assistant coming soon</p>';
 }
 
 function renderAccounts() {
-  const t = getTracker();
-  const root = document.getElementById('accountsRoot');
-  root.innerHTML = t.map(x => {
-    const d = DATA.find(a => a.id === x.id) || {
-      id: x.id,
-      name: x.name,
-      cl: 'Prospect',
-      prio: 'warm',
-      wk: 'New',
-      tch: 'Manual',
-      angle: 'Promoted Prospect',
-      targets: x.contactName + (x.contactTitle ? ' / ' + x.contactTitle : ''),
-      signal: x.notes,
-      msg: 'No playbook message for prospects.',
-      notes: ''
-    };
-    const tag = d.prio === 'hot' ? 'tag-hot' : d.prio === 'warm' ? 'tag-warm' : 'tag-cold';
-    const touches = d.tch.split('+').map(touch => `<span style="background:var(--surface2);padding:1px 6px;border-radius:4px;font-size:10px">${touch}</span>`).join('');
-    return `
-      <div class="acct-row" onclick="this.classList.toggle('open')">
-        <div class="left">
-          <div class="acct-name">${d.name} <span class="acct-cluster">${d.cl}</span></div>
-          <div class="acct-angle">${d.angle}</div>
-        </div>
-        <div><span class="acct-tag ${tag}">${d.prio.toUpperCase()}</span></div>
-        <div style="font-size:12px;color:var(--muted)">${d.wk}</div>
-        <div style="font-size:11px;color:var(--muted);display:flex;flex-wrap:wrap;gap:3px">${touches}</div>
-        <div class="acct-detail">
-          <div class="detail-grid">
-            <div class="detail-card"><h4>🎯 Targets</h4><ul>${d.targets.split(' · ').map(target => `<li>${target}</li>`).join('')}</ul></div>
-            <div class="detail-card"><h4>📡 Signal</h4><ul>${d.signal.split('. ').filter(s => s.trim()).map(s => `<li>${s}</li>`).join('')}</ul></div>
-            <div class="detail-card" style="grid-column:1/-1"><h4>💬 Message</h4><p>${d.msg}</p></div>
-            <div class="detail-card" style="grid-column:1/-1"><h4>📝 Notes</h4><p>${d.notes}</p></div>
-          </div>
-        </div>
-      </div>`;
-  }).join('');
+  var t = getT();
+  var h = '';
+  for (var i = 0; i < t.length; i++) {
+    var x = t[i];
+    var d = null;
+    for (var j = 0; j < DATA.length; j++) { if (DATA[j].id === x.id) { d = DATA[j]; break; } }
+    if (!d) d = { name: x.name, cl: 'Prospect', prio: 'warm', wk: 'New', tch: 'Manual', angle: 'Prospect', targets: '', signal: '', msg: '', notes: '' };
+    var tc = d.prio === 'hot' ? 'tag-hot' : (d.prio === 'warm' ? 'tag-warm' : 'tag-cold');
+    var th = '';
+    var ts = d.tch.split('+');
+    for (var k = 0; k < ts.length; k++) th += '<span style="background:var(--surface2);padding:1px 6px;border-radius:4px;font-size:10px">' + ts[k] + '</span>';
+    var tar = d.targets.split(', ');
+    var tah = '';
+    for (var m = 0; m < tar.length; m++) tah += '<li>' + tar[m] + '</li>';
+    var sig = d.signal.split('. ');
+    var sih = '';
+    for (var n = 0; n < sig.length; n++) { if (sig[n].trim()) sih += '<li>' + sig[n] + '</li>'; }
+    h += '<div class="acct-row" onclick="this.classList.toggle(\'open\')">';
+    h += '<div class="left"><div class="acct-name">' + d.name + ' <span class="acct-cluster">' + d.cl + '</span></div><div class="acct-angle">' + d.angle + '</div></div>';
+    h += '<div><span class="acct-tag ' + tc + '">' + d.prio.toUpperCase() + '</span></div><div style="font-size:12px;color:var(--muted)">' + d.wk + '</div>';
+    h += '<div style="font-size:11px;display:flex;flex-wrap:wrap;gap:3px">' + th + '</div>';
+    h += '<div class="acct-detail"><div class="detail-grid"><div class="detail-card"><h4>Targets</h4><ul>' + tah + '</ul></div>';
+    h += '<div class="detail-card"><h4>Signal</h4><ul>' + sih + '</ul></div>';
+    h += '<div class="detail-card" style="grid-column:1/-1"><h4>Message</h4><p>' + d.msg + '</p></div>';
+    h += '<div class="detail-card" style="grid-column:1/-1"><h4>Notes</h4><p>' + d.notes + '</p></div></div></div></div>';
+  }
+  document.getElementById('accountsRoot').innerHTML = h;
 }
 
 function renderTracker() {
-  const t = getTracker();
-  const root = document.getElementById('trackerRoot');
-  const opts = ['todo','emailed','called','meeting-scheduled','meeting-done','declined','closed'];
-  const cats = [['','None'],['reliability','🔗 Reliability'],['security','🛡️ Security/Compliance'],['cost','💰 Cost'],['compliance','📋 Compliance']];
-  
-  root.innerHTML = `<div class="tracker-grid">` + t.map(x => {
-    const d = DATA.find(a => a.id === x.id) || { prio: 'warm', angle: 'Prospect', wk: 'New' };
-    const statusOpts = opts.map(v => `<option value="${v}" ${x.status === v ? 'selected' : ''}>${v.replace(/-/g,' ')}</option>`).join('');
-    const catOpts = cats.map(([v,l]) => `<option value="${v}" ${x.pitchCategory === v ? 'selected' : ''}>${l}</option>`).join('');
-    
-    return `
-      <div class="trk-card">
-        <h4>${x.name} <span class="acct-tag ${d.prio === 'hot' ? 'tag-hot' : d.prio === 'warm' ? 'tag-warm' : 'tag-cold'}" style="font-size:9px;padding:1px 6px">${d.prio.toUpperCase()}</span></h4>
-        <div class="meta">${d.angle} · ${d.wk}</div>
-        <div class="field-group">
-          <label>Status</label>
-          <select onchange="updT('${x.id}','status',this.value)">${statusOpts}</select>
-        </div>
-        <div class="row2">
-          <div class="field-group">
-            <label>👤 Contact Name</label>
-            <input value="${x.contactName || ''}" placeholder="e.g. Jane Smith" onchange="updT('${x.id}','contactName',this.value)">
-          </div>
-          <div class="field-group">
-            <label>💼 Title</label>
-            <input value="${x.contactTitle || ''}" placeholder="e.g. VP Engineering" onchange="updT('${x.id}','contactTitle',this.value)">
-          </div>
-        </div>
-        <div class="field-group">
-          <label>🔗 LinkedIn URL</label>
-          <input value="${x.linkedinUrl || ''}" placeholder="https://linkedin.com/in/username" onchange="updT('${x.id}','linkedinUrl',this.value)">
-        </div>
-        <div class="field-group">
-          <label>📝 Pitch Used</label>
-          <textarea onchange="updT('${x.id}','pitchUsed',this.value)">${x.pitchUsed || ''}</textarea>
-        </div>
-        <div class="row2">
-          <div class="field-group">
-            <label>🏷️ Category</label>
-            <select onchange="updT('${x.id}','pitchCategory',this.value)">${catOpts}</select>
-          </div>
-          <div class="field-group">
-            <label>👤 AE</label>
-            <input value="${x.assignedTo || ''}" onchange="updT('${x.id}','assignedTo',this.value)">
-          </div>
-        </div>
-        <div class="field-group">
-          <label>📓 Notes</label>
-          <textarea onchange="updT('${x.id}','notes',this.value)">${x.notes || ''}</textarea>
-        </div>
-      </div>`;
-  }).join('') + `</div>`;
-}
-
-function getActions() {
-  return JSON.parse(localStorage.getItem('orcaActs') || '[]');
-}
-
-function logAction() {
-  const acct = document.getElementById('actAcct').value;
-  const type = document.getElementById('actType').value;
-  const detail = document.getElementById('actDetail').value.trim();
-  const contact = document.getElementById('actContact').value.trim();
-  
-  if(!acct || !detail) { alert('Select account and add details'); return; }
-  
-  const acts = getActions();
-  acts.push({
-    account: acct,
-    type: type,
-    contact: contact,
-    detail: detail,
-    date: new Date().toLocaleDateString(),
-    time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
-  });
-  localStorage.setItem('orcaActs', JSON.stringify(acts));
-  
-  const t = getTracker();
-  const tr = t.find(x => x.id === acct);
-  if(tr) {
-    tr.lastTouch = new Date().toLocaleDateString() + ' - ' + detail.slice(0, 30);
-    localStorage.setItem('orcaT', JSON.stringify(t));
+  var t = getT();
+  var opts = ['todo','emailed','called','meeting-scheduled','meeting-done','declined','closed'];
+  var h = '';
+  for (var i = 0; i < t.length; i++) {
+    var x = t[i];
+    var d = null;
+    for (var j = 0; j < DATA.length; j++) { if (DATA[j].id === x.id) { d = DATA[j]; break; } }
+    var pr = d ? d.prio : 'warm';
+    var tc = pr === 'hot' ? 'tag-hot' : (pr === 'warm' ? 'tag-warm' : 'tag-cold');
+    var so = '';
+    for (var k = 0; k < opts.length; k++) so += '<option value="' + opts[k] + '"' + (x.status === opts[k] ? ' selected' : '') + '>' + opts[k].replace(/-/g,' ') + '</option>';
+    var an = d ? d.angle : 'Prospect';
+    var wk = d ? d.wk : 'New';
+    var ids = x.id.replace(/'/g, "\\'");
+    h += '<div class="trk-card"><h4>' + x.name + ' <span class="acct-tag ' + tc + '" style="font-size:9px;padding:1px 6px">' + pr.toUpperCase() + '</span></h4>';
+    h += '<div class="meta">' + an + ' - ' + wk + '</div>';
+    h += '<div class="field-group"><label>Status</label><select onchange="upd(\'' + ids + '\',\'status\',this.value)">' + so + '</select></div>';
+    h += '<div class="row2"><div class="field-group"><label>Contact</label><input value="' + (x.contactName||'') + '" onchange="upd(\'' + ids + '\',\'contactName\',this.value)"></div>';
+    h += '<div class="field-group"><label>Title</label><input value="' + (x.contactTitle||'') + '" onchange="upd(\'' + ids + '\',\'contactTitle\',this.value)"></div></div>';
+    h += '<div class="field-group"><label>LinkedIn</label><input value="' + (x.linkedinUrl||'') + '" onchange="upd(\'' + ids + '\',\'linkedinUrl\',this.value)"></div>';
+    h += '<div class="field-group"><label>Notes</label><textarea onchange="upd(\'' + ids + '\',\'notes\',this.value)">' + (x.notes||'') + '</textarea></div></div>';
   }
-  
-  document.getElementById('actDetail').value = '';
-  document.getElementById('actContact').value = '';
-  renderActions();
+  document.getElementById('trackerRoot').innerHTML = h;
+}
+
+function getActs() {
+  var r = localStorage.getItem(AK);
+  try { return JSON.parse(r) || []; } catch(e) { return []; }
 }
 
 function renderActions() {
-  const t = getTracker();
-  const acts = getActions();
-  const sel = document.getElementById('actAcct');
-  sel.innerHTML = t.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
-  
-  const root = document.getElementById('actionsRoot');
-  const icons = {emailed:'📧',called:'📞',linkedin:'💼',demo:'🎤',followup:'📬',meeting:'🗓️',declined:'❌',other:'📝'};
-  
-  root.innerHTML = t.map(tr => {
-    const d = DATA.find(x => x.id === tr.id) || { name: tr.name, angle: 'Prospect' };
-    const acctActs = acts.filter(a => a.account === tr.id).reverse().slice(0, 3);
-    const actsHtml = acctActs.length > 0 ? acctActs.map(a => `
-      <div class="action-item">
-        <span class="check">${icons[a.type] || '📝'}</span>
-        <span class="date">${a.date}</span>
-        ${a.contact ? '👤' + a.contact + ' ' : ''}${a.detail}
-      </div>`).join('') : '<div style="color:var(--muted)">No actions yet</div>';
-      
-    return `
-      <tr>
-        <td style="font-weight:600">${d.name}<br><small style="color:var(--muted);font-weight:400">${d.angle}</small></td>
-        <td>${tr.assignedTo || '-'}</td>
-        <td><span class="status-dot ${tr.status}"></span>${tr.status.replace(/-/g,' ')}</td>
-        <td>${actsHtml}</td>
-        <td style="font-size:12px;color:var(--muted)">Review</td>
-      </tr>`;
-  }).join('');
+  var t = getT();
+  var h = '<table class="actions-table"><thead><tr><th>Account</th><th>Status</th><th>AE</th></tr></thead><tbody>';
+  for (var i = 0; i < t.length; i++) {
+    var tr = t[i];
+    var d = null;
+    for (var j = 0; j < DATA.length; j++) { if (DATA[j].id === tr.id) { d = DATA[j]; break; } }
+    var nm = d ? d.name : tr.name;
+    var ids = tr.id.replace(/'/g, "\\'");
+    h += '<tr><td>' + nm + '</td><td><span class="status-dot ' + (tr.status||'todo') + '"></span>' + (tr.status||'todo').replace(/-/g,' ') + '</td><td>' + (tr.assignedTo||'-') + '</td></tr>';
+  }
+  h += '</tbody></table>';
+  document.getElementById('actionsRoot').innerHTML = h;
 }
 
-function renderDashboard() {
-  const t = getTracker();
-  const acts = getActions();
-  const total = t.length;
-  const contacted = t.filter(x => x.status !== 'todo').length;
-  const meetings = t.filter(x => x.status.includes('meeting')).length;
-  
-  document.getElementById('dashRoot').innerHTML = `
-    <div class="dash-card"><div class="dash-num">${total}</div><div class="dash-label">Total</div></div>
-    <div class="dash-card"><div class="dash-num">${contacted}</div><div class="dash-label">Contacted</div></div>
-    <div class="dash-card"><div class="dash-num">${meetings}</div><div class="dash-label">Meetings</div></div>
-    <div class="dash-card blue"><div class="dash-num">${acts.length}</div><div class="dash-label">Actions</div></div>`;
-}
-
-function getProspects() {
-  return JSON.parse(localStorage.getItem('orcaProspects') || '[]');
+function getProsp() {
+  var r = localStorage.getItem(PK);
+  try { return JSON.parse(r) || []; } catch(e) { return []; }
 }
 
 function renderProspects() {
-  const p = getProspects();
-  const root = document.getElementById('prospectsRoot');
-  if(p.length === 0) { root.innerHTML = '<p style="color:var(--muted);font-size:13px">No prospects yet.</p>'; return; }
-  
-  root.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px">` + p.map(x => `
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
-      <div style="font-weight:600;margin-bottom:4px">${x.company}</div>
-      <div style="font-size:12px;color:var(--accent);margin-bottom:8px">${x.type} signal</div>
-      <div style="font-size:12px;color:var(--muted)">${x.detail}</div>
-      <button class="btn btn-sm" onclick="promoteToAccount('${x.id}')" style="margin-top:12px">+ Add to Accounts</button>
-    </div>`).join('') + `</div>`;
-}
-
-function addProspect() {
-  const company = document.getElementById('psCompany').value.trim();
-  if(!company) return;
-  const p = getProspects();
-  p.push({
-    id: Date.now().toString(),
-    company: company,
-    contact: document.getElementById('psContact').value,
-    type: document.getElementById('psType').value,
-    detail: document.getElementById('psDetail').value,
-    status: 'new'
-  });
-  localStorage.setItem('orcaProspects', JSON.stringify(p));
-  renderProspects();
-}
-
-function promoteToAccount(id) {
-  const p = getProspects();
-  const item = p.find(x => x.id === id);
-  if(!item) return;
-  const t = getTracker();
-  if(!t.find(x => x.name === item.company)) {
-    t.push({
-      id: item.id,
-      name: item.company,
-      status: 'todo',
-      lastTouch: '',
-      contactName: item.contact,
-      contactTitle: '',
-      linkedinUrl: '',
-      pitchUsed: '',
-      pitchCategory: '',
-      assignedTo: '',
-      notes: item.detail
-    });
-    localStorage.setItem('orcaT', JSON.stringify(t));
+  var p = getProsp();
+  if (p.length === 0) { document.getElementById('prospectsRoot').innerHTML = '<p style="color:var(--muted);font-size:13px">No prospects yet.</p>'; return; }
+  var h = '';
+  for (var i = 0; i < p.length; i++) {
+    h += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:8px">';
+    h += '<div style="font-weight:600">' + p[i].company + '</div>';
+    h += '<div style="font-size:12px;color:var(--muted)">' + (p[i].detail||'') + '</div></div>';
   }
-  localStorage.setItem('orcaProspects', JSON.stringify(p.filter(x => x.id !== id)));
-  renderProspects();
-  renderAccounts();
+  document.getElementById('prospectsRoot').innerHTML = h;
 }
 
-// Tab switching
-document.querySelectorAll('[data-tab]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('[data-tab]').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-    if(btn.dataset.tab === 'accounts') renderAccounts();
-    if(btn.dataset.tab === 'tracker') renderTracker();
-    if(btn.dataset.tab === 'actions') renderActions();
-    if(btn.dataset.tab === 'prospects') renderProspects();
-    if(btn.dataset.tab === 'learn') renderDashboard();
-  });
-});
-
-// Initial load
 renderAccounts();
 renderTracker();
 renderActions();
-renderDashboard();
 renderProspects();
 </script>
 </body>
