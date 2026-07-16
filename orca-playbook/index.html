@@ -381,6 +381,7 @@ h2 small { font-size: 13px; color: var(--muted); font-weight: 400; }
 <div class="footer">OrcaRouter Outreach Playbook · FlashLabs · July 2026</div>
 
 <script>
+// Use backtick template literals to avoid escaping nightmares
 const DATA = [
 {id:'sourcegraph',name:'Sourcegraph',cl:'C1: Code',prio:'hot',wk:'W1',tch:'Email→Call',angle:'Tool-call firewall for Cody',targets:'Head of Product, Cody · CTO · VP Eng',signal:'Pure enterprise ($59/seat, SOC2). BYO model on Enterprise tier.',msg:'Cody runs multi-model with code-exec tool access. OrcaRouter tool-call firewall blocks secrets before they hit the LLM.',notes:'Reference their published blog content.'},
 {id:'replit',name:'Replit',cl:'C1: Code',prio:'hot',wk:'W1',tch:'Call+Email',angle:'Claude single-provider → fallback',targets:'VP Eng · Head of AI Platform · CTO',signal:'9 AI/ML roles open. Agent 4 uses Claude Sonnet 4.5 exclusively.',msg:'"Replit Agent runs on Claude exclusively. When Claude degrades, every session breaks. OrcaRouter adds invisible fallback chains."',notes:'Highest urgency. Call then email same day.'},
@@ -404,41 +405,9 @@ const DATA = [
 {id:'twilio',name:'Twilio Segment',cl:'C4: Infra',prio:'cold',wk:'W4',tch:'Email',angle:'Enterprise guardrails for CDP',targets:'VP Product · CTO',signal:'CDP data → LLM = PII risk. Large enterprise customer base.',msg:'"CDP data is full of PII. OrcaRouter PII Shield ensures that data never hits the model unredacted."',notes:'Low priority, parent too large.'},
 ];
 
-function getTracker() {
-  let t = JSON.parse(localStorage.getItem('orcaT') || '[]');
-  if(t.length === 0 || !t[0] || !t[0].id){
-    t = DATA.map(d => ({
-      id: d.id,
-      name: d.name,
-      status: 'todo',
-      lastTouch: '',
-      contactName: '',
-      contactTitle: '',
-      linkedinUrl: '',
-      pitchUsed: '',
-      pitchCategory: '',
-      assignedTo: '',
-      notes: '',
-      linkedinProfileData: null
-    }));
-    localStorage.setItem('orcaT', JSON.stringify(t));
-  }
-  return t;
-}
-
-function updT(id, field, val) {
-  const t = getTracker();
-  const item = t.find(x => x.id === id);
-  if(item) {
-    item[field] = val;
-    localStorage.setItem('orcaT', JSON.stringify(t));
-  }
-}
-
 function renderAccounts() {
   const t = getTracker();
-  const root = document.getElementById('accountsRoot');
-  root.innerHTML = t.map(x => {
+  document.getElementById('accountsRoot').innerHTML = t.map(x => {
     const d = DATA.find(a => a.id === x.id) || {
       id: x.id,
       name: x.name,
@@ -452,239 +421,781 @@ function renderAccounts() {
       msg: 'No playbook message for prospects.',
       notes: ''
     };
-    const tag = d.prio === 'hot' ? 'tag-hot' : d.prio === 'warm' ? 'tag-warm' : 'tag-cold';
-    const touches = d.tch.split('+').map(touch => `<span style="background:var(--surface2);padding:1px 6px;border-radius:4px;font-size:10px">${touch}</span>`).join('');
-    return `
-      <div class="acct-row" onclick="this.classList.toggle('open')">
-        <div class="left">
-          <div class="acct-name">${d.name} <span class="acct-cluster">${d.cl}</span></div>
-          <div class="acct-angle">${d.angle}</div>
+    const tag = d.prio==='hot'?'tag-hot':d.prio==='warm'?'tag-warm':'tag-cold';
+    const touches = d.tch.split('+').map(t => `<span style="background:var(--surface2);padding:1px 6px;border-radius:4px;font-size:10px">${t}</span>`).join('');
+    return `<div class="acct-row open" onclick="this.classList.toggle('open')">
+      <div class="left"><div class="acct-name">${d.name} <span class="acct-cluster">${d.cl}</span></div><div class="acct-angle">${d.angle}</div></div>
+      <div><span class="acct-tag ${tag}">${d.prio.toUpperCase()}</span></div>
+      <div style="font-size:12px;color:var(--muted)">${d.wk}</div>
+      <div style="font-size:11px;color:var(--muted);display:flex;flex-wrap:wrap;gap:3px">${touches}</div>
+      <div class="acct-detail">
+        <div class="detail-grid">
+          <div class="detail-card"><h4>🎯 Targets</h4><ul>${d.targets.split(' · ').map(t => `<li>${t}</li>`).join('')}</ul></div>
+          <div class="detail-card"><h4>📡 Signal</h4><ul>${d.signal.split('. ').filter(s=>s.trim()).map(s => `<li>${s}</li>`).join('')}</ul></div>
+          <div class="detail-card" style="grid-column:1/-1"><h4>💬 Message</h4><p>${d.msg}</p></div>
+          <div class="detail-card" style="grid-column:1/-1"><h4>📝 Notes</h4><p>${d.notes}</p></div>
         </div>
-        <div><span class="acct-tag ${tag}">${d.prio.toUpperCase()}</span></div>
-        <div style="font-size:12px;color:var(--muted)">${d.wk}</div>
-        <div style="font-size:11px;color:var(--muted);display:flex;flex-wrap:wrap;gap:3px">${touches}</div>
-        <div class="acct-detail">
-          <div class="detail-grid">
-            <div class="detail-card"><h4>🎯 Targets</h4><ul>${d.targets.split(' · ').map(target => `<li>${target}</li>`).join('')}</ul></div>
-            <div class="detail-card"><h4>📡 Signal</h4><ul>${d.signal.split('. ').filter(s => s.trim()).map(s => `<li>${s}</li>`).join('')}</ul></div>
-            <div class="detail-card" style="grid-column:1/-1"><h4>💬 Message</h4><p>${d.msg}</p></div>
-            <div class="detail-card" style="grid-column:1/-1"><h4>📝 Notes</h4><p>${d.notes}</p></div>
-          </div>
-        </div>
-      </div>`;
+      </div>
+    </div>`;
   }).join('');
+}
+
+function getTracker() {
+  let t = JSON.parse(localStorage.getItem('orcaT') || '[]');
+  // Reinitialize only if empty OR data is truly corrupted (missing 'id' field)
+  if(t.length===0 || !t[0] || !t[0].id){
+    t = DATA.map(d => ({id:d.id,name:d.name,status:'todo',lastTouch:'',contactName:'',contactTitle:'',linkedinUrl:'',pitchUsed:'',pitchCategory:'',assignedTo:'',notes:'',linkedinProfileData:null}));
+    localStorage.setItem('orcaT',JSON.stringify(t));
+  }
+  return t;
 }
 
 function renderTracker() {
   const t = getTracker();
-  const root = document.getElementById('trackerRoot');
   const opts = ['todo','emailed','called','meeting-scheduled','meeting-done','declined','closed'];
-  const cats = [['','None'],['reliability','🔗 Reliability'],['security','🛡️ Security/Compliance'],['cost','💰 Cost'],['compliance','📋 Compliance']];
-  
-  root.innerHTML = `<div class="tracker-grid">` + t.map(x => {
-    const d = DATA.find(a => a.id === x.id) || { prio: 'warm', angle: 'Prospect', wk: 'New' };
-    const statusOpts = opts.map(v => `<option value="${v}" ${x.status === v ? 'selected' : ''}>${v.replace(/-/g,' ')}</option>`).join('');
-    const catOpts = cats.map(([v,l]) => `<option value="${v}" ${x.pitchCategory === v ? 'selected' : ''}>${l}</option>`).join('');
-    
-    return `
-      <div class="trk-card">
-        <h4>${x.name} <span class="acct-tag ${d.prio === 'hot' ? 'tag-hot' : d.prio === 'warm' ? 'tag-warm' : 'tag-cold'}" style="font-size:9px;padding:1px 6px">${d.prio.toUpperCase()}</span></h4>
-        <div class="meta">${d.angle} · ${d.wk}</div>
+  document.getElementById('trackerRoot').innerHTML = `<div class="tracker-grid">` +
+    t.map(x => {
+      const d = DATA.find(a => a.id === x.id) || { prio: 'warm', angle: 'Prospect', wk: 'New' };
+      const o=opts.map(v => `<option value="${v}" ${x.status===v?'selected':''}>${v.replace(/-/g,' ')}</option>`).join('');
+      const cats = [['','None'],['reliability','🔗 Reliability'],['security','🛡️ Security/Compliance'],['cost','💰 Cost'],['compliance','📋 Compliance']];
+      const catOpts = cats.map(([v,l]) => `<option value="${v}" ${x.pitchCategory===v?'selected':''}>${l}</option>`).join('');
+      const liUrl = x.linkedinUrl || '';
+      return `<div class="trk-card">
+        <h4>${x.name} <span class="acct-tag ${d.prio==='hot'?'tag-hot':d.prio==='warm'?'tag-warm':'tag-cold'}" style="font-size:9px;padding:1px 6px">${d.prio.toUpperCase()}</span></h4>
+        <div class="meta">${d?d.angle:''} · ${d?d.wk:''}</div>
+
         <div class="field-group">
           <label>Status</label>
-          <select onchange="updT('${x.id}','status',this.value)">${statusOpts}</select>
+          <select onchange="updT('${x.id}','status',this.value)">${o}</select>
         </div>
+
         <div class="row2">
           <div class="field-group">
             <label>👤 Contact Name</label>
-            <input value="${x.contactName || ''}" placeholder="e.g. Jane Smith" onchange="updT('${x.id}','contactName',this.value)">
+            <input value="${x.contactName||''}" placeholder="e.g. Jane Smith" onchange="updT('${x.id}','contactName',this.value)">
           </div>
           <div class="field-group">
             <label>💼 Title</label>
-            <input value="${x.contactTitle || ''}" placeholder="e.g. VP Engineering" onchange="updT('${x.id}','contactTitle',this.value)">
+            <input value="${x.contactTitle||''}" placeholder="e.g. VP Engineering" onchange="updT('${x.id}','contactTitle',this.value)">
           </div>
         </div>
+
         <div class="field-group">
-          <label>🔗 LinkedIn URL</label>
-          <input value="${x.linkedinUrl || ''}" placeholder="https://linkedin.com/in/username" onchange="updT('${x.id}','linkedinUrl',this.value)">
+          <label>🔗 LinkedIn URL <button class="enrich-btn" onclick="enrichLinkedIn('${x.id}')">Enrich ↩</button></label>
+          <input id="li-${x.id}" value="${liUrl}" placeholder="https://linkedin.com/in/username" onchange="updT('${x.id}','linkedinUrl',this.value)">
+          <div id="enrich-${x.id}" class="enrich-result"></div>
         </div>
+
         <div class="field-group">
-          <label>📝 Pitch Used</label>
-          <textarea onchange="updT('${x.id}','pitchUsed',this.value)">${x.pitchUsed || ''}</textarea>
+          <label>📝 Pitch / Messaging Used</label>
+          <textarea placeholder="Paste your actual outreach message here..." onchange="updT('${x.id}','pitchUsed',this.value)">${x.pitchUsed||''}</textarea>
         </div>
+
         <div class="row2">
           <div class="field-group">
-            <label>🏷️ Category</label>
+            <label>🏷️ Pitch Category</label>
             <select onchange="updT('${x.id}','pitchCategory',this.value)">${catOpts}</select>
           </div>
           <div class="field-group">
-            <label>👤 AE</label>
-            <input value="${x.assignedTo || ''}" onchange="updT('${x.id}','assignedTo',this.value)">
+            <label>📅 Last Touch</label>
+            <input value="${x.lastTouch||''}" placeholder="e.g. Jul 15 email" onchange="updT('${x.id}','lastTouch',this.value)">
+          </div>
+          <div class="field-group">
+            <label>👤 Assigned AE</label>
+            <input value="${x.assignedTo||''}" placeholder="e.g. Danny" onchange="updT('${x.id}','assignedTo',this.value)">
           </div>
         </div>
+
         <div class="field-group">
           <label>📓 Notes</label>
-          <textarea onchange="updT('${x.id}','notes',this.value)">${x.notes || ''}</textarea>
+          <textarea placeholder="Outcome, response received, follow-up needed..." onchange="updT('${x.id}','notes',this.value)">${x.notes||''}</textarea>
         </div>
       </div>`;
-  }).join('') + `</div>`;
+    }).join('') + `</div>`;
 }
 
-function getActions() {
-  return JSON.parse(localStorage.getItem('orcaActs') || '[]');
+function updT(id,field,val){
+  const t=getTracker();
+  const item=t.find(x=>x.id===id);
+  if(item){item[field]=val;localStorage.setItem('orcaT',JSON.stringify(t));}
 }
 
-function logAction() {
-  const acct = document.getElementById('actAcct').value;
-  const type = document.getElementById('actType').value;
-  const detail = document.getElementById('actDetail').value.trim();
-  const contact = document.getElementById('actContact').value.trim();
-  
-  if(!acct || !detail) { alert('Select account and add details'); return; }
-  
-  const acts = getActions();
-  acts.push({
-    account: acct,
-    type: type,
-    contact: contact,
-    detail: detail,
-    date: new Date().toLocaleDateString(),
-    time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
-  });
-  localStorage.setItem('orcaActs', JSON.stringify(acts));
-  
+function usePrevContact(id){
+  const sel = document.getElementById('prevContacts-'+id);
+  const name = sel.value;
+  if(!name) return;
   const t = getTracker();
-  const tr = t.find(x => x.id === acct);
-  if(tr) {
-    tr.lastTouch = new Date().toLocaleDateString() + ' - ' + detail.slice(0, 30);
+  const item = t.find(x => x.id === id);
+  if(item){
+    item.contactName = name;
     localStorage.setItem('orcaT', JSON.stringify(t));
+    renderTracker();
   }
-  
-  document.getElementById('actDetail').value = '';
-  document.getElementById('actContact').value = '';
-  renderActions();
 }
 
-function renderActions() {
-  const t = getTracker();
-  const acts = getActions();
-  const sel = document.getElementById('actAcct');
-  sel.innerHTML = t.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
-  
-  const root = document.getElementById('actionsRoot');
-  const icons = {emailed:'📧',called:'📞',linkedin:'💼',demo:'🎤',followup:'📬',meeting:'🗓️',declined:'❌',other:'📝'};
-  
-  root.innerHTML = t.map(tr => {
+function enrichLinkedIn(id){
+  const input = document.getElementById('li-'+id);
+  const result = document.getElementById('enrich-'+id);
+  const url = input.value.trim();
+  if(!url){
+    result.innerHTML = 'Enter a LinkedIn URL first';
+    return;
+  }
+  // Extract username
+  const match = url.match(/linkedin\.com\/in\/([^\/\?#]+)/);
+  if(!match){
+    result.innerHTML = '⚠️ Could not parse LinkedIn URL. Expected format: https://linkedin.com/in/username';
+    return;
+  }
+  const username = match[1];
+
+  // Try web search for enrichment
+  fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://linkedin.com/in/'+username)}`)
+    .then(r => result.innerHTML = '⚠️ LinkedIn requires login. Try manually:')
+    .catch(() => result.innerHTML = '⚠️ LinkedIn requires login.')
+    .finally(() => {
+      result.innerHTML = `🔍 Parsed: <strong>${username}</strong>. LinkedIn requires authentication to scrape. 
+        <br>Try searching: <a href="https://www.google.com/search?q=${encodeURIComponent(username+' '+id)}" target="_blank" style="color:var(--accent)">Google search →</a>
+        <br>Then manually fill name & title above.`;
+    });
+}
+
+function getActions(){
+  return JSON.parse(localStorage.getItem('orcaActs')||'[]');
+}
+
+function logAction(){
+  const acct=document.getElementById('actAcct').value;
+  const type=document.getElementById('actType').value;
+  const detail=document.getElementById('actDetail').value.trim();
+  if(!acct||!detail){alert('Select account and add details');return;}
+  const acts=getActions();
+  const cName = document.getElementById('actContact').value.trim(); acts.push({account:acct,type:type,contact:cName,detail:detail,date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}); document.getElementById('actContact').value='';
+  localStorage.setItem('orcaActs',JSON.stringify(acts));
+  const t=getTracker();
+  const tr=t.find(x=>x.id===acct);
+  if(tr){
+    const sm={emailed:'emailed',called:'called',linkedin:'emailed',demo:'meeting-done',followup:tr.status,meeting:'meeting-scheduled',declined:'declined'};
+    if(sm[type]&&tr.status==='todo'){tr.status=sm[type];localStorage.setItem('orcaT',JSON.stringify(t));}
+    tr.lastTouch=new Date().toLocaleDateString()+' '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})+' - '+detail.slice(0,40);
+    localStorage.setItem('orcaT',JSON.stringify(t));
+  }
+  document.getElementById('actDetail').value='';
+  renderActions();renderTracker();
+}
+
+function getIcon(t){return{emailed:'📧',called:'📞',linkedin:'💼',demo:'🎤',followup:'📬',meeting:'🗓️',declined:'❌',other:'📝'}[t]||'📝';}
+
+function renderActions(){
+  const t=getTracker();
+  const acts=getActions();
+  const sel=document.getElementById('actAcct');
+  sel.innerHTML=t.map(d=>`<option value="${d.id}">${d.name}</option>`).join('');
+  document.getElementById('actionsRoot').innerHTML=t.map(tr=>{
     const d = DATA.find(x => x.id === tr.id) || { name: tr.name, angle: 'Prospect' };
-    const acctActs = acts.filter(a => a.account === tr.id).reverse().slice(0, 3);
-    const actsHtml = acctActs.length > 0 ? acctActs.map(a => `
-      <div class="action-item">
-        <span class="check">${icons[a.type] || '📝'}</span>
-        <span class="date">${a.date}</span>
-        ${a.contact ? '👤' + a.contact + ' ' : ''}${a.detail}
-      </div>`).join('') : '<div style="color:var(--muted)">No actions yet</div>';
-      
-    return `
-      <tr>
-        <td style="font-weight:600">${d.name}<br><small style="color:var(--muted);font-weight:400">${d.angle}</small></td>
-        <td>${tr.assignedTo || '-'}</td>
-        <td><span class="status-dot ${tr.status}"></span>${tr.status.replace(/-/g,' ')}</td>
-        <td>${actsHtml}</td>
-        <td style="font-size:12px;color:var(--muted)">Review</td>
-      </tr>`;
+    const status=tr.status||'todo';
+    const aa=acts.filter(a=>a.account===tr.id);
+    const ah=aa.length>0?aa.slice(-3).reverse().map(a=>`<div class="action-item"><span class="check">${getIcon(a.type)}</span><span class="date">${a.date} ${a.time||''}</span> ${a.contact ? '👤'+a.contact+' ' : ''}${a.detail}</div>`).join(''):'<div class="action-item" style="color:var(--muted)">No actions yet</div>';
+    const nx={'todo':'📧 Send initial email','emailed':'📞 Follow up call (Day 3)','called':'📬 Follow-up with insight','meeting-scheduled':'🎤 Prep demo','meeting-done':'📬 Send recap','declined':'❌ Log & move','closed':'✅ Onboard'};
+    const opts = ['todo','emailed','called','meeting-scheduled','meeting-done','declined','closed'];
+    const statusOpts = opts.map(v => `<option value="${v}" ${status===v?'selected':''}>${v.replace(/-/g,' ')}</option>`).join('');
+    const ae = tr.assignedTo||'';
+    return `<tr><td style="font-weight:600">${d.name}<br><span style="font-size:11px;color:var(--muted);font-weight:400">${d.angle}</span></td>
+      <td><input value="${ae}" placeholder="-" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 5px;color:var(--text);font-size:11px;font-family:Inter" onchange="updT('${tr.id}','assignedTo',this.value);renderActions();"></td>
+      <td><select style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:4px 6px;color:var(--text);font-size:11px;font-family:Inter" onchange="updT('${tr.id}','status',this.value);renderActions();renderTracker();">${statusOpts}</select></td><td>${ah}</td>
+      <td style="font-size:12px;color:var(--muted)">${nx[status]||'Review'}</td></tr>`;
   }).join('');
 }
 
-function renderDashboard() {
-  const t = getTracker();
-  const acts = getActions();
-  const total = t.length;
-  const contacted = t.filter(x => x.status !== 'todo').length;
-  const meetings = t.filter(x => x.status.includes('meeting')).length;
-  
-  document.getElementById('dashRoot').innerHTML = `
+function renderDashboard(){
+  const t=getTracker();
+  const acts=getActions();
+  const l=JSON.parse(localStorage.getItem('orcaL')||'[]');
+  const total=t.length;
+  const todo=t.filter(x=>x.status==='todo').length;
+  const contacted=t.filter(x=>x.status!=='todo').length;
+  const meetings=t.filter(x=>x.status==='meeting-scheduled'||x.status==='meeting-done').length;
+  const declined=t.filter(x=>x.status==='declined').length;
+  const closed=t.filter(x=>x.status==='closed').length;
+
+  document.getElementById('dashRoot').innerHTML=`
     <div class="dash-card"><div class="dash-num">${total}</div><div class="dash-label">Total</div></div>
-    <div class="dash-card"><div class="dash-num">${contacted}</div><div class="dash-label">Contacted</div></div>
-    <div class="dash-card"><div class="dash-num">${meetings}</div><div class="dash-label">Meetings</div></div>
-    <div class="dash-card blue"><div class="dash-num">${acts.length}</div><div class="dash-label">Actions</div></div>`;
+    <div class="dash-card orange"><div class="dash-num">${todo}</div><div class="dash-label">Not Contacted</div><div class="dash-sub">${Math.round(todo/total*100)}%</div></div>
+    <div class="dash-card"><div class="dash-num">${contacted}</div><div class="dash-label">Contacted</div><div class="dash-sub">${Math.round(contacted/total*100)}%</div></div>
+    <div class="dash-card"><div class="dash-num">${meetings}</div><div class="dash-label">Meetings</div><div class="dash-sub">${contacted>0?Math.round(meetings/contacted*100):0}% conv</div></div>
+    <div class="dash-card red"><div class="dash-num">${declined}</div><div class="dash-label">Declined</div></div>
+    <div class="dash-card"><div class="dash-num">${closed}</div><div class="dash-label">Closed Won</div></div>
+    <div class="dash-card blue"><div class="dash-num">${acts.length}</div><div class="dash-label">Actions</div></div>
+    <div class="dash-card"><div class="dash-num">${l.length}</div><div class="dash-label">Learnings</div></div>`;
+
+  // Messaging Analysis
+  const pitches = t.filter(x => x.pitchUsed && x.pitchCategory);
+  const byCategory = {};
+  pitches.forEach(p => {
+    const cat = p.pitchCategory || 'uncategorized';
+    if(!byCategory[cat]) byCategory[cat] = {total:0,worked:0,pending:0,no:0,examples:[]};
+    byCategory[cat].total++;
+    if(p.status==='meeting-scheduled'||p.status==='meeting-done'||p.status==='closed') byCategory[cat].worked++;
+    else if(p.status==='declined') byCategory[cat].no++;
+    else byCategory[cat].pending++;
+    if(p.pitchUsed) byCategory[cat].examples.push({name:p.name,pitch:p.pitchUsed.slice(0,120),status:p.status});
+  });
+
+  const catLabels = {reliability:'🔗 Reliability/Security',cost:'💰 Cost Optimization',compliance:'📋 Compliance',security:'🛡️ Security',uncategorized:'📝 Other'};
+  const catKeys = Object.keys(byCategory);
+  let msgHtml = '';
+  if(catKeys.length===0){
+    msgHtml = '<p style="color:var(--muted);font-size:13px">No pitches logged yet. Add pitch copy in Tracker to see analysis.</p>';
+  } else {
+    msgHtml = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px">` +
+      catKeys.map(k => {
+        const c = byCategory[k];
+        const rate = c.total > 0 ? Math.round(c.worked/c.total*100) : 0;
+        return `<div class="msg-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="font-weight:600;font-size:13px">${catLabels[k]||k}</span>
+            <span style="font-size:12px;color:var(--muted)">${c.total} pitches</span>
+          </div>
+          <div style="display:flex;gap:12px;margin-bottom:8px">
+            <span style="font-size:11px;color:var(--green)">✅ ${c.worked} worked</span>
+            <span style="font-size:11px;color:var(--orange)">⏳ ${c.pending} pending</span>
+            <span style="font-size:11px;color:var(--red)">❌ ${c.no} no</span>
+          </div>
+          <div class="progress-bar"><div class="fill green" style="width:${rate}%\"></div></div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">${rate}% meeting rate</div>
+          ${c.examples.slice(0,2).map(e => `
+            <div style="margin-top:8px;padding:6px 8px;background:var(--surface2);border-radius:4px;font-size:11px">
+              <div style="color:var(--text);font-weight:500">${e.name} <span class="msg-result ${e.status==='declined'?'no':e.status==='todo'||e.status==='emailed'?'pending':'worked'}">${e.status.replace(/-/g,' ')}</span></div>
+              <div style="color:var(--muted);font-style:italic;margin-top:2px">"${e.pitch}${e.pitch.length>=120?'...':''}"</div>
+            </div>
+          `).join('')}
+        </div>`;
+      }).join('') + `</div>`;
+  }
+  document.getElementById('msgAnalysis').innerHTML = msgHtml;
+
+  // Weekly
+  const w1=DATA.filter(d=>d.wk==='W1').length;
+  const w2=DATA.filter(d=>d.wk==='W2').length;
+  const w3=DATA.filter(d=>d.wk==='W3').length;
+  document.getElementById('statsRoot').innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px">
+      <h4 style="font-size:13px;font-weight:600;margin-bottom:12px">📅 Outreach by Week</h4>
+      ${[['W1 🔥 Hot',w1,DATA.filter(d=>d.wk==='W1'&&t.find(x=>x.id===d.id&&x.status!=='todo')).length,'green'],
+        ['W2 🟠 Hot+Warm',w2,DATA.filter(d=>d.wk==='W2'&&t.find(x=>x.id===d.id&&x.status!=='todo')).length,'orange'],
+        ['W3 🔵 Warm',w3,DATA.filter(d=>d.wk==='W3'&&t.find(x=>x.id===d.id&&x.status!=='todo')).length,'blue'],
+        ['W4 ⚪ Cold',DATA.filter(d=>d.wk==='W4').length,DATA.filter(d=>d.wk==='W4'&&t.find(x=>x.id===d.id&&x.status!=='todo')).length,'']]
+        .map(([l,total2,done,color])=>`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>${l}</span><span>${done}/${total2}</span></div><div class="progress-bar"><div class="fill ${color}" style="width:${total2>0?done/total2*100:0}%\"></div></div></div>`).join('')}
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px">
+      <h4 style="font-size:13px;font-weight:600;margin-bottom:12px">🔄 Overall Funnel</h4>
+      ${[['📋 Total',total,100,'green'],['📧 Contacted',contacted,contacted/total*100,'orange'],['🗓️ Meetings',meetings,contacted>0?meetings/contacted*100:0,'green'],['✅ Closed',closed,meetings>0?closed/meetings*100:0,'green']]
+        .map(([l,n,p])=>`<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>${l}</span><span>${n}</span></div><div class="progress-bar"><div class="fill green" style="width:${p}%\"></div></div></div>`).join('')}
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:12px;color:var(--muted)"><span>❌ Declined</span><span>${declined}</span></div>
+    </div>
+  </div>`;
+
+  const lr=document.getElementById('learnRoot');
+  if(l.length===0) lr.innerHTML='<p style="color:var(--muted);font-size:13px">No learnings yet.</p>';
+  else lr.innerHTML=l.slice().reverse().map(x=>`<div class="learn-entry"><span class="date">${x.date}</span><span class="acct-t">${x.acct}</span>${x.text}</div>`).join('');
 }
 
+function addLearn(){
+  const input=document.getElementById('li');
+  const acct=document.getElementById('la');
+  if(!input.value.trim())return;
+  const l=JSON.parse(localStorage.getItem('orcaL')||'[]');
+  l.push({date:new Date().toLocaleDateString(),text:input.value.trim(),acct:acct.value.trim()||'general'});
+  localStorage.setItem('orcaL',JSON.stringify(l));
+  input.value='';acct.value='';
+  renderDashboard();
+}
+
+// ===== MESSAGING ASSISTANT =====
+function initMessaging() {
+  const sel = document.getElementById('msgAccount');
+  const t = getTracker();
+  sel.innerHTML = t.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+  sel.onchange = function() {
+    const tr = t.find(x => x.id === this.value);
+    if(tr) {
+      document.getElementById('msgContactName').value = tr.contactName || '';
+      document.getElementById('msgContactTitle').value = tr.contactTitle || '';
+      document.getElementById('msgLinkedIn').value = tr.linkedinUrl || '';
+    }
+  };
+}
+initMessaging();
+
+function toggleOutreachStyle() {
+  const section = document.getElementById('creativeSection');
+  const btn = document.getElementById('styleToggle');
+  if(section.style.display === 'none') {
+    section.style.display = 'block';
+    btn.textContent = 'Switch to Standard';
+    btn.style.borderColor = 'var(--orange)';
+    btn.style.color = 'var(--orange)';
+    btn.style.background = 'rgba(245,158,11,0.1)';
+  } else {
+    section.style.display = 'none';
+    btn.textContent = 'Switch to Creative';
+    btn.style.borderColor = 'var(--accent)';
+    btn.style.color = 'var(--accent)';
+    btn.style.background = 'rgba(0,212,170,0.1)';
+  }
+}
+
+function generateCreativeMessage() {
+  const acct = document.getElementById('msgAccount').value;
+  const t = getTracker();
+  const tr = t.find(x => x.id === acct);
+  const d = DATA.find(x => x.id === acct) || { name: tr.name, angle: 'Prospect', signal: tr.notes };
+  const contactName = document.getElementById('msgContactName').value.trim() || 'there';
+  const title = document.getElementById('msgContactTitle').value.trim();
+  const linkedin = document.getElementById('msgLinkedIn').value.trim();
+  const context = document.getElementById('msgContext').value.trim();
+  const approach = document.getElementById('creativeApproach').value;
+  const idea = document.getElementById('creativeIdea').value.trim();
+  const assets = document.getElementById('creativeAssets').value.trim();
+  const companyContext = document.getElementById('msgContext2').value.trim() || (d ? d.signal : '');
+  const channel = document.getElementById('msgChannel').value;
+  const goal = document.getElementById('msgGoal').value;
+  const pitchCat = document.getElementById('msgPitchCat').value;
+
+  const btn = document.getElementById('msgGenerateBtn');
+  btn.textContent = '⏳ Crafting creative play...';
+  btn.disabled = true;
+
+  const company = d ? d.name : 'this company';
+  const signal = d ? d.angle : '';
+
+  // Creative play templates
+  const approachNames = {
+    loom: '🎥 Loom Video',
+    datadrop: '📊 Data Drop',
+    microsite: '🌐 Micro-Site',
+    gift: '🎁 Physical Mailer',
+    social: '💬 Social Proof Bomb',
+    audit: '🔍 Free Audit',
+    event: '🎪 Co-Marketing',
+    meme: '😂 Humor / Meme',
+    custom: '✨ Custom Creative'
+  };
+
+  const playbooks = {
+    loom: {
+      concept: `Record a 2-3 minute Loom video showing ${contactName !== 'there' ? contactName + ' ' : ''}something specific to ${company}. For example: pull up their product, highlight their AI features, then show a quick mockup of how OrcaRouter would seamlessly fit into their architecture. End with a specific insight — not a generic pitch.`,
+      script: `\"Hey ${contactName !== 'there' ? contactName : title || 'there'} — I wanted to show you something. [Open their product/site] You guys are doing [specific thing] with AI here. I mapped out what your model routing setup probably looks like today vs what it could be with OrcaRouter. [Show quick diagram or overlay] The key insight: [1 specific thing they're missing]. I'll send this over — no need to watch now. Happy to walk through it live if it's interesting.\"`,
+      assets: 'Loom link, 1-slide visual overlay or annotation',
+      followup: 'Day 3: \"Did you get a chance to watch? The most important part is at 1:30 — happy to expand on that live.\"'
+    },
+    datadrop: {
+      concept: `Pull together a relevant dataset or benchmark specifically useful for ${company}. Example: a comparison of model pricing/performance across providers they use, or an analysis of inference costs at their scale. The key is making it valuable regardless of whether they buy.`,
+      script: `${contactName !== 'there' ? contactName + ', ' : ''}I put together something I thought would be useful for your team at ${company}. [Attached dataset/analysis] — it's a real-world comparison of latency, cost and reliability across the top 8 LLM providers at [relevant scale]. No agenda here — just data I thought would help with your [specific challenge]. If it sparks any questions, I'm happy to chat.`,
+      assets: 'Curated dataset, benchmark spreadsheet, or analysis PDF',
+      followup: 'Day 5: \"Did the data land? Happy to walk through the methodology if helpful.\"'
+    },
+    microsite: {
+      concept: `Build a single HTML page tailored specifically to ${company}. Show their name, their specific use case, a mockup of OrcaRouter in their stack, and projected cost/reliability improvements. URL: orcarouter.ai/for/${d ? d.id : 'company'}. Send the link with zero context.`,
+      script: `${contactName !== 'there' ? contactName : 'Hey'}, I built something for your team at ${company}. No pitch — just a page showing what your AI stack looks like with and without OrcaRouter.\\n\\nhttps://orcarouter.ai/for/${d ? d.id : 'company'}\\n\\nWorth 3 minutes?`,
+      assets: 'Custom 1-page micro-site with their branding, use case, and ROI projection',
+      followup: 'Day 3: \"Curious what you think of the architecture on that page. The fallback chain design specifically.\"'
+    },
+    gift: {
+      concept: `Send a memorable physical item related to model reliability or AI infrastructure. Ideas: A \"Model Fallback\" emergency kit (small pouch with a backup battery, a note saying \"Your AI shouldn't need a backup plan — but if it does, we've got you\"), or a custom-engraved notebook with \"${company}'s AI Reliability Playbook\" on the cover. Include a QR code to a personalized video.`,
+      script: `(No email — let the physical item do the work. Follow up 3 days after delivery.)\\n\\n\"Hey ${contactName !== 'there' ? contactName : title || 'there'} — did a package show up? Hope it got a smile. The QR code inside links to a 90-second thought on something I think you're dealing with at ${company}. Worth a look?\"`,
+      assets: 'Physical item ($50-100 range), QR code linking to personalized video',
+      followup: 'Day 5 after delivery: call. Reference the item as the opener.'
+    },
+    social: {
+      concept: `Curate 3-5 customer wins or case studies specifically relevant to ${company}'s industry or use case ${signal}. Package them as a \"Peer Success Brief\" — not from us, but from their peers. Add specific numbers and quotes.`,
+      script: `${contactName !== 'there' ? contactName + ', ' : ''}I put together something I think you'll find useful — ${company} is in a similar position to a few of our customers who solved [specific problem]. \\n\\nHere are 3 anonymized examples of companies at your stage who were dealing with the same [reliability/cost/compliance] challenge:\\n\\n[Example 1]: Company A — similar volume, saved 32% on inference\\n[Example 2]: Company B — eliminated single-provider risk\\n[Example 3]: Company C — passed HIPAA audit first time\\n\\nWould a 15-min rundown of what they did be useful?`,
+      assets: 'Curated case studies with peer-level context',
+      followup: 'Day 4: \"The most relevant one to your setup was probably [specific example]. Want me to share the full playbook?\"'
+    },
+    audit: {
+      concept: 'Offer a completely free, no-strings-attached audit of their current AI infrastructure. Use publicly available info (their published stack, job postings, engineering blogs) to identify gaps. Present findings in a clean format.',
+      script: `${contactName !== 'there' ? contactName : title || 'there'} — we analyzed ${company}'s publicly available AI infrastructure based on your engineering blog posts, job listings, and published architecture. Here's what we found:\\n\\n✅ What you're doing well: [2-3 things]\\n⚠️ Potential gaps: [1-2 risks we identified]\\n💡 Opportunities: [1-2 quick wins]\\n\\nNo obligation whatsoever — just sharing what we found. Want the full breakdown? It's 3 pages.`,
+      assets: '3-page audit report with findings, risks, and recommendations',
+      followup: 'Day 5: \"The most critical finding was [specific gap]. Want to discuss it?\"'
+    },
+    event: {
+      concept: `Propose a co-marketing initiative — not a sales call. Suggest a joint webinar, white paper, or podcast episode about ${signal}. Position it as \"let's create something valuable for both our audiences.\"`,
+      script: `${contactName !== 'there' ? contactName : 'Hey'} — I have an idea for ${company} that's not a sales pitch.\\n\\nWe're seeing huge demand for content around [specific topic — e.g., \"multi-model AI reliability\" or \"PII governance in LLM pipelines\"], and ${company} has a unique perspective here. I'd love to propose a joint webinar / white paper co-authored by our teams.\\n\\nWe handle production, promotion to our audience, and logistics. You bring the expertise and a case study. Sound interesting?\\n\\n(No purchase necessary — genuinely think this would be valuable for both communities.)`,
+      assets: 'Event proposal one-pager, audience reach data, production timeline',
+      followup: \"Day 7: Even if a webinar isn't right, would a joint blog post work?\"
+    },
+    meme: {
+      concept: `Use humor to break through the noise. The AI infrastructure space is dry — laugh about it. A self-deprecating meme about model outages, API pricing surprises, or the \"make vs buy\" debate. Make it genuinely funny, not cringey.`,
+      script: `${contactName !== 'there' ? contactName : 'Hey'} — saw [their recent post/news] and couldn't resist. [Send meme/image]\\n\\nOkay, sales pitch over. But seriously — if you ever want to chat about [relevant topic with zero pressure], I'm here.`,
+      assets: 'A genuinely funny meme or GIF tailored to their situation',
+      followup: 'Day 3: \"My meme game is better than my sales pitch. Let me know if you want to chat properly!\"'
+    },
+    custom: {
+      concept: idea || 'Custom creative concept — describe your idea above and I will flesh it out.',
+      script: idea ? `Custom concept: \"${idea}\"\\n\\nAssets available: ${assets || 'Not specified'}\\n\\nBased on your idea for reaching out to ${contactName !== 'there' ? contactName : contactName} at ${company}, here is the recommended execution plan, messaging, and follow-up sequence tailored to their [${pitchCat}] pain point.` : 'Describe your creative idea above and regenerate.',
+      assets: assets || 'Custom — varies based on concept',
+      followup: 'Custom follow-up based on the concept chosen.'
+    }
+  };
+
+  const pb = playbooks[approach];
+  const approachName = approachNames[approach] || 'Creative';
+
+  const pitchBody = `🧠 CREATIVE OUTREACH: ${approachName}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🎯 Target: ${company}\n👤 Contact: ${contactName !== 'there' ? contactName : '[Contact Name]'}${title ? ', ' + title : ''}\n📡 Signal: ${signal}\n\n💡 THE CONCEPT\n${pb.concept}\n\n📝 SUGGESTED MESSAGING\n${pb.script}\n\n📦 ASSETS NEEDED\n${pb.assets}\n\n📅 FOLLOW-UP SEQUENCE\n${pb.followup}\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n${idea ? `\\n✏️ YOUR CUSTOM IDEA:\\n${idea}\\n` : ''}\n${assets ? `\\n📦 AVAILABLE RESOURCES:\\n${assets}` : ''}\n⚡ Tip: The standard template generates copy. Creative plays win meetings. Pick the one that fits your personality and their culture.`;
+
+  document.getElementById('msgBody').textContent = pitchBody;
+  document.getElementById('msgOutput').style.display = 'block';
+  btn.textContent = '✨ Generate Outreach Message';
+  btn.disabled = false;
+  document.getElementById('msgCopied').style.display = 'none';
+}
+
+function generateMessage() {
+  const creativeSection = document.getElementById('creativeSection');
+  if(creativeSection.style.display !== 'none') {
+    generateCreativeMessage();
+  } else {
+    generateStandardMessage();
+  }
+}
+
+// Rename original generateMessage to generateStandardMessage
+function generateStandardMessage() {
+  const acct = document.getElementById('msgAccount').value;
+  const t = getTracker();
+  const tr = t.find(x => x.id === acct);
+  const d = DATA.find(x => x.id === acct) || { name: tr.name, angle: 'Prospect' };
+  const contactName = document.getElementById('msgContactName').value.trim() || 'there';
+  const title = document.getElementById('msgContactTitle').value.trim();
+  const linkedin = document.getElementById('msgLinkedIn').value.trim();
+  const context = document.getElementById('msgContext').value.trim();
+  const channel = document.getElementById('msgChannel').value;
+  const goal = document.getElementById('msgGoal').value;
+  const pitchCat = document.getElementById('msgPitchCat').value;
+  const companyContext = document.getElementById('msgContext2').value.trim() || (d ? d.signal : '');
+
+  const btn = document.getElementById('msgGenerateBtn');
+  btn.textContent = '⏳ Crafting...';
+  btn.disabled = true;
+
+  // Build message using template logic based on Straight Line Selling
+  const channelInfo = {
+    email: { greeting: 'Hi', signoff: 'Best,', format: 'email' },
+    linkedin: { greeting: 'Hi', signoff: '—', format: 'short' },
+    call: { greeting: '', signoff: '', format: 'call' },
+    inmail: { greeting: 'Hi', signoff: 'Best,', format: 'email' }
+  };
+  const ci = channelInfo[channel];
+
+  const goalLines = {
+    meeting: `Would you be open to a 15-minute call this week to discuss? I'll share how other [feature] teams are solving this.`,
+    demo: `I'd love to show you how OrcaRouter works in 20 minutes. Bring your toughest use case.`,
+    intro: `Would you be open to connecting me with your team responsible for [model infrastructure / AI platform]?`,
+    info: `Curious how you're currently handling [specific challenge]. Got 10 minutes to share your perspective?`,
+    followup: `Following up on my note from last week — any thoughts? Happy to jump on a quick call.`
+  };
+
+  // Build the pitch based on category and channel
+  let pitchBody = '';
+  const sharedPain = d ? d.angle : '';
+  const signalLine = d ? d.msg : '';
+
+  const openers = {
+    reliability: `I noticed you're running AI features that depend on model availability — when [provider] degrades, it directly impacts your users.`,
+    security: `Given the sensitive data flowing through your AI pipeline, I imagine governance and compliance are top of mind.`,
+    cost: `At your scale, every inference call adds up. I'm curious how you're thinking about cost-to-serve as AI usage grows.`,
+    platform: `You've built a platform that others build on. I'd love to talk about how OrcaRouter could complement your ecosystem.`
+  };
+
+  const bridges = {
+    reliability: `OrcaRouter sits between your app and every LLM provider with intelligent fallback chains — traffic auto-routes before users notice latency. No single-provider risk.`,
+    security: `OrcaRouter's PII Shield scans every prompt and response in real-time — blocks secrets, PHI, and credentials before they hit the model. Full audit trail. Deploy in your VPC.`,
+    cost: `OrcaRouter is a zero-markup passthrough. We don't add margin to your inference bill. Route simple requests to cheaper models automatically. Same quality, lower cost.`,
+    platform: `OrcaRouter gives your users enterprise-grade model governance under your ecosystem — PII Shield, compliance recipes, and cost-optimized routing through a single endpoint.`
+  };
+
+  const personalTouch = context ? `\\n\\nI also saw that ${context} — thought it was worth mentioning.` : '';
+  const liNote = linkedin ? `\\n\\n(I came across your profile on LinkedIn.)` : '';
+  const titleIntro = title ? ` ${title}` : '';
+
+  if(channel === 'call') {
+    pitchBody = `Hi${titleIntro ? ' ' + title : ''}, I'm reaching out because ${openers[pitchCat]}\\n\\n${bridges[pitchCat]}\\n\\n${goalLines[goal]}${personalTouch}`;
+  } else {
+    pitchBody = `${ci.greeting}${title ? ' ' + title : ''}${contactName !== 'there' ? ' ' + contactName : ''},${liNote}\\n\\n${openers[pitchCat]}\\n\\n${bridges[pitchCat]}\\n\\n${goalLines[goal]}${personalTouch}\\n\\n${ci.signoff}\\n[Rep Name]\\nFlashLabs - OrcaRouter`;
+  }
+
+  document.getElementById('msgBody').textContent = pitchBody;
+  document.getElementById('msgOutput').style.display = 'block';
+  btn.textContent = '✨ Generate Outreach Message';
+  btn.disabled = false;
+  document.getElementById('msgCopied').style.display = 'none';
+}
+
+function copyMessage() {
+  const text = document.getElementById('msgBody').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    document.getElementById('msgCopied').style.display = 'inline';
+    setTimeout(() => document.getElementById('msgCopied').style.display = 'none', 2000);
+  });
+}
+
+function regenerate() {
+  generateMessage();
+}
+
+function copyToTracker() {
+  const acct = document.getElementById('msgAccount').value;
+  const t = getTracker();
+  const tr = t.find(x => x.id === acct);
+  if(tr) {
+    const msg = document.getElementById('msgBody').textContent;
+    tr.pitchUsed = msg.slice(0, 500);
+    tr.notes = (tr.notes ? tr.notes + '\\n---\\n' : '') + 'Generated message (' + new Date().toLocaleDateString() + '): ' + msg.slice(0, 200);
+    localStorage.setItem('orcaT', JSON.stringify(t));
+    document.getElementById('msgCopied').textContent = '✅ Saved to Tracker!';
+    document.getElementById('msgCopied').style.display = 'inline';
+    setTimeout(() => {
+      document.getElementById('msgCopied').textContent = '✅ Copied!';
+      setTimeout(() => document.getElementById('msgCopied').style.display = 'none', 2000);
+    }, 2000);
+  }
+}
+
+// ===== PROSPECTS =====
 function getProspects() {
   return JSON.parse(localStorage.getItem('orcaProspects') || '[]');
 }
 
-function renderProspects() {
-  const p = getProspects();
-  const root = document.getElementById('prospectsRoot');
-  if(p.length === 0) { root.innerHTML = '<p style="color:var(--muted);font-size:13px">No prospects yet.</p>'; return; }
-  
-  root.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px">` + p.map(x => `
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
-      <div style="font-weight:600;margin-bottom:4px">${x.company}</div>
-      <div style="font-size:12px;color:var(--accent);margin-bottom:8px">${x.type} signal</div>
-      <div style="font-size:12px;color:var(--muted)">${x.detail}</div>
-      <button class="btn btn-sm" onclick="promoteToAccount('${x.id}')" style="margin-top:12px">+ Add to Accounts</button>
-    </div>`).join('') + `</div>`;
-}
-
 function addProspect() {
   const company = document.getElementById('psCompany').value.trim();
-  if(!company) return;
+  const contact = document.getElementById('psContact').value.trim();
+  const type = document.getElementById('psType').value;
+  const detail = document.getElementById('psDetail').value.trim();
+  if(!company) { alert('Enter a company name'); return; }
+
   const p = getProspects();
   p.push({
     id: Date.now().toString(),
     company: company,
-    contact: document.getElementById('psContact').value,
-    type: document.getElementById('psType').value,
-    detail: document.getElementById('psDetail').value,
+    contact: contact,
+    type: type,
+    detail: detail,
+    date: new Date().toLocaleDateString(),
+    time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
     status: 'new'
   });
   localStorage.setItem('orcaProspects', JSON.stringify(p));
+  document.getElementById('psCompany').value='';
+  document.getElementById('psContact').value='';
+  document.getElementById('psDetail').value='';
   renderProspects();
 }
 
 function promoteToAccount(id) {
   const p = getProspects();
-  const item = p.find(x => x.id === id);
-  if(!item) return;
+  const idx = p.findIndex(x => x.id === id);
+  if(idx === -1) return;
+  const item = p[idx];
+
+  // Add to tracker
   const t = getTracker();
-  if(!t.find(x => x.name === item.company)) {
+  const newId = item.company.toLowerCase().replace(/[^a-z0-9]/g,'') + '_prospect';
+  if(!t.find(x => x.id === newId)) {
     t.push({
-      id: item.id,
+      id: newId,
       name: item.company,
       status: 'todo',
       lastTouch: '',
-      contactName: item.contact,
-      contactTitle: '',
+      contactName: (item.contact || '').split('/')[0]?.trim() || '',
+      contactTitle: (item.contact || '').includes('/') ? item.contact.split('/')[1].trim() : '',
       linkedinUrl: '',
       pitchUsed: '',
       pitchCategory: '',
       assignedTo: '',
-      notes: item.detail
+      notes: 'Promoted from prospect signal: ' + item.detail
     });
     localStorage.setItem('orcaT', JSON.stringify(t));
   }
-  localStorage.setItem('orcaProspects', JSON.stringify(p.filter(x => x.id !== id)));
+
+  // Mark as promoted
+  p[idx].status = 'promoted';
+  localStorage.setItem('orcaProspects', JSON.stringify(p));
   renderProspects();
+  renderTracker();
   renderAccounts();
+  renderActions();
 }
 
-// Tab switching
-document.querySelectorAll('[data-tab]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('[data-tab]').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+function importFromSheet() {
+  const sheetId = '1plfEWmbqh1GcO35XHra4T3_rA6RzOyLd3SfzcX4xOQg';
+  // Try the gviz endpoint which sometimes has better CORS/public access
+  const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`;
+  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(csvUrl)}`;
+  const btn = document.querySelector('[onclick=\"importFromSheet()\"]');
+  
+  const tryFetch = (url) => {
+    btn.textContent = '⏳ Importing...';
+    btn.disabled = true;
+    return fetch(url)
+      .then(r => {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.text();
+      })
+      .then(csv => {
+        if (csv.includes('ServiceLogin') || csv.includes('login-container')) {
+          throw new Error('Sheet is private. Please \"Publish to the web\" (File > Share > Publish to the web > CSV) or use the JSON import.');
+        }
+        const lines = csv.split('\\n').filter(l => l.trim());
+        if (lines.length < 2) throw new Error('No data rows found.');
+        
+        const p = getProspects();
+        let imported = 0;
+        for (let i = 1; i < lines.length; i++) {
+          const vals = [];
+          let current = '', inQuotes = false;
+          for (const ch of lines[i]) {
+            if (ch === '\"') { inQuotes = !inQuotes; continue; }
+            if (ch === ',' && !inQuotes) { vals.push(current.trim()); current = ''; continue; }
+            current += ch;
+          }
+          vals.push(current.trim());
+          
+          const company = vals[1] || ''; // Column B
+          const detail = vals[6] || '';  // Column G
+          if (!company && !detail) continue;
+
+          p.push({
+            id: Date.now().toString() + '_' + i,
+            company: company.replace(/^\"|\"$/g,''),
+            contact: (vals[2] || '').replace(/^\"|\"$/g,''),
+            type: (vals[4] || 'other').toLowerCase().replace(/^\"|\"$/g,''),
+            detail: detail.replace(/^\"|\"$/g,'') + (vals[7] ? ' | Angle: ' + vals[7].replace(/^\"|\"$/g,'') : ''),
+            date: new Date().toLocaleDateString(),
+            time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
+            status: 'new'
+          });
+          imported++;
+        }
+        localStorage.setItem('orcaProspects', JSON.stringify(p));
+        btn.textContent = '✅ ' + imported + ' imported';
+        setTimeout(() => { btn.textContent = '📥 Import from Scout Sheet'; btn.disabled = false; }, 3000);
+        renderProspects();
+      })
+      .catch(e => {
+        console.error(e);
+        alert('Import failed: ' + e.message);
+        btn.textContent = '📥 Import from Scout Sheet';
+        btn.disabled = false;
+        
+        // Fallback: Show a prompt to paste CSV
+        const manual = confirm('Would you like to paste the CSV data manually?');
+        if (manual) {
+          const data = prompt('Paste CSV data here (including headers):');
+          if (data) {
+            // Recursively call with a data URI or just handle it
+            const blob = new Blob([data], {type: 'text/csv'});
+            tryFetch(URL.createObjectURL(blob));
+          }
+        }
+      });
+  };
+
+  tryFetch(proxyUrl);
+}
+
+function importFromJSON() {
+  const btn = document.querySelector('[onclick=\"importFromJSON()\"]');
+  btn.textContent = '⏳ Loading...';
+  btn.disabled = true;
+
+  fetch('signals.json')
+    .then(r => { if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+    .then(data => {
+      const p = getProspects();
+      let imported = 0;
+      let skipped = 0;
+      data.forEach((s, i) => {
+        // Check for duplicates by company name (case-insensitive) + detail prefix
+        const dup = p.find(x =>
+          x.company.toLowerCase() === s.company.toLowerCase() &&
+          (x.detail || '').slice(0, 40) === (s.detail || '').slice(0, 40)
+        );
+        if(dup) { skipped++; return; }
+        p.push({
+          id: Date.now().toString() + '_' + i,
+          company: s.company,
+          contact: s.contact || '',
+          type: s.type || 'other',
+          detail: (s.detail || '') + (s.angle ? ' | Angle: ' + s.angle : ''),
+          date: new Date().toLocaleDateString(),
+          time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
+          status: 'new'
+        });
+        imported++;
+      });
+      localStorage.setItem('orcaProspects', JSON.stringify(p));
+      btn.textContent = '✅ ' + imported + ' new, ' + skipped + ' skipped';
+      setTimeout(() => { btn.textContent = '📄 Import signals.json ✓'; btn.disabled = false; }, 3000);
+      renderProspects();
+    })
+    .catch(e => {
+      alert('Could not load signals.json: ' + e.message + '\\n\\nMake sure signals.json exists in the same folder as the playbook.');
+      btn.textContent = '📄 Import signals.json ✓';
+      btn.disabled = false;
+    });
+}
+
+function clearProspects() {
+  if(confirm('Are you sure you want to clear all prospect signals? This cannot be undone.')) {
+    localStorage.removeItem('orcaProspects');
+    renderProspects();
+  }
+}
+
+function renderProspects() {
+  const p = getProspects();
+  const root = document.getElementById('prospectsRoot');
+
+  if(p.length === 0) {
+    root.innerHTML = '<p style=\"color:var(--muted);font-size:13px\">No prospect signals saved yet. Use the form above to add one.</p>';
+    return;
+  }
+
+  const typeIcons = {hiring:'📡',product:'🚀',funding:'💰',outage:'⚠️',partnership:'🤝',content:'📝',job:'💼',other:'📌'};
+
+  root.innerHTML = `<div style=\"display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px\">` +
+    p.slice().reverse().map(x => {
+      const promoted = x.status === 'promoted';
+      return `<div style=\"background:var(--surface);border:1px solid ${promoted ? 'var(--green)' : 'var(--border)'};border-radius:10px;padding:16px\">
+        <div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:6px\">
+          <div style=\"font-weight:600;font-size:14px\">${x.company}</div>
+          <span style=\"font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;background:${promoted ? 'rgba(16,185,129,0.15)' : 'rgba(245,158,11,0.15)'};color:${promoted ? 'var(--green)' : 'var(--orange)'}\">${promoted ? '✅ Added' : '🆕 New'}</span>
+        </div>
+        ${x.contact ? `<div style=\"font-size:12px;color:var(--text);margin-bottom:4px\">👤 ${x.contact}</div>` : ''}
+        <div style=\"font-size:11px;color:var(--accent);margin-bottom:6px\">${typeIcons[x.type]||'📌'} ${x.type.charAt(0).toUpperCase()+x.type.slice(1)} signal</div>
+        <div style=\"font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:8px\">${x.detail}</div>
+        <div style=\"font-size:10px;color:var(--muted)\">${x.date} ${x.time}</div>
+        ${!promoted ? `<button class=\"btn btn-sm\" onclick=\"promoteToAccount('${x.id}')\" style=\"margin-top:8px;background:rgba(0,212,170,0.1);border-color:var(--accent);color:var(--accent)\">+ Add to Accounts</button>` : ''}
+      </div>`;
+    }).join('') + `</div>`;
+}
+
+document.querySelectorAll('[data-tab]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('[data-tab]').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
     btn.classList.add('active');
-    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-    if(btn.dataset.tab === 'accounts') renderAccounts();
-    if(btn.dataset.tab === 'tracker') renderTracker();
-    if(btn.dataset.tab === 'actions') renderActions();
-    if(btn.dataset.tab === 'prospects') renderProspects();
-    if(btn.dataset.tab === 'learn') renderDashboard();
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+    if(btn.dataset.tab==='tracker') renderTracker();
+    if(btn.dataset.tab==='actions') renderActions();
+    if(btn.dataset.tab==='prospects') renderProspects();
+    if(btn.dataset.tab==='messaging') initMessaging();
+    if(btn.dataset.tab==='learn') renderDashboard();
+    if(btn.dataset.tab==='accounts') renderAccounts();
   });
 });
 
-// Initial load
 renderAccounts();
 renderTracker();
 renderActions();
