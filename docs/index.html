@@ -511,7 +511,19 @@ function renderTracker() {
           <label>📓 Notes</label>
           <textarea placeholder="Outcome, response received, follow-up needed..." onchange="updT('${x.id}','notes',this.value)">${x.notes||''}</textarea>
         </div>
-      </div>`;
+        <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+          <select id="qt-${x.id}" style="flex:1;min-width:80px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 6px;color:var(--text);font-size:10px">
+            <option value="emailed">Email</option>
+            <option value="called">Call</option>
+            <option value="linkedin">LinkedIn</option>
+            <option value="meeting">Meeting</option>
+            <option value="declined">Declined</option>
+          </select>
+          <input id="qc-${x.id}" placeholder="Contact" value="${x.contactName||''}" style="flex:1;min-width:70px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 6px;color:var(--text);font-size:10px">
+          <input id="qd-${x.id}" placeholder="What happened?" style="flex:2;min-width:90px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 6px;color:var(--text);font-size:10px">
+          <button class="btn btn-sm" onclick="quickLog('${x.id}')" style="background:rgba(0,212,170,0.15);border-color:var(--accent);color:var(--accent);font-size:10px;padding:3px 8px">+ Log</button>
+        </div>
+      </div></div>`;
     }).join('') + `</div>`;
 }
 
@@ -519,6 +531,48 @@ function updT(id,field,val){
   const t=getTracker();
   const item=t.find(x=>x.id===id);
   if(item){item[field]=val;localStorage.setItem('orcaT',JSON.stringify(t));}
+}
+
+function quickLog(id){
+  const type=document.getElementById('qt-'+id).value;
+  const contact=document.getElementById('qc-'+id).value.trim();
+  const detail=document.getElementById('qd-'+id).value.trim();
+  if(!detail){alert('Enter details');return;}
+  const acts=JSON.parse(localStorage.getItem('orcaActs')||'[]');
+  acts.push({account:id,type:type,contact:contact,detail:detail,date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});
+  localStorage.setItem('orcaActs',JSON.stringify(acts));
+  const t=getTracker();
+  const tr=t.find(x=>x.id===id);
+  if(tr){
+    if(tr.status==='todo'&&['emailed','called','linkedin'].includes(type)){tr.status=type;}
+    if(type==='meeting'&&tr.status==='todo'){tr.status='meeting-scheduled';}
+    if(contact){tr.contactName=contact;}
+    tr.lastTouch=new Date().toLocaleDateString()+' '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})+' - '+detail.slice(0,40);
+    localStorage.setItem('orcaT',JSON.stringify(t));
+  }
+  document.getElementById('qd-'+id).value='';
+  if(typeof renderActions==='function')renderActions();
+}
+
+function quickLog(id){
+  const type=document.getElementById('qt-'+id).value;
+  const contact=document.getElementById('qc-'+id).value.trim();
+  const detail=document.getElementById('qd-'+id).value.trim();
+  if(!detail){alert('Enter details');return;}
+  const acts=JSON.parse(localStorage.getItem('orcaActs')||'[]');
+  acts.push({account:id,type:type,contact:contact,detail:detail,date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});
+  localStorage.setItem('orcaActs',JSON.stringify(acts));
+  const t=getTracker();
+  const tr=t.find(x=>x.id===id);
+  if(tr){
+    if(tr.status==='todo'&&['emailed','called','linkedin'].includes(type)){tr.status=type;}
+    if(type==='meeting'&&tr.status==='todo'){tr.status='meeting-scheduled';}
+    if(contact){tr.contactName=contact;}
+    tr.lastTouch=new Date().toLocaleDateString()+' '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})+' - '+detail.slice(0,40);
+    localStorage.setItem('orcaT',JSON.stringify(t));
+  }
+  document.getElementById('qd-'+id).value='';
+  if(typeof renderActions==='function')renderActions();
 }
 
 function usePrevContact(id){
