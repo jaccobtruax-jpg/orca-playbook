@@ -596,22 +596,70 @@ function enrichLinkedIn(id){
     result.innerHTML = 'Enter a LinkedIn URL first';
     return;
   }
-  // Extract username
   const match = url.match(/linkedin\.com\/in\/([^\/\?#]+)/);
   if(!match){
-    result.innerHTML = '⚠️ Could not parse LinkedIn URL. Expected format: https://linkedin.com/in/username';
+    result.innerHTML = 'Could not parse LinkedIn URL';
     return;
   }
   const username = match[1];
+  result.innerHTML = 'Searching for <strong>' + username + '</strong>...';
 
-  // Try web search for enrichment
-  fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://linkedin.com/in/'+username)}`)
-    .then(r => result.innerHTML = '⚠️ LinkedIn requires login. Try manually:')
-    .catch(() => result.innerHTML = '⚠️ LinkedIn requires login.')
-    .finally(() => {
-      result.innerHTML = `🔍 Parsed: <strong>${username}</strong>. LinkedIn requires authentication to scrape. 
-        <br>Try searching: <a href="https://www.google.com/search?q=${encodeURIComponent(username+' '+id)}" target="_blank" style="color:var(--accent)">Google search →</a>
-        <br>Then manually fill name & title above.`;
+  // Try to fetch profile data via Google search
+  const searchUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://www.google.com/search?q=linkedin.com/in/' + username + '&hl=en');
+  
+  fetch(searchUrl)
+    .then(r => r.text())
+    .then(html => {
+      // Try to extract name from Google search result
+      const nameMatch = html.match(/<h3[^>]*>([^<]+)<\/h3>/);
+      const titleMatch = html.match(/<div[^>]*class="[^"]*BNeawe[^"]*"[^>]*>([^<]*(?:Engineer|Manager|Director|VP|CEO|CTO|Head|Lead|Founder|President|Officer|Architect|Developer|Designer|Analyst|Consultant)[^<]*)<\/div>/i);
+      
+      let name = '';
+      let title = '';
+      
+      if (nameMatch) {
+        name = nameMatch[1].replace(/ - LinkedIn$/, '').trim();
+      }
+      if (titleMatch) {
+        title = titleMatch[1].trim();
+      }
+      
+      if (name || title) {
+        if (name) {
+          document.getElementById('li-'+id).value = url;
+          updT(id, 'contactName', name);
+        }
+        const cnInput = document.querySelector('.trk-card:nth-child(' + (Array.from(document.querySelectorAll('.trk-card')).findIndex(c => c.querySelector('#li-'+id)) + 1) + ') [onchange*=\"contactName\"]');
+        
+        result.innerHTML = 'Found: <strong>' + (name || 'Not found') + '</strong>' + (title ? ' - ' + title : '') + ' <a href="https://www.google.com/search?q=' + encodeURIComponent(username + ' linkedin') + '" target="_blank" style="color:var(--accent)">Search →</a>';
+        
+        if (name) {
+          // Update the contact name input on the tracker card
+          const inputs = document.querySelectorAll('input');
+          for (let i = 0; i < inputs.length; i++) {
+            if (inputs[i].onchange && inputs[i].onchange.toString().indexOf('contactName') > -1 && inputs[i].closest('.trk-card') && inputs[i].closest('.trk-card').querySelector('#li-' + id)) {
+              inputs[i].value = name;
+              inputs[i].dispatchEvent(new Event('change'));
+              break;
+            }
+          }
+          if (title) {
+            for (let i = 0; i < inputs.length; i++) {
+              if (inputs[i].onchange && inputs[i].onchange.toString().indexOf('contactTitle') > -1 && inputs[i].closest('.trk-card') && inputs[i].closest('.trk-card').querySelector('#li-' + id)) {
+                inputs[i].value = title;
+                inputs[i].dispatchEvent(new Event('change'));
+                break;
+              }
+            }
+          }
+        }
+      } else {
+        result.innerHTML = 'Could not auto-extract. Try: <a href="https://www.google.com/search?q=' + encodeURIComponent(username + ' linkedin') + '" target="_blank" style="color:var(--accent)">Google search →</a>';
+      }
+    })
+    .catch(() => {
+      // Fallback: Google search link
+      result.innerHTML = 'Could not fetch. Try: <a href="https://www.google.com/search?q=' + encodeURIComponent(username + ' linkedin') + '" target="_blank" style="color:var(--accent)">Google search →</a>';
     });
 }
 
